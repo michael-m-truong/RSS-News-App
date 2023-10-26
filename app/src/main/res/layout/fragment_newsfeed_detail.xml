@@ -27,15 +27,7 @@
         android:textAppearance="?attr/textAppearanceHeadline5"
         android:text="@string/newsfeed_details_label" />
 
-    <!-- Use a ChipGroup for the word bank -->
-    <com.google.android.material.chip.ChipGroup
-        android:id="@+id/chip_group"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp">
-        <!-- You can add Chip elements dynamically in code -->
-    </com.google.android.material.chip.ChipGroup>
+
 
     <!-- Add an EditText and Button for input -->
     <LinearLayout
@@ -48,7 +40,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="Enter a word" />
+            android:hint="Enter a word"
+            android:imeOptions="actionDone"
+            android:singleLine="true"/>
 
         <Button
             android:id="@+id/add_chip_button"
@@ -57,5 +51,13 @@
             android:text="Add" />
     </LinearLayout>
 
-
+    <!-- Use a ChipGroup for the word bank -->
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/chip_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp">
+        <!-- You can add Chip elements dynamically in code -->
+    </com.google.android.material.chip.ChipGroup>
 </LinearLayout>

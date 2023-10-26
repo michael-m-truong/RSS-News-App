@@ -1,9 +1,11 @@
 package com.bignerdranch.android.newsapp
 
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import com.bignerdranch.android.newsapp.databinding.FragmentNewsfeedDetailBinding
@@ -65,6 +67,26 @@ class NewsFeedDetailFragment  : Fragment() {
                     chipGroup.addView(chip)
                     inputWord.text.clear() // Clear the input field
                 }
+            }
+
+            inputWord.setOnEditorActionListener { v, actionId, event ->
+                if (actionId == EditorInfo.IME_ACTION_DONE || (event != null && event.action == KeyEvent.ACTION_DOWN && event.keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    val word = inputWord.text.toString().trim()
+                    if (word.isNotEmpty()) {
+                        newsFeed.wordBank.add(word)
+                        val chip = Chip(requireContext())
+                        chip.text = word
+                        chip.isCloseIconVisible = true
+                        chip.setOnCloseIconClickListener {
+                            newsFeed.wordBank.remove(word)
+                            chipGroup.removeView(chip)
+                        }
+                        chipGroup.addView(chip)
+                        inputWord.text.clear()
+                        return@setOnEditorActionListener true
+                    }
+                }
+                return@setOnEditorActionListener false
             }
         }
 
