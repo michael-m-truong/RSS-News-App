@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">NewsApp</string>
+
+    <string name="newsfeed_title">Enter a News Feed Title</string>
+    <string name="newsfeed_title_label">Title</string>
+    <string name="wordbank_label">Word Bank</string>
+
+    <string name="newsfeed_details_label">Details</string>
 </resources>
