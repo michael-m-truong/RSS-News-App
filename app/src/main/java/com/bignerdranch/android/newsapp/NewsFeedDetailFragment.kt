@@ -68,9 +68,9 @@ class NewsFeedDetailFragment  : Fragment() {
                             oldNewsFeed.wordBank.remove(word)
                             oldNewsFeed.copy(wordBank = oldNewsFeed.wordBank)
                         }
+                        chipGroup.removeView(chip)
 
                     }
-                    chipGroup.removeView(chip)
                     chipGroup.addView(chip)
                     inputWord.text.clear() // Clear the input field
                     newsFeedDetailViewModel.updateNewsFeed { oldNewsFeed ->

@@ -21,7 +21,7 @@ class NewsFeedRepository private constructor
             NewsFeedDatabase::class.java,
             DATABASE_NAME
         )
-        .createFromAsset(DATABASE_NAME)
+        //.createFromAsset(DATABASE_NAME)
         .build()
 
     fun getNewsFeeds(): Flow<List<NewsFeed>>
@@ -35,6 +35,9 @@ class NewsFeedRepository private constructor
         }
     }
 
+    suspend fun addNewsFeed(newsFeed: NewsFeed) {
+        database.newsfeedDao().addCrime(newsFeed)
+    }
 
     companion object {
         private var INSTANCE: NewsFeedRepository? = null

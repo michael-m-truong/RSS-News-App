@@ -3,6 +3,9 @@ package com.bignerdranch.android.newsapp
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
@@ -15,12 +18,20 @@ import com.bignerdranch.android.newsapp.databinding.FragmentNewsfeedListBinding
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import androidx.navigation.fragment.findNavController
+import java.util.Date
+import java.util.UUID
 
 private const val TAG = "NewsFeedListFragment"
 
 class NewsFeedListFragment : Fragment() {
 
     private val newsFeedListViewModel: NewsFeedListViewModel by viewModels()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
     private var job: Job? = null
     private var _binding: FragmentNewsfeedListBinding? = null
     private val binding
@@ -58,6 +69,35 @@ class NewsFeedListFragment : Fragment() {
                         }
                 }
             }
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.fragment_newsfeed_list, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.new_newsfeed -> {
+                showNewNewsFeed()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+    private fun showNewNewsFeed() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            val newNewsFeed = NewsFeed(
+                id = UUID.randomUUID(),
+                title = "",
+                date = Date(),
+                wordBank = mutableListOf<String>()
+            )
+            newsFeedListViewModel.addNewsFeed(newNewsFeed)
+            findNavController().navigate(
+                NewsFeedListFragmentDirections.showCrimeDetail(newNewsFeed.id)
+            )
         }
     }
 

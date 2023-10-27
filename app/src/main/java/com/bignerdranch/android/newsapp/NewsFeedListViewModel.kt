@@ -27,4 +27,8 @@ class NewsFeedListViewModel : ViewModel() {
             }
         }
     }
+
+    suspend fun addNewsFeed(newsFeed: NewsFeed) {
+        newsFeedRepository.addNewsFeed(newsFeed)
+    }
 }

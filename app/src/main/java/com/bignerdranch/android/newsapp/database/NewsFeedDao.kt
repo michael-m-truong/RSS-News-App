@@ -1,6 +1,7 @@
 package com.bignerdranch.android.newsapp.database
 
 import androidx.room.Dao
+import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import com.bignerdranch.android.newsapp.NewsFeed
@@ -17,4 +18,7 @@ interface NewsFeedDao {
 
     @Update
     suspend fun updateNewsFeed(newsFeed: NewsFeed)
+
+    @Insert
+    suspend fun addCrime(newsFeed: NewsFeed)
 }
