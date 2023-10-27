@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bignerdranch.android.newsapp.databinding.FragmentNewsfeedListBinding
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import androidx.navigation.fragment.findNavController
 
 private const val TAG = "NewsFeedListFragment"
 
@@ -50,7 +51,11 @@ class NewsFeedListFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 newsFeedListViewModel.newsFeeds.collect { newsfeeds ->
                     binding.newsfeedRecyclerView.adapter =
-                        NewsFeedListAdapter(newsfeeds)
+                        NewsFeedListAdapter(newsfeeds)  {crimeId ->
+                            findNavController().navigate(
+                                NewsFeedListFragmentDirections.showCrimeDetail(crimeId)
+                            )
+                        }
                 }
             }
         }

@@ -5,27 +5,25 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bignerdranch.android.newsapp.databinding.ListItemNewsfeedBinding
+import java.util.UUID
 
 class NewsFeedHolder(
     private val binding: ListItemNewsfeedBinding
 ) : RecyclerView.ViewHolder(binding.root) {
-    fun bind(newsFeed: NewsFeed) {
+    fun bind(newsFeed: NewsFeed, onNewsFeedClicked: (newsfeedId: UUID) -> Unit) {
         binding.newsfeedTitle.text = newsFeed.title
         binding.newsfeedDate.text = newsFeed.date.toString()
 
         binding.root.setOnClickListener {
-            Toast.makeText(
-                binding.root.context,
-                "${newsFeed.title} clicked!",
-                Toast.LENGTH_SHORT
-            ).show()
+            onNewsFeedClicked(newsFeed.id)
         }
 
     }
 }
 
 class NewsFeedListAdapter(
-    private val newsFeeds: List<NewsFeed>
+    private val newsFeeds: List<NewsFeed>,
+    private val onNewsFeedClicked: (newsfeedId: UUID) -> Unit
 ) : RecyclerView.Adapter<NewsFeedHolder>() {
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -37,7 +35,7 @@ class NewsFeedListAdapter(
     }
     override fun onBindViewHolder(holder: NewsFeedHolder, position: Int) {
         val newsFeed = newsFeeds[position]
-        holder.bind(newsFeed)
+        holder.bind(newsFeed, onNewsFeedClicked)
     }
     override fun getItemCount() = newsFeeds.size
 }
