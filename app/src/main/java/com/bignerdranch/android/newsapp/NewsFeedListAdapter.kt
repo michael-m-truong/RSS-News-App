@@ -1,8 +1,10 @@
 package com.bignerdranch.android.newsapp
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bignerdranch.android.newsapp.databinding.ListItemNewsfeedBinding
 import java.util.UUID
@@ -13,13 +15,15 @@ class NewsFeedHolder(
     fun bind(newsFeed: NewsFeed, onNewsFeedClicked: (newsfeedId: UUID) -> Unit) {
         binding.newsfeedTitle.text = newsFeed.title
         binding.newsfeedDate.text = newsFeed.date.toString()
+        Log.d("init", "editnewsfeed")
 
         binding.root.setOnClickListener {
-            // Change it so that it goes to all the articles
-            //onNewsFeedClicked(newsFeed.id)
+            val action = NewsFeedListFragmentDirections.showArticleList(newsFeed.id)
+            it.findNavController().navigate(action)
         }
 
         binding.editNewsfeed.setOnClickListener {
+
             // Handle the click on the "edit" button (e.g., navigate to the edit view)
             onNewsFeedClicked(newsFeed.id)
         }

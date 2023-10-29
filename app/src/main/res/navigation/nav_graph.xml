@@ -12,12 +12,24 @@
         <action
             android:id="@+id/show_crime_detail"
             app:destination="@id/crimeDetailFragment" />
+        <action
+            android:id="@+id/show_article_list"
+            app:destination="@id/articleListFragment" />
     </fragment>
     <fragment
         android:id="@+id/crimeDetailFragment"
         android:name="com.bignerdranch.android.newsapp.NewsFeedDetailFragment"
         android:label="CrimeDetailFragment"
         tools:layout="@layout/fragment_newsfeed_detail" >
+        <argument
+            android:name="newsfeedId"
+            app:argType="java.util.UUID" />
+    </fragment>
+    <fragment
+        android:id="@+id/articleListFragment"
+        android:name="com.bignerdranch.android.newsapp.ArticleListFragment"
+        android:label="ArticleListFragment"
+        tools:layout="@layout/fragment_article_list" >
         <argument
             android:name="newsfeedId"
             app:argType="java.util.UUID" />
