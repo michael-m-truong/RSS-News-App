@@ -15,6 +15,10 @@ class ArticleListViewModel : ViewModel() {
     private val _articles: MutableStateFlow<List<Article>> = MutableStateFlow(emptyList())
     val articles: StateFlow<List<Article>> get() = _articles.asStateFlow()
 
+    companion object {
+        var searchQueries: MutableList<String> = mutableListOf()
+    }
+
     init {
         fetchArticles()
     }
@@ -28,8 +32,14 @@ class ArticleListViewModel : ViewModel() {
         }
     }
 
+    // Function to update search queries based on the selected NewsFeed
+    fun setSearchQueriesFromNewsFeed(newsFeed: NewsFeed) {
+        // Use the wordBank from the selected NewsFeed as search queries
+        searchQueries = newsFeed.wordBank
+    }
+
+
     private fun performWebScraping(): List<Article> {
-        val searchQueries = listOf("president", "new message about the war")
         val queryStrings = searchQueries.joinToString("+") { "%22$it%22" }
         val url = "https://news.google.com/search?q=$queryStrings&hl=en-US&gl=US&ceid=US:en"
 

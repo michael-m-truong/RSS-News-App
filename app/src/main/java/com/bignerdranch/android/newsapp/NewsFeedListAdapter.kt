@@ -18,6 +18,7 @@ class NewsFeedHolder(
         Log.d("init", "editnewsfeed")
 
         binding.root.setOnClickListener {
+            ArticleListViewModel.searchQueries = newsFeed.wordBank
             val action = NewsFeedListFragmentDirections.showArticleList(newsFeed.id)
             it.findNavController().navigate(action)
         }
