@@ -143,9 +143,20 @@ class NewsFeedDetailFragment  : Fragment() {
                 val chip = Chip(requireContext())
                 chip.text = word
                 chip.isCloseIconVisible = true
+
+                chip.setOnCloseIconClickListener {
+                    // Remove the word from the list and the chip
+                    newsFeedDetailViewModel.updateNewsFeed { oldNewsFeed ->
+                        oldNewsFeed.wordBank.remove(word)
+                        oldNewsFeed.copy(wordBank = oldNewsFeed.wordBank)
+                    }
+                    chipGroup.removeView(chip)
+                }
+
                 chipGroup.addView(chip)
             }
             //newsFeedDate.text = newsFeed.date.toString()
         }
     }
+
 }
