@@ -1,6 +1,7 @@
 package com.bignerdranch.android.newsapp
 
 import android.os.Bundle
+import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -140,23 +141,26 @@ class NewsFeedDetailFragment  : Fragment() {
 
             // Iterate over the wordBank and create Chips for each word
             for (word in newsFeed.wordBank) {
-                val chip = Chip(requireContext())
-                chip.text = word
-                chip.isCloseIconVisible = true
+                if (word.isNotEmpty()) { // Add this condition to skip empty words
+                    val chip = Chip(requireContext())
+                    chip.text = word
+                    chip.isCloseIconVisible = true
 
-                chip.setOnCloseIconClickListener {
-                    // Remove the word from the list and the chip
-                    newsFeedDetailViewModel.updateNewsFeed { oldNewsFeed ->
-                        oldNewsFeed.wordBank.remove(word)
-                        oldNewsFeed.copy(wordBank = oldNewsFeed.wordBank)
+                    chip.setOnCloseIconClickListener {
+                        // Remove the word from the list and the chip
+                        newsFeedDetailViewModel.updateNewsFeed { oldNewsFeed ->
+                            oldNewsFeed.wordBank.remove(word)
+                            oldNewsFeed.copy(wordBank = oldNewsFeed.wordBank)
+                        }
+                        chipGroup.removeView(chip)
                     }
-                    chipGroup.removeView(chip)
-                }
 
-                chipGroup.addView(chip)
+                    chipGroup.addView(chip)
+                }
             }
             //newsFeedDate.text = newsFeed.date.toString()
         }
     }
+
 
 }
