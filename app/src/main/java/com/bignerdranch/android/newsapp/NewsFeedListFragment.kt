@@ -62,9 +62,9 @@ class NewsFeedListFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 newsFeedListViewModel.newsFeeds.collect { newsfeeds ->
                     binding.newsfeedRecyclerView.adapter =
-                        NewsFeedListAdapter(newsfeeds)  {crimeId ->
+                        NewsFeedListAdapter(newsfeeds)  {newsfeedId ->
                             findNavController().navigate(
-                                NewsFeedListFragmentDirections.showCrimeDetail(crimeId)
+                                NewsFeedListFragmentDirections.showCrimeDetail(newsfeedId)
                             )
                         }
                 }

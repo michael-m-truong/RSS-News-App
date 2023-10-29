@@ -15,9 +15,14 @@ class NewsFeedHolder(
         binding.newsfeedDate.text = newsFeed.date.toString()
 
         binding.root.setOnClickListener {
-            onNewsFeedClicked(newsFeed.id)
+            // Change it so that it goes to all the articles
+            //onNewsFeedClicked(newsFeed.id)
         }
 
+        binding.editNewsfeed.setOnClickListener {
+            // Handle the click on the "edit" button (e.g., navigate to the edit view)
+            onNewsFeedClicked(newsFeed.id)
+        }
     }
 }
 
