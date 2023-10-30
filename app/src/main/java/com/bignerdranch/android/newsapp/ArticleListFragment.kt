@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -31,8 +32,8 @@ class ArticleListFragment : Fragment() {
         binding.articleRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.articleRecyclerView.adapter = articleAdapter
 
-        //Add loading animation
-        binding.loadingLayout.visibility = View.VISIBLE
+        // Show loading animation
+        binding.loadingProgressBar.visibility = View.VISIBLE
 
         // Observe the articles from the ViewModel and update the RecyclerView when they change
         viewLifecycleOwner.lifecycleScope.launch {
@@ -43,8 +44,16 @@ class ArticleListFragment : Fragment() {
             }
         }
 
-        binding.loadingLayout.visibility = View.INVISIBLE
+        // Listen for data fetching completion and hide the progress bar
+        articleListViewModel.onDataFetched.observe(viewLifecycleOwner, Observer {
+            // Hide loading progress bar and show the RecyclerView when data is ready
+            binding.loadingProgressBar.visibility = View.INVISIBLE
+            binding.articleRecyclerView.visibility = View.VISIBLE
+        })
+
+        return binding.root
 
         return binding.root
     }
+
 }

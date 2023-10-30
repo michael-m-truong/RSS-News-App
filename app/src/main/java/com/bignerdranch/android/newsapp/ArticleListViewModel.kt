@@ -1,5 +1,6 @@
 package com.bignerdranch.android.newsapp
 
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bignerdranch.android.newsapp.Article
@@ -15,6 +16,8 @@ class ArticleListViewModel : ViewModel() {
     private val _articles: MutableStateFlow<List<Article>> = MutableStateFlow(emptyList())
     val articles: StateFlow<List<Article>> get() = _articles.asStateFlow()
 
+    val onDataFetched: MutableLiveData<Unit> = MutableLiveData()
+
     companion object {
         var searchQueries: MutableList<String> = mutableListOf()
     }
@@ -28,6 +31,7 @@ class ArticleListViewModel : ViewModel() {
             val articles = performWebScraping()
             withContext(Dispatchers.Main) {
                 _articles.value = articles
+                onDataFetched.postValue(Unit) // Notify the completion of data fetching
             }
         }
     }
