@@ -31,6 +31,9 @@ class ArticleListFragment : Fragment() {
         binding.articleRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.articleRecyclerView.adapter = articleAdapter
 
+        //Add loading animation
+        binding.loadingLayout.visibility = View.VISIBLE
+
         // Observe the articles from the ViewModel and update the RecyclerView when they change
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -39,6 +42,8 @@ class ArticleListFragment : Fragment() {
                 }
             }
         }
+
+        binding.loadingLayout.visibility = View.INVISIBLE
 
         return binding.root
     }
