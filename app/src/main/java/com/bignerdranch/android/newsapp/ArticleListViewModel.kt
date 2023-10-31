@@ -1,10 +1,12 @@
 package com.bignerdranch.android.newsapp
 
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bignerdranch.android.newsapp.Article
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -43,7 +45,7 @@ class ArticleListViewModel : ViewModel() {
     }
 
 
-    private fun performWebScraping(): List<Article> {
+    private suspend fun performWebScraping(): List<Article> {
         val queryStrings = searchQueries.joinToString("+") { "%22$it%22" }
         val url = "https://news.google.com/search?q=$queryStrings&hl=en-US&gl=US&ceid=US:en"
 
@@ -53,12 +55,18 @@ class ArticleListViewModel : ViewModel() {
             val htmlContent = Jsoup.connect(url).get().html()
             val document = Jsoup.parse(htmlContent)
             val toplevelElements = document.select("div[jslog]")
+            var count = 0
 
             for (element in toplevelElements) {
                 val attributes = element.attributes()
                 if (attributes.size() != 2) {
                     continue
                 }
+                count +=1
+                if (count == 10) {
+                    break
+                }
+
                 val articleElement = element.select("article")
                 val headlineText = articleElement.select("h3").text()
                 val headlineLink = "https://news.google.com" + articleElement.select("a").attr("href")
@@ -70,19 +78,21 @@ class ArticleListViewModel : ViewModel() {
                     null
                 }
 
-                val articleText = getArticleText(headlineLink)
+                val articleTextDeferred = viewModelScope.async { getArticleText(headlineLink) }
+                val articleText = articleTextDeferred.await()
 
                 val article = Article(headlineText, headlineLink, headlineDate, headlinePublisher, imgSrc, articleText)
                 articles.add(article)
+
             }
         } catch (e: Exception) {
             e.printStackTrace()
         }
-
         return articles
     }
 
     private fun getArticleText(url: String): String {
+//        return ""
         try {
             val document = Jsoup.connect(url).get()
             val paragraphs = document.select("p")
