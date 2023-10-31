@@ -4,6 +4,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -37,6 +38,12 @@ class ArticleListAdapter :
                 binding.imageView.load(article.imgSrc)
             } else {
                 binding.imageView.visibility = View.GONE
+            }
+
+            // Make article clickable
+            binding.root.setOnClickListener {
+                Log.d("click","Clicked on article")
+
             }
         }
     }
