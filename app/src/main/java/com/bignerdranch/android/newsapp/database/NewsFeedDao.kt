@@ -1,6 +1,7 @@
 package com.bignerdranch.android.newsapp.database
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
@@ -21,4 +22,7 @@ interface NewsFeedDao {
 
     @Insert
     suspend fun addCrime(newsFeed: NewsFeed)
+
+    @Query("DELETE FROM newsfeed WHERE id =(:id)")
+    suspend fun deleteNewsFeed(id: UUID): Int
 }

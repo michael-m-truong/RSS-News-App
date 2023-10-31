@@ -1,7 +1,6 @@
 package com.bignerdranch.android.newsapp
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -18,6 +17,8 @@ import com.bignerdranch.android.newsapp.databinding.FragmentNewsfeedListBinding
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
 import java.util.Date
 import java.util.UUID
 
@@ -48,6 +49,8 @@ class NewsFeedListFragment : Fragment() {
         _binding = FragmentNewsfeedListBinding.inflate(inflater, container, false)
 
         binding.newsfeedRecyclerView.layoutManager = LinearLayoutManager(context)
+
+        swipeToDelete()
 
         return binding.root
     }
@@ -100,5 +103,34 @@ class NewsFeedListFragment : Fragment() {
             )
         }
     }
+
+    private fun swipeToDelete() {
+        val itemTouchHelperCallback = object : ItemTouchHelper.SimpleCallback(
+            0, ItemTouchHelper.LEFT
+        ) {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                // Not used in this case
+                return false
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val position = viewHolder.bindingAdapterPosition
+                val newsFeed = newsFeedListViewModel.getNewsFeedByPosition(position)
+                if (newsFeed != null) {
+                    viewLifecycleOwner.lifecycleScope.launch {
+                        newsFeedListViewModel.deleteNewsFeed(newsFeed.id)
+                    }
+                }
+            }
+        }
+
+        val itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
+        itemTouchHelper.attachToRecyclerView(binding.newsfeedRecyclerView)
+    }
+
 
 }

@@ -7,7 +7,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import java.util.Date
 import java.util.UUID
 
 private const val TAG = "NewsFeedListViewModel"
@@ -30,5 +29,17 @@ class NewsFeedListViewModel : ViewModel() {
 
     suspend fun addNewsFeed(newsFeed: NewsFeed) {
         newsFeedRepository.addNewsFeed(newsFeed)
+    }
+
+    suspend fun deleteNewsFeed(id: UUID) {
+        newsFeedRepository.deleteNewsFeed(id)
+    }
+
+    fun getNewsFeedByPosition(index: Int): NewsFeed? {
+        val newsFeedsList = _newsFeeds.value
+        if (index >= 0 && index < newsFeedsList.size) {
+            return newsFeedsList[index]
+        }
+        return null
     }
 }

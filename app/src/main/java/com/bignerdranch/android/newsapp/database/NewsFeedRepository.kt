@@ -39,6 +39,10 @@ class NewsFeedRepository private constructor
         database.newsfeedDao().addCrime(newsFeed)
     }
 
+    suspend fun deleteNewsFeed(id: UUID) {
+        database.newsfeedDao().deleteNewsFeed(id)
+    }
+
     companion object {
         private var INSTANCE: NewsFeedRepository? = null
         fun initialize(context: Context) {

@@ -10,7 +10,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bignerdranch.android.newsapp.databinding.FragmentArticleListBinding
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -52,8 +54,7 @@ class ArticleListFragment : Fragment() {
         })
 
         return binding.root
-
-        return binding.root
     }
 
 }
+
