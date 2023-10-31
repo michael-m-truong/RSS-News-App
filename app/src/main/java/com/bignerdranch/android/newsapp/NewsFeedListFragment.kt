@@ -156,14 +156,16 @@ class NewsFeedListFragment : Fragment() {
                     )
                     background.draw(c)
 
-                    // Draw the delete icon
-                    deleteIcon?.setBounds(
-                        itemView.right - iconMargin - deleteIcon.intrinsicWidth,
-                        itemView.top + iconMargin,
-                        itemView.right - iconMargin,
-                        itemView.bottom - iconMargin
-                    )
-                    deleteIcon?.draw(c)
+                    // Draw the delete icon if the swipe is in progress
+                    if (isCurrentlyActive) {
+                        deleteIcon?.setBounds(
+                            itemView.right - iconMargin - deleteIcon.intrinsicWidth,
+                            itemView.top + iconMargin,
+                            itemView.right - iconMargin,
+                            itemView.bottom - iconMargin
+                        )
+                        deleteIcon?.draw(c)
+                    }
                 }
 
                 super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
