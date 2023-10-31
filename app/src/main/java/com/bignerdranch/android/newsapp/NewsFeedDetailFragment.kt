@@ -78,6 +78,8 @@ class NewsFeedDetailFragment  : Fragment() {
                         oldNewsFeed.wordBank.add(word)
                         oldNewsFeed.copy(wordBank = oldNewsFeed.wordBank)
                     }
+                    var inputfield = binding.inputWord
+                    inputfield.requestFocus()
                 }
             }
 
