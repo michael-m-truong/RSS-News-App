@@ -1,5 +1,7 @@
 package com.bignerdranch.android.newsapp
 
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -7,6 +9,8 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.graphics.Canvas
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -125,6 +129,44 @@ class NewsFeedListFragment : Fragment() {
                         newsFeedListViewModel.deleteNewsFeed(newsFeed.id)
                     }
                 }
+            }
+
+            // Customize the swipe appearance
+            override fun onChildDraw(
+                c: Canvas,
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                dX: Float,
+                dY: Float,
+                actionState: Int,
+                isCurrentlyActive: Boolean
+            ) {
+                if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
+                    val itemView = viewHolder.itemView
+                    val background = ColorDrawable(Color.RED)
+                    val deleteIcon = ContextCompat.getDrawable(requireContext(), R.drawable.baseline_delete_24)
+                    val iconMargin = (itemView.height - deleteIcon?.intrinsicHeight!!) / 2
+
+                    // Draw the red background
+                    background.setBounds(
+                        itemView.right + dX.toInt(),
+                        itemView.top,
+                        itemView.right,
+                        itemView.bottom
+                    )
+                    background.draw(c)
+
+                    // Draw the delete icon
+                    deleteIcon?.setBounds(
+                        itemView.right - iconMargin - deleteIcon.intrinsicWidth,
+                        itemView.top + iconMargin,
+                        itemView.right - iconMargin,
+                        itemView.bottom - iconMargin
+                    )
+                    deleteIcon?.draw(c)
+                }
+
+                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
             }
         }
 
