@@ -30,8 +30,19 @@
         android:name="com.bignerdranch.android.newsapp.ArticleListFragment"
         android:label="ArticleListFragment"
         tools:layout="@layout/fragment_article_list" >
+        <action
+            android:id="@+id/show_article"
+            app:destination="@id/photoPageFragment" />
         <argument
             android:name="newsfeedId"
             app:argType="java.util.UUID" />
+    </fragment>
+    <fragment
+        android:id="@+id/photoPageFragment"
+        android:name="com.bignerdranch.android.newsapp.ArticlePageFragment"
+        android:label="ArticlePageFragment" >
+        <argument
+            android:name="articlePageUri"
+            app:argType="android.net.Uri" />
     </fragment>
 </navigation>

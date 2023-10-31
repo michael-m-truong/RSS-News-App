@@ -1,5 +1,6 @@
 package com.bignerdranch.android.newsapp
 
+import android.net.Uri
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -15,7 +16,9 @@ import com.bignerdranch.android.newsapp.databinding.ListItemNewsfeedBinding
 
 
 
-class ArticleListAdapter :
+class ArticleListAdapter(
+    private val onItemClicked: (Uri) -> Unit
+) :
     ListAdapter<Article, ArticleListAdapter.ArticleViewHolder>(ArticleDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ArticleViewHolder {
@@ -26,12 +29,12 @@ class ArticleListAdapter :
 
     override fun onBindViewHolder(holder: ArticleViewHolder, position: Int) {
         val article = getItem(position)
-        holder.bind(article)
+        holder.bind(article, onItemClicked)
     }
 
     inner class ArticleViewHolder(private val binding: ListItemArticleBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(article: Article) {
+        fun bind(article: Article, onItemClicked: (Uri) -> Unit) {
             binding.textHeadline.text = article.headline
             binding.textDate.text = article.date
             if (article.imgSrc != null) {
@@ -43,7 +46,7 @@ class ArticleListAdapter :
             // Make article clickable
             binding.root.setOnClickListener {
                 Log.d("click","Clicked on article")
-
+                //onItemClicked("")
             }
         }
     }
