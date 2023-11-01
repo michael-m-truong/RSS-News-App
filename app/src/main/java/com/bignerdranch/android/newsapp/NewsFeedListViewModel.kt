@@ -42,4 +42,13 @@ class NewsFeedListViewModel : ViewModel() {
         }
         return null
     }
+
+     fun reorderNewsFeeds(fromPosition: Int, toPosition: Int) {
+        val newsFeedsList = _newsFeeds.value.toMutableList()
+        if (fromPosition in 0 until newsFeedsList.size && toPosition in 0 until newsFeedsList.size) {
+            val newsFeed = newsFeedsList.removeAt(fromPosition)
+            newsFeedsList.add(toPosition, newsFeed)
+            _newsFeeds.value = newsFeedsList
+        }
+    }
 }

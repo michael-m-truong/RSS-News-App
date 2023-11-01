@@ -32,6 +32,7 @@ class NewsFeedListFragment : Fragment() {
 
     private val newsFeedListViewModel: NewsFeedListViewModel by viewModels()
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
@@ -56,8 +57,13 @@ class NewsFeedListFragment : Fragment() {
 
         swipeToDelete()
 
+        val dragAndDropCallback = createArticleItemTouchHelperCallback()
+        val itemTouchHelper = ItemTouchHelper(dragAndDropCallback)
+        itemTouchHelper.attachToRecyclerView(binding.newsfeedRecyclerView)
+
         return binding.root
     }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
@@ -69,7 +75,7 @@ class NewsFeedListFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 newsFeedListViewModel.newsFeeds.collect { newsfeeds ->
                     binding.newsfeedRecyclerView.adapter =
-                        NewsFeedListAdapter(newsfeeds)  {newsfeedId ->
+                        NewsFeedListAdapter(newsfeeds) { newsfeedId ->
                             findNavController().navigate(
                                 NewsFeedListFragmentDirections.showCrimeDetail(newsfeedId)
                             )
@@ -90,9 +96,11 @@ class NewsFeedListFragment : Fragment() {
                 showNewNewsFeed()
                 true
             }
+
             else -> super.onOptionsItemSelected(item)
         }
     }
+
     private fun showNewNewsFeed() {
         viewLifecycleOwner.lifecycleScope.launch {
             val newNewsFeed = NewsFeed(
@@ -144,7 +152,8 @@ class NewsFeedListFragment : Fragment() {
                 if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
                     val itemView = viewHolder.itemView
                     val background = ColorDrawable(Color.RED)
-                    val deleteIcon = ContextCompat.getDrawable(requireContext(), R.drawable.baseline_delete_24)
+                    val deleteIcon =
+                        ContextCompat.getDrawable(requireContext(), R.drawable.baseline_delete_24)
                     val iconMargin = (itemView.height - deleteIcon?.intrinsicHeight!!) / 2
 
                     // Draw the red background
@@ -168,7 +177,15 @@ class NewsFeedListFragment : Fragment() {
                     }
                 }
 
-                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+                super.onChildDraw(
+                    c,
+                    recyclerView,
+                    viewHolder,
+                    dX,
+                    dY,
+                    actionState,
+                    isCurrentlyActive
+                )
             }
         }
 
@@ -176,5 +193,31 @@ class NewsFeedListFragment : Fragment() {
         itemTouchHelper.attachToRecyclerView(binding.newsfeedRecyclerView)
     }
 
+    private fun createArticleItemTouchHelperCallback(): ItemTouchHelper.SimpleCallback {
+        return object : ItemTouchHelper.SimpleCallback(
+            ItemTouchHelper.UP or ItemTouchHelper.DOWN, // Drag directions
+            0 // Swipe directions (no swiping)
+        ) {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                // Handle item drag by reordering items in the adapter
+                val fromPosition = viewHolder.bindingAdapterPosition
+                val toPosition = target.bindingAdapterPosition
+                newsFeedListViewModel.reorderNewsFeeds(fromPosition, toPosition)
+                return true
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                // No action needed for swiping, so this method is left empty
+            }
+
+            override fun isLongPressDragEnabled(): Boolean {
+                return true // Enable long press to start dragging
+            }
+        }
+    }
 
 }
