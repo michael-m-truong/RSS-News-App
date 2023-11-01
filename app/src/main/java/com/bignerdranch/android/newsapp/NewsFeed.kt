@@ -10,7 +10,8 @@ data class NewsFeed(
     @PrimaryKey val id: UUID,
     val title: String,
     val date: Date,
-    val wordBank: MutableList<String>
+    val wordBank: MutableList<String>,
+    val orderNumber: Int
 )
 
 

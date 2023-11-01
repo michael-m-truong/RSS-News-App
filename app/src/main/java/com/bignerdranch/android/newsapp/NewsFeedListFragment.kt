@@ -74,6 +74,9 @@ class NewsFeedListFragment : Fragment() {
                 if (fromPos != null && toPos != null) {
                     Log.d("changed", toPos.toString())
                     newsFeedListViewModel.reorderNewsFeeds(fromPos!!, toPos!!)
+                    viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+                        newsFeedListViewModel.swapOrderNumbers(toPos!!, fromPos!!)
+                    }
                     isMoving =false
                 }
             }
@@ -129,7 +132,8 @@ class NewsFeedListFragment : Fragment() {
                 id = UUID.randomUUID(),
                 title = "",
                 date = Date(),
-                wordBank = mutableListOf<String>()
+                wordBank = mutableListOf<String>(),
+                orderNumber = newsFeedListViewModel.getCount() + 1
             )
             newsFeedListViewModel.addNewsFeed(newNewsFeed)
             findNavController().navigate(

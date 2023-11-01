@@ -43,6 +43,11 @@ class NewsFeedRepository private constructor
         database.newsfeedDao().deleteNewsFeed(id)
     }
 
+    suspend fun swapOrderNumbers(newsFeedId1: UUID, newsFeedOrderNumber1: Int, newsFeedId2: UUID, newsFeedOrderNumber2: Int) {
+        database.newsfeedDao().swapOrderNumbers(newsFeedId1, newsFeedOrderNumber2)
+        database.newsfeedDao().swapOrderNumbers(newsFeedId2, newsFeedOrderNumber1)
+    }
+
     companion object {
         private var INSTANCE: NewsFeedRepository? = null
         fun initialize(context: Context) {

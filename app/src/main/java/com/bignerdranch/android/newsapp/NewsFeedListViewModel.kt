@@ -36,6 +36,15 @@ class NewsFeedListViewModel : ViewModel() {
         newsFeedRepository.deleteNewsFeed(id)
     }
 
+    suspend fun swapOrderNumbers(fromPosition: Int, toPosition: Int) {
+        val newsFeedsList = _newsFeeds.value.toMutableList()
+        val newsFeedId1 = newsFeedsList[fromPosition].id
+        val newsFeedOrderNumber1 = newsFeedsList[fromPosition].orderNumber
+        val newsFeedId2 = newsFeedsList[toPosition].id
+        val newsFeedOrderNumber2 = newsFeedsList[toPosition].orderNumber
+        newsFeedRepository.swapOrderNumbers(newsFeedId1, newsFeedOrderNumber1, newsFeedId2, newsFeedOrderNumber2)
+    }
+
     fun getNewsFeedByPosition(index: Int): NewsFeed? {
         val newsFeedsList = _newsFeeds.value
         if (index >= 0 && index < newsFeedsList.size) {
@@ -51,6 +60,10 @@ class NewsFeedListViewModel : ViewModel() {
             Collections.swap(newsFeedsList, fromPosition, toPosition)
             _newsFeeds.value = newsFeedsList
         }
+    }
+
+    fun getCount(): Int {
+        return _newsFeeds.value.size
     }
 
 }
