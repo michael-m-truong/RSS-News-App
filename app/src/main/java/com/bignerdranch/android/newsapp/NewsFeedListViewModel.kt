@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.util.Collections
 import java.util.UUID
 
 private const val TAG = "NewsFeedListViewModel"
@@ -43,12 +44,13 @@ class NewsFeedListViewModel : ViewModel() {
         return null
     }
 
-     fun reorderNewsFeeds(fromPosition: Int, toPosition: Int) {
+    fun reorderNewsFeeds(fromPosition: Int, toPosition: Int) {
         val newsFeedsList = _newsFeeds.value.toMutableList()
         if (fromPosition in 0 until newsFeedsList.size && toPosition in 0 until newsFeedsList.size) {
-            val newsFeed = newsFeedsList.removeAt(fromPosition)
-            newsFeedsList.add(toPosition, newsFeed)
+            // Swap items in the list
+            Collections.swap(newsFeedsList, fromPosition, toPosition)
             _newsFeeds.value = newsFeedsList
         }
     }
+
 }

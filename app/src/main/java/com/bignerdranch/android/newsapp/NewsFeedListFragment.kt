@@ -1,5 +1,6 @@
 package com.bignerdranch.android.newsapp
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -10,6 +11,8 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.graphics.Canvas
+import android.util.Log
+import android.view.MotionEvent
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -23,6 +26,9 @@ import kotlinx.coroutines.launch
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import java.util.Date
 import java.util.UUID
 
@@ -45,7 +51,12 @@ class NewsFeedListFragment : Fragment() {
             "Cannot access binding because it is null. Is the view visible?"
         }
 
+    private var isMoving = false
+    private var fromPos: Int? = null
+    private var toPos: Int? = null
 
+
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -55,11 +66,22 @@ class NewsFeedListFragment : Fragment() {
 
         binding.newsfeedRecyclerView.layoutManager = LinearLayoutManager(context)
 
-        swipeToDelete()
+        // Set your touch listener to detect when the touch is released
+        binding.root.setOnTouchListener { _, motionEvent ->
+            if (motionEvent.action == MotionEvent.ACTION_UP) {
+                Log.d("from", fromPos.toString())
+                Log.d("to", toPos.toString())
+                if (fromPos != null && toPos != null) {
+                    Log.d("changed", toPos.toString())
+                    newsFeedListViewModel.reorderNewsFeeds(fromPos!!, toPos!!)
+                    isMoving =false
+                }
+            }
+            false
+        }
 
-        val dragAndDropCallback = createArticleItemTouchHelperCallback()
-        val itemTouchHelper = ItemTouchHelper(dragAndDropCallback)
-        itemTouchHelper.attachToRecyclerView(binding.newsfeedRecyclerView)
+        swipeToDelete()
+        createArticleItemTouchHelperCallback()
 
         return binding.root
     }
@@ -193,31 +215,45 @@ class NewsFeedListFragment : Fragment() {
         itemTouchHelper.attachToRecyclerView(binding.newsfeedRecyclerView)
     }
 
-    private fun createArticleItemTouchHelperCallback(): ItemTouchHelper.SimpleCallback {
-        return object : ItemTouchHelper.SimpleCallback(
-            ItemTouchHelper.UP or ItemTouchHelper.DOWN, // Drag directions
+    private fun createArticleItemTouchHelperCallback() {
+        val simpleCallback = object : ItemTouchHelper.SimpleCallback(
+            ItemTouchHelper.UP or ItemTouchHelper.DOWN or ItemTouchHelper.START or ItemTouchHelper.END, // Drag directions
             0 // Swipe directions (no swiping)
         ) {
+
             override fun onMove(
                 recyclerView: RecyclerView,
                 viewHolder: RecyclerView.ViewHolder,
                 target: RecyclerView.ViewHolder
             ): Boolean {
-                // Handle item drag by reordering items in the adapter
                 val fromPosition = viewHolder.bindingAdapterPosition
                 val toPosition = target.bindingAdapterPosition
-                newsFeedListViewModel.reorderNewsFeeds(fromPosition, toPosition)
-                return true
+
+                recyclerView.adapter?.notifyItemMoved(fromPosition, toPosition)
+                //Log.d("moving","moving")
+                if (isMoving) {
+                    toPos = toPosition
+                }
+                else {
+                    fromPos = fromPosition
+                    toPos = toPosition
+                }
+                isMoving = true
+
+
+
+                //newsFeedListViewModel.reorderNewsFeeds(fromPosition, toPosition)
+                return false
             }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 // No action needed for swiping, so this method is left empty
             }
-
-            override fun isLongPressDragEnabled(): Boolean {
-                return true // Enable long press to start dragging
-            }
         }
-    }
 
+        val itemTouchHelper = ItemTouchHelper(simpleCallback)
+        itemTouchHelper.attachToRecyclerView(binding.newsfeedRecyclerView)
+
+
+    }
 }
