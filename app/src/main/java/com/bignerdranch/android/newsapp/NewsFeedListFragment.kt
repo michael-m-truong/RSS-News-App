@@ -93,6 +93,26 @@ class NewsFeedListFragment : Fragment() {
         swipeToDelete()
         createArticleItemTouchHelperCallback()
 
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                newsFeedListViewModel.isListEmpty.collect { isEmpty ->
+                    if (isEmpty) {
+                        binding.newsfeedRecyclerView.visibility = View.GONE
+                        binding.emptyTextView.visibility = View.VISIBLE
+                        binding.actionButton.visibility = View.VISIBLE
+                    } else {
+                        binding.newsfeedRecyclerView.visibility = View.VISIBLE
+                        binding.emptyTextView.visibility = View.GONE
+                        binding.actionButton.visibility = View.GONE
+                    }
+                }
+            }
+        }
+
+        binding.actionButton.setOnClickListener {
+            showNewNewsFeed()
+        }
+
         return binding.root
     }
 

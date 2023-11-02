@@ -26,10 +26,17 @@ class NewsFeedListViewModel : ViewModel() {
     val newsFeeds: StateFlow<List<NewsFeed>>
         get() = _newsFeeds.asStateFlow()
 
+    // New StateFlow to represent whether the list is empty or not
+    private val _isListEmpty: MutableStateFlow<Boolean> = MutableStateFlow(true)
+    val isListEmpty: StateFlow<Boolean>
+        get() = _isListEmpty.asStateFlow()
+
     init {
         viewModelScope.launch {
             newsFeedRepository.getNewsFeeds().collect {
                 _newsFeeds.value = it
+                // Update the isListEmpty StateFlow based on the new list of crimes
+                _isListEmpty.value = it.isEmpty()
             }
         }
     }
