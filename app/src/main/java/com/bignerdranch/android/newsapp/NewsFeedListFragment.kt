@@ -75,9 +75,14 @@ class NewsFeedListFragment : Fragment() {
                     Log.d("changed", toPos.toString())
                     newsFeedListViewModel.reorderNewsFeeds(fromPos!!, toPos!!)
                     viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
-                        newsFeedListViewModel.swapOrderNumbers(toPos!!, fromPos!!)
+                        Log.d("changed", "here")
+                        newsFeedListViewModel.updateNewsFeedOrder(fromPos!!, toPos!!)
+                        fromPos = null
+                        toPos = null
                     }
                     isMoving =false
+                    //fromPos = null
+                    //toPos = null
                 }
             }
             false

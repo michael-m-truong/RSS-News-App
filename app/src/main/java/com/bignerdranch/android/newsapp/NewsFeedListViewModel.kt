@@ -1,13 +1,15 @@
 package com.bignerdranch.android.newsapp
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bignerdranch.android.newsapp.database.NewsFeedRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import java.util.Collections
+import kotlinx.coroutines.withContext
 import java.util.UUID
 
 private const val TAG = "NewsFeedListViewModel"
@@ -36,15 +38,6 @@ class NewsFeedListViewModel : ViewModel() {
         newsFeedRepository.deleteNewsFeed(id)
     }
 
-    suspend fun swapOrderNumbers(fromPosition: Int, toPosition: Int) {
-        val newsFeedsList = _newsFeeds.value.toMutableList()
-        val newsFeedId1 = newsFeedsList[fromPosition].id
-        val newsFeedOrderNumber1 = newsFeedsList[fromPosition].orderNumber
-        val newsFeedId2 = newsFeedsList[toPosition].id
-        val newsFeedOrderNumber2 = newsFeedsList[toPosition].orderNumber
-        newsFeedRepository.swapOrderNumbers(newsFeedId1, newsFeedOrderNumber1, newsFeedId2, newsFeedOrderNumber2)
-    }
-
     fun getNewsFeedByPosition(index: Int): NewsFeed? {
         val newsFeedsList = _newsFeeds.value
         if (index >= 0 && index < newsFeedsList.size) {
@@ -53,14 +46,37 @@ class NewsFeedListViewModel : ViewModel() {
         return null
     }
 
-    fun reorderNewsFeeds(fromPosition: Int, toPosition: Int) {
+    suspend fun updateNewsFeedOrder(fromPosition: Int, toPosition: Int) {
         val newsFeedsList = _newsFeeds.value.toMutableList()
-        if (fromPosition in 0 until newsFeedsList.size && toPosition in 0 until newsFeedsList.size) {
-            // Swap items in the list
-            Collections.swap(newsFeedsList, fromPosition, toPosition)
-            _newsFeeds.value = newsFeedsList
+        val lowerPosition = minOf(fromPosition, toPosition)
+        val higherPosition = maxOf(fromPosition, toPosition)
+        for (i in lowerPosition..higherPosition) {
+            val newsFeed = newsFeedsList[i]
+            newsFeedRepository.updateOrderNumber(newsFeed.id, i)
         }
     }
+
+    fun reorderNewsFeeds(fromPosition: Int, toPosition: Int) {
+        val newsFeedsList = _newsFeeds.value.toMutableList()
+        Log.d("idx", "test")
+        if (fromPosition in 0 until newsFeedsList.size && toPosition in 0 until newsFeedsList.size) {
+            val itemToMove = newsFeedsList.removeAt(fromPosition)
+            newsFeedsList.add(toPosition, itemToMove)
+            val lowerPosition = minOf(fromPosition, toPosition)
+            val higherPosition = maxOf(fromPosition, toPosition)
+
+            _newsFeeds.value = newsFeedsList
+
+            // Run the for loop in a background thread using a coroutine
+//            withContext(Dispatchers.IO) {
+//                for (i in lowerPosition..higherPosition) {
+//                    val newsFeed = newsFeedsList[i]
+//                    newsFeedRepository.updateOrderNumber(newsFeed.id, i)
+//                }
+//            }
+        }
+    }
+
 
     fun getCount(): Int {
         return _newsFeeds.value.size

@@ -28,6 +28,7 @@ interface NewsFeedDao {
     suspend fun deleteNewsFeed(id: UUID): Int
 
     @Query("UPDATE NewsFeed SET orderNumber = :newOrderNumber WHERE id = :newsFeedId")
-    fun swapOrderNumbers(newsFeedId: UUID, newOrderNumber: Int)
+    fun updateOrderNumber(newsFeedId: UUID, newOrderNumber: Int)
+
 
 }
