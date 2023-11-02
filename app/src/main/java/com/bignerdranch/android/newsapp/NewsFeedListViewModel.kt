@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bignerdranch.android.newsapp.database.NewsFeedRepository
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -11,6 +12,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.UUID
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+
 
 private const val TAG = "NewsFeedListViewModel"
 
@@ -50,11 +54,23 @@ class NewsFeedListViewModel : ViewModel() {
         val newsFeedsList = _newsFeeds.value.toMutableList()
         val lowerPosition = minOf(fromPosition, toPosition)
         val higherPosition = maxOf(fromPosition, toPosition)
-        for (i in lowerPosition..higherPosition) {
-            val newsFeed = newsFeedsList[i]
-            newsFeedRepository.updateOrderNumber(newsFeed.id, i)
+
+        val deferredUpdates = mutableListOf<Deferred<Unit>>()
+
+        withContext(Dispatchers.IO) {
+            for (i in lowerPosition..higherPosition) {
+                val newsFeed = newsFeedsList[i]
+                val deferred = async {
+                    newsFeedRepository.updateOrderNumber(newsFeed.id, i)
+                }
+                deferredUpdates.add(deferred)
+            }
         }
+
+        // Wait for all the updates to complete
+        deferredUpdates.awaitAll()
     }
+
 
     fun reorderNewsFeeds(fromPosition: Int, toPosition: Int) {
         val newsFeedsList = _newsFeeds.value.toMutableList()

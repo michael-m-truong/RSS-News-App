@@ -67,26 +67,26 @@ class NewsFeedListFragment : Fragment() {
         binding.newsfeedRecyclerView.layoutManager = LinearLayoutManager(context)
 
         // Set your touch listener to detect when the touch is released
-        binding.root.setOnTouchListener { _, motionEvent ->
-            if (motionEvent.action == MotionEvent.ACTION_UP) {
-                Log.d("from", fromPos.toString())
-                Log.d("to", toPos.toString())
-                if (fromPos != null && toPos != null) {
-                    Log.d("changed", toPos.toString())
-                    newsFeedListViewModel.reorderNewsFeeds(fromPos!!, toPos!!)
-                    viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
-                        Log.d("changed", "here")
-                        newsFeedListViewModel.updateNewsFeedOrder(fromPos!!, toPos!!)
-                        fromPos = null
-                        toPos = null
-                    }
-                    isMoving =false
-                    //fromPos = null
-                    //toPos = null
-                }
-            }
-            false
-        }
+//        binding.root.setOnTouchListener { _, motionEvent ->
+//            if (motionEvent.action == MotionEvent.ACTION_UP) {
+//                Log.d("from", fromPos.toString())
+//                Log.d("to", toPos.toString())
+//                if (fromPos != null && toPos != null) {
+//                    Log.d("changed", toPos.toString())
+//                    newsFeedListViewModel.reorderNewsFeeds(fromPos!!, toPos!!)
+//                    viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+//                        Log.d("changed", "here")
+//                        newsFeedListViewModel.updateNewsFeedOrder(fromPos!!, toPos!!)
+//                        fromPos = null
+//                        toPos = null
+//                    }
+//                    isMoving =false
+//                    //fromPos = null
+//                    //toPos = null
+//                }
+//            }
+//            false
+//        }
 
         swipeToDelete()
         createArticleItemTouchHelperCallback()
@@ -253,6 +253,29 @@ class NewsFeedListFragment : Fragment() {
 
                 //newsFeedListViewModel.reorderNewsFeeds(fromPosition, toPosition)
                 return false
+            }
+
+            override fun clearView(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder
+            ) {
+                super.clearView(recyclerView, viewHolder)
+
+                // Call notifyItemMoved here when the move is complete (user releases the item)
+                Log.d("noway","noway")
+                if (fromPos != null && toPos != null) {
+                    Log.d("changed", toPos.toString())
+                    newsFeedListViewModel.reorderNewsFeeds(fromPos!!, toPos!!)
+                    viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+                        Log.d("changed", "here")
+                        newsFeedListViewModel.updateNewsFeedOrder(fromPos!!, toPos!!)
+                        fromPos = null
+                        toPos = null
+                    }
+                    isMoving =false
+                    //fromPos = null
+                    //toPos = null
+                }
             }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
