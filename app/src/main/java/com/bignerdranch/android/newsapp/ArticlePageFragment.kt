@@ -64,4 +64,11 @@ class ArticlePageFragment : Fragment() {
 
         return binding.root
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+
+        val parent = requireActivity() as AppCompatActivity
+        parent.supportActionBar?.subtitle = null
+    }
 }
