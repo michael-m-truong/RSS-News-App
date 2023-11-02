@@ -1,6 +1,7 @@
 package com.bignerdranch.android.newsapp
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -31,6 +32,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import java.util.Date
 import java.util.UUID
+import android.app.AlertDialog
 
 private const val TAG = "NewsFeedListFragment"
 
@@ -163,11 +165,22 @@ class NewsFeedListFragment : Fragment() {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val position = viewHolder.bindingAdapterPosition
                 val newsFeed = newsFeedListViewModel.getNewsFeedByPosition(position)
-                if (newsFeed != null) {
-                    viewLifecycleOwner.lifecycleScope.launch {
-                        newsFeedListViewModel.deleteNewsFeed(newsFeed.id)
+
+                AlertDialog.Builder(context)
+                    .setTitle("Delete Item")
+                    .setMessage("Are you sure you want to delete this item?")
+                    .setPositiveButton("Delete") { _, _ ->
+                        if (newsFeed != null) {
+                            viewLifecycleOwner.lifecycleScope.launch {
+                                newsFeedListViewModel.deleteNewsFeed(newsFeed.id)
+                            }
+                        }
                     }
-                }
+                    .setNegativeButton("Cancel") { dialog, _ ->
+                        dialog.dismiss() // Close the dialog when the user clicks "Cancel"
+                        viewHolder.bindingAdapter?.notifyItemChanged(position)
+                    }
+                    .show()
             }
 
             // Customize the swipe appearance
@@ -288,4 +301,6 @@ class NewsFeedListFragment : Fragment() {
 
 
     }
+
+
 }
