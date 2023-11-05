@@ -39,6 +39,11 @@ class ArticleListAdapter :
             } else {
                 binding.imageView.visibility = View.GONE
             }
+            if (article.publisherImgSrc != null) {
+                binding.publisherImageView.load(article.publisherImgSrc)
+            } else {
+                binding.publisherImageView.visibility = View.GONE
+            }
 
             // Make article clickable
             binding.root.setOnClickListener {

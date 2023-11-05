@@ -124,7 +124,13 @@ class ArticleListViewModel : ViewModel() {
                     else{
                         imgSrc = element.select("figure img").attr("src")
                     }
-
+                    val publisherImgSrc: String?
+                    if (articleElements.size > 1) {
+                        publisherImgSrc = articleElement.select("div").select("img").attr("src")
+                    }
+                    else{
+                        publisherImgSrc = articleElement.select("img").attr("src")
+                    }
 //                    val articleTextDeferred = viewModelScope.async {
 //                        getArticleText(url)
 //                    }
@@ -140,7 +146,7 @@ class ArticleListViewModel : ViewModel() {
                     Log.d("datetime",headlineDateTime)
                     val parsedDate = parseDateTime(headlineDateTime)
 
-                    var article = Article(headlineText, headlineLink, headlineDate, parsedDate, headlinePublisher, imgSrc, articleText)
+                    var article = Article(headlineText, headlineLink, headlineDate, parsedDate, headlinePublisher, imgSrc, publisherImgSrc, articleText)
                     articles.add(article)
                 }
             }

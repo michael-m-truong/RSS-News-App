@@ -10,6 +10,7 @@ data class Article(
     val datetime: Date?,
     val publisher: String,
     val imgSrc: String?,
+    val publisherImgSrc: String?,
     var text: String
  ) {
     val articlePageUri: Uri
