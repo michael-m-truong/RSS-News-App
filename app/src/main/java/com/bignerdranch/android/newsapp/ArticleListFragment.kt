@@ -1,6 +1,7 @@
 package com.bignerdranch.android.newsapp
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bignerdranch.android.newsapp.databinding.FragmentArticleListBinding
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
@@ -23,6 +25,7 @@ class ArticleListFragment : Fragment() {
 
     private val articleListViewModel: ArticleListViewModel by viewModels()
     private lateinit var articleAdapter: ArticleListAdapter // Assuming you have an ArticleAdapter
+    private var loadedInitialArticles = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,6 +54,14 @@ class ArticleListFragment : Fragment() {
             // Hide loading progress bar and show the RecyclerView when data is ready
             binding.loadingProgressBar.visibility = View.INVISIBLE
             binding.articleRecyclerView.visibility = View.VISIBLE
+
+            if (loadedInitialArticles) {
+                val snackbarMessage = "Filtered by reading time"
+                Snackbar.make(requireView(), snackbarMessage, Snackbar.LENGTH_SHORT).show()
+            }
+
+            loadedInitialArticles = true
+
         })
 
         return binding.root
