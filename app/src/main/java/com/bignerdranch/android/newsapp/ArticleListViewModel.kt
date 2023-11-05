@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.bignerdranch.android.newsapp.Article
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -48,7 +49,7 @@ class ArticleListViewModel : ViewModel() {
     private suspend fun performWebScraping(): List<Article> {
         val queryStrings = searchQueries.joinToString("+") { "%22$it%22" }
         val url = "https://news.google.com/search?q=$queryStrings&hl=en-US&gl=US&ceid=US:en"
-
+        Log.d("url",url)
         val articles = mutableListOf<Article>()
 
         try {
@@ -58,47 +59,69 @@ class ArticleListViewModel : ViewModel() {
             var count = 0
 
             for (element in toplevelElements) {
-                val attributes = element.attributes()
-                if (attributes.size() != 2) {
-                    continue
-                }
-                count +=1
+                val articleElements = element.select("article")
                 if (count == 10) {
                     break
                 }
+                for (articleElement in articleElements) {
+                    val headlineText = articleElement.select("h3").text()
+                    if (headlineText.isEmpty()) {
+                        continue
+                    }
+                    val headlineLink = "https://news.google.com" + articleElement.select("a").attr("href").substring(1)  //remove the initial "."
+                    val headlineDate = articleElement.select("time[datetime]").text()
+                    val headlinePublisher = articleElement.select("a[data-n-tid]").text()
+                    var imgSrc: String?
 
-                val articleElement = element.select("article")
-                val headlineText = articleElement.select("h3").text()
-                val headlineLink = "https://news.google.com" + articleElement.select("a").attr("href")
-                val headlineDate = articleElement.select("time[datetime]").text()
-                val headlinePublisher = articleElement.select("a[data-n-tid]").text()
-                val imgSrc = try {
-                    element.select("figure img").attr("src")
-                } catch (e: Exception) {
-                    null
+                    if (articleElements.size > 1) {
+                        imgSrc = articleElement.select("img").attr("src")
+                    }
+                    else{
+                        imgSrc = element.select("figure img").attr("src")
+                    }
+
+                    val articleTextDeferred = viewModelScope.async {
+                        getArticleText(url)
+                    }
+                    val articleText = articleTextDeferred.await()
+                    //val articleText = getArticleText(headlineLink)
+                    Log.d("text",articleText)
+                    count +=1
+                    if (count == 10) {
+                        break
+                    }
+
+                    var article = Article(headlineText, headlineLink, headlineDate, headlinePublisher, imgSrc, articleText)
+                    articles.add(article)
                 }
-
-                val articleTextDeferred = viewModelScope.async { getArticleText(headlineLink) }
-                val articleText = articleTextDeferred.await()
-
-                val article = Article(headlineText, headlineLink, headlineDate, headlinePublisher, imgSrc, articleText)
-                articles.add(article)
-
             }
         } catch (e: Exception) {
+            Log.d("bad","bad")
             e.printStackTrace()
         }
         return articles
     }
 
+    // As of now,text will be null in the article object if ran async; but we dont need text rn
     private fun getArticleText(url: String): String {
-//        return ""
         try {
-            val document = Jsoup.connect(url).get()
-            val paragraphs = document.select("p")
+            var htmlContent = Jsoup.connect(url).get().html()
+            var document = Jsoup.parse(htmlContent)
+            val articleLinkElement = document.select("a[rel=nofollow]")
+            var finalUrl = url
+            if (articleLinkElement.size > 0) {
+                finalUrl = articleLinkElement.attr("href")
+            }
+
+            htmlContent = Jsoup.connect(finalUrl).get().html()
+            val articleDocument = Jsoup.parse(htmlContent)
+            Log.d("finalurl", finalUrl)
+            val paragraphs = articleDocument.select("p")
             return paragraphs.joinToString(" ") { it.text() }
         } catch (e: Exception) {
             return "Error fetching article text: ${e.message}"
         }
     }
+
+
 }
