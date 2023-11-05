@@ -20,6 +20,8 @@ import org.jsoup.Connection
 import org.jsoup.Jsoup
 import java.text.SimpleDateFormat
 import java.util.Date
+import kotlin.math.ceil
+import kotlin.math.floor
 
 class ArticleListViewModel : ViewModel() {
     private val _articles: MutableStateFlow<List<Article>> = MutableStateFlow(emptyList())
@@ -38,8 +40,34 @@ class ArticleListViewModel : ViewModel() {
     private fun fetchArticles() {
         viewModelScope.launch(Dispatchers.IO) {
             val articles = performWebScraping()
+
+            // Perform URL and text updates for all articles
+            val deferredUpdates = articles.map { article ->
+                async {
+                    updateArticleUrlAndText(article.link, article)
+                }
+            }
+
+            deferredUpdates.awaitAll()
+
+            // Filter out articles with word count or empty text
+            val filteredArticles = articles.filter { article ->
+                val text = article.text
+                val words = text.split(Regex("\\s+"))
+                val wordCount = words.size
+                // floor or ceil??
+                var minutesToRead = floor(wordCount.toDouble() / 238).toInt()
+                if (minutesToRead == 0) {
+                    minutesToRead = 1
+                }
+
+                // Adjust the conditions as needed
+                (text.isEmpty() || minutesToRead in 6..6)
+            }
+
+
             withContext(Dispatchers.Main) {
-                _articles.value = articles
+                _articles.value = filteredArticles
                 onDataFetched.postValue(Unit) // Notify the completion of data fetching
             }
         }
@@ -86,12 +114,12 @@ class ArticleListViewModel : ViewModel() {
                         imgSrc = element.select("figure img").attr("src")
                     }
 
-                    val articleTextDeferred = viewModelScope.async {
-                        getArticleText(url)
-                    }
-                    val articleText = articleTextDeferred.await()
+//                    val articleTextDeferred = viewModelScope.async {
+//                        getArticleText(url)
+//                    }
+//                    val articleText = articleTextDeferred.await()
                     //val articleText = getArticleText(headlineLink)
-                    Log.d("text",articleText)
+                    val articleText = ""
                     count +=1
                     if (count == 10) {
                         break
@@ -110,7 +138,7 @@ class ArticleListViewModel : ViewModel() {
             e.printStackTrace()
         }
         val sortedArticles = articles.sortedByDescending { it.datetime }
-        viewModelScope.launch(Dispatchers.IO) {
+        /*viewModelScope.launch(Dispatchers.IO) {
             val deferredUpdates = articles.map { article ->
                 async {
                     updateArticleUrlAndText(article.link, article)
@@ -118,7 +146,7 @@ class ArticleListViewModel : ViewModel() {
             }
 
             deferredUpdates.awaitAll()
-        }
+        }*/
 
 
         return sortedArticles
@@ -165,7 +193,7 @@ class ArticleListViewModel : ViewModel() {
             if (articleLinkElement.size > 0) {
                 finalUrl = articleLinkElement.attr("href")
             }
-
+            article.link = finalUrl
             htmlContent = Jsoup.connect(finalUrl)
                 .method(Connection.Method.GET)
                 .userAgent("Mozilla/5.0 (Linux; Android 13) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.5414.117 Mobile Safari/537.36")
@@ -179,7 +207,6 @@ class ArticleListViewModel : ViewModel() {
             Log.d("finalurl", finalUrl)
             val paragraphs = articleDocument.select("p")
             article.text = paragraphs.joinToString(" ") { it.text() }
-            article.link = finalUrl
             Log.d("huh",article.toString())
 
         } catch (e: Exception) {
