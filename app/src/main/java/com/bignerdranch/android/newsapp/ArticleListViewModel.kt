@@ -1,6 +1,8 @@
 package com.bignerdranch.android.newsapp
 
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -14,6 +16,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jsoup.Jsoup
+import java.text.SimpleDateFormat
+import java.util.Date
 
 class ArticleListViewModel : ViewModel() {
     private val _articles: MutableStateFlow<List<Article>> = MutableStateFlow(emptyList())
@@ -90,8 +94,12 @@ class ArticleListViewModel : ViewModel() {
                     if (count == 10) {
                         break
                     }
+                    val headlineDateElement = articleElement.select("time")
+                    val headlineDateTime = headlineDateElement.attr("datetime")
+                    Log.d("datetime",headlineDateTime)
+                    val parsedDate = parseDateTime(headlineDateTime)
 
-                    var article = Article(headlineText, headlineLink, headlineDate, headlinePublisher, imgSrc, articleText)
+                    var article = Article(headlineText, headlineLink, headlineDate, parsedDate, headlinePublisher, imgSrc, articleText)
                     articles.add(article)
                 }
             }
@@ -99,7 +107,19 @@ class ArticleListViewModel : ViewModel() {
             Log.d("bad","bad")
             e.printStackTrace()
         }
-        return articles
+        val sortedArticles = articles.sortedByDescending { it.datetime }
+        return sortedArticles
+    }
+
+    // Define the parseDateTime function
+    private fun parseDateTime(dateTimeString: String): Date? {
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
+        try {
+            return dateFormat.parse(dateTimeString)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return null
     }
 
     // As of now,text will be null in the article object if ran async; but we dont need text rn
