@@ -51,12 +51,12 @@ class ArticlePageFragment : Fragment() {
                         }
                     }
 
-                    override fun onReceivedTitle(
-                        view: WebView?,
-                        title: String?
-                    ) {
-                        val parent = requireActivity() as AppCompatActivity
-                        parent.supportActionBar?.subtitle = title
+                    override fun onReceivedTitle(view: WebView?, title: String?) {
+                        // Check if the fragment is still attached to an activity
+                        if (isAdded) {
+                            val parent = requireActivity() as AppCompatActivity
+                            parent.supportActionBar?.subtitle = title
+                        }
                     }
                 }
             }
