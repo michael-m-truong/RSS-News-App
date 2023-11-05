@@ -39,38 +39,49 @@ class ArticleListViewModel : ViewModel() {
 
     private fun fetchArticles() {
         viewModelScope.launch(Dispatchers.IO) {
-            val articles = performWebScraping()
-
-            // Perform URL and text updates for all articles
-            val deferredUpdates = articles.map { article ->
-                async {
-                    updateArticleUrlAndText(article.link, article)
-                }
-            }
-
-            deferredUpdates.awaitAll()
-
-            // Filter out articles with word count or empty text
-            val filteredArticles = articles.filter { article ->
-                val text = article.text
-                val words = text.split(Regex("\\s+"))
-                val wordCount = words.size
-                // floor or ceil??
-                var minutesToRead = floor(wordCount.toDouble() / 238).toInt()
-                if (minutesToRead == 0) {
-                    minutesToRead = 1
-                }
-
-                // Adjust the conditions as needed
-                (text.isEmpty() || minutesToRead in 6..6)
-            }
-
+            // Load and display the initial articles
+            val initialArticles = performWebScraping()
 
             withContext(Dispatchers.Main) {
-                _articles.value = filteredArticles
-                onDataFetched.postValue(Unit) // Notify the completion of data fetching
+                _articles.value = initialArticles
+                onDataFetched.postValue(Unit) // Notify the initial data load
+            }
+
+            // Asynchronously update the articles in the background
+            val articlesToUpdate = initialArticles
+
+            if (articlesToUpdate.isNotEmpty()) {
+                val deferredUpdates = articlesToUpdate.map { article ->
+                    async {
+                        updateArticleUrlAndText(article.link, article)
+                    }
+                }
+
+                // Wait for all updates to complete
+                deferredUpdates.awaitAll()
+
+                // Filter articles based on word count and reading time
+                val filteredArticles = articlesToUpdate.filter { article ->
+                    val text = article.text
+                    val words = text.split(Regex("\\s+"))
+                    val wordCount = words.size
+
+                    // Calculate minutes to read based on word count
+                    val wordsPerMinute = 238 // Adjust this value based on your assumptions
+                    val minutesToRead = ceil(wordCount.toDouble() / wordsPerMinute).toInt().coerceAtLeast(1)
+
+                    // Adjust the conditions as needed
+                    (text.isEmpty() || minutesToRead in 4..6)
+                }
+
+                // Update the articles with the filtered data
+                withContext(Dispatchers.Main) {
+                    _articles.value = filteredArticles
+                    onDataFetched.postValue(Unit) // Notify the completion of data fetching
+                }
             }
         }
+
     }
 
     // Function to update search queries based on the selected NewsFeed
