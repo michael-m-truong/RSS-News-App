@@ -9,12 +9,14 @@ import androidx.lifecycle.viewModelScope
 import com.bignerdranch.android.newsapp.Article
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.jsoup.Connection
 import org.jsoup.Jsoup
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -108,6 +110,17 @@ class ArticleListViewModel : ViewModel() {
             e.printStackTrace()
         }
         val sortedArticles = articles.sortedByDescending { it.datetime }
+        viewModelScope.launch(Dispatchers.IO) {
+            val deferredUpdates = articles.map { article ->
+                async {
+                    updateArticleUrlAndText(article.link, article)
+                }
+            }
+
+            deferredUpdates.awaitAll()
+        }
+
+
         return sortedArticles
     }
 
@@ -143,5 +156,35 @@ class ArticleListViewModel : ViewModel() {
         }
     }
 
+    private fun updateArticleUrlAndText(url: String, article: Article) {
+        try {
+            var htmlContent = Jsoup.connect(url).get().html()
+            var document = Jsoup.parse(htmlContent)
+            val articleLinkElement = document.select("a[rel=nofollow]")
+            var finalUrl = url
+            if (articleLinkElement.size > 0) {
+                finalUrl = articleLinkElement.attr("href")
+            }
+
+            htmlContent = Jsoup.connect(finalUrl)
+                .method(Connection.Method.GET)
+                .userAgent("Mozilla/5.0 (Linux; Android 13) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.5414.117 Mobile Safari/537.36")
+                .referrer("https://www.google.com")
+                .header("accept", "*/*")
+                .timeout(3000)
+                .header("content-type", "text/plain;charset=UTF-8")
+                .get()
+                .html()
+            val articleDocument = Jsoup.parse(htmlContent)
+            Log.d("finalurl", finalUrl)
+            val paragraphs = articleDocument.select("p")
+            article.text = paragraphs.joinToString(" ") { it.text() }
+            article.link = finalUrl
+            Log.d("huh",article.toString())
+
+        } catch (e: Exception) {
+            Log.d("exception", e.message.toString())
+        }
+    }
 
 }

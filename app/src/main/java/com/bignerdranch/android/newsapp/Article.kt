@@ -5,12 +5,12 @@ import java.util.Date
 
 data class Article(
     val headline: String,
-    val link: String,
+    var link: String,
     val date: String,
     val datetime: Date?,
     val publisher: String,
     val imgSrc: String?,
-    val text: String
+    var text: String
  ) {
     val articlePageUri: Uri
         get() = Uri.parse(link)
