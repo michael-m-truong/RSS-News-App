@@ -1,6 +1,8 @@
 package com.bignerdranch.android.newsapp
 
 import android.app.Dialog
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
@@ -83,18 +85,25 @@ class ArticleListFragment : Fragment() {
         dialog.setContentView(R.layout.sort_button_view) // Replace with your input group layout
         dialog.setCancelable(true)
 
-        // You can access the RadioButtons in the dialog and set their listeners here
+        // Make the dialog background transparent
+        dialog.window?.setBackgroundDrawable(ColorDrawable(android.graphics.Color.WHITE))
 
-
-        // Set the window attributes to position the dialog at the bottom and fit the whole width
+        // Get the window attributes and set width and height
+        val lp = WindowManager.LayoutParams()
         val window = dialog.window
-        val layoutParams = window?.attributes
-        layoutParams?.gravity = Gravity.BOTTOM
-        layoutParams?.width = WindowManager.LayoutParams.MATCH_PARENT
-        window?.attributes = layoutParams
+        lp.copyFrom(window?.attributes)
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT
+
+        // Set the gravity to make the dialog appear at the bottom
+        lp.gravity = Gravity.BOTTOM
+
+        window?.attributes = lp
 
         dialog.show()
     }
+
+
 
 }
 
