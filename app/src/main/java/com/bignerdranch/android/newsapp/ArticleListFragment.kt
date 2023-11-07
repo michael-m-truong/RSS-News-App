@@ -25,7 +25,6 @@ class ArticleListFragment : Fragment() {
 
     private val articleListViewModel: ArticleListViewModel by viewModels()
     private lateinit var articleAdapter: ArticleListAdapter // Assuming you have an ArticleAdapter
-    private var loadedInitialArticles = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -55,12 +54,11 @@ class ArticleListFragment : Fragment() {
             binding.loadingProgressBar.visibility = View.INVISIBLE
             binding.articleRecyclerView.visibility = View.VISIBLE
 
-            if (loadedInitialArticles) {
+            if (articleListViewModel.isFiltered) {
                 val snackbarMessage = "Filtered by reading time"
                 Snackbar.make(requireView(), snackbarMessage, Snackbar.LENGTH_SHORT).show()
             }
-
-            loadedInitialArticles = true
+            articleListViewModel.isFiltered = false
 
         })
 

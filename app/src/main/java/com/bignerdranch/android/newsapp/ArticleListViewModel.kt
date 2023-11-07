@@ -29,6 +29,9 @@ class ArticleListViewModel : ViewModel() {
 
     val onDataFetched: MutableLiveData<Unit> = MutableLiveData()
 
+    var loadedInitialArticles = false
+    var isFiltered = false
+
     companion object {
         var searchQueries: MutableList<String> = mutableListOf()
     }
@@ -45,6 +48,7 @@ class ArticleListViewModel : ViewModel() {
             withContext(Dispatchers.Main) {
                 _articles.value = initialArticles
                 onDataFetched.postValue(Unit) // Notify the initial data load
+                loadedInitialArticles = true
             }
 
             // Asynchronously update the articles in the background
@@ -78,6 +82,7 @@ class ArticleListViewModel : ViewModel() {
                 withContext(Dispatchers.Main) {
                     _articles.value = filteredArticles
                     onDataFetched.postValue(Unit) // Notify the completion of data fetching
+                    isFiltered = true
                 }
             }
         }
