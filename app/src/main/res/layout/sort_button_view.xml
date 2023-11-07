@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- Selector Choice 1 -->
+        <RadioButton
+            android:id="@+id/selector_choice1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Choice 1" />
+
+        <!-- Selector Choice 2 -->
+        <RadioButton
+            android:id="@+id/selector_choice2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Choice 2" />
+
+        <!-- Selector Choice 3 -->
+        <RadioButton
+            android:id="@+id/selector_choice3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Choice 3" />
+
+        <!-- Selector Choice 4 -->
+        <RadioButton
+            android:id="@+id/selector_choice4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Choice 4" />
+    </RadioGroup>
+
+</LinearLayout>
