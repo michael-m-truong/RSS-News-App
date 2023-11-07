@@ -9,26 +9,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <!-- Selector Choice 1 -->
+        <!-- Sorting Choice 1 -->
         <RadioButton
-            android:id="@+id/selector_choice1"
+            android:id="@+id/sorting_choice1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Today" />
+            android:text="Newest" />
 
-        <!-- Selector Choice 2 -->
+        <!-- Sorting Choice 2 -->
         <RadioButton
-            android:id="@+id/selector_choice2"
+            android:id="@+id/read_choice2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Last week" />
-
-        <!-- Selector Choice 3 -->
-        <RadioButton
-            android:id="@+id/selector_choice3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="All" />
+            android:text="Most Popular" />
 
     </RadioGroup>
 
