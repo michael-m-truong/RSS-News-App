@@ -1,10 +1,15 @@
 package com.bignerdranch.android.newsapp
 
+import android.app.Dialog
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.Window
+import android.view.WindowManager
+import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -62,7 +67,33 @@ class ArticleListFragment : Fragment() {
 
         })
 
+        val showInputButton = binding.filter1Button
+
+        // Set a click listener for the button to show the popup
+        showInputButton.setOnClickListener {
+            showInputPopup()
+        }
+
         return binding.root
+    }
+
+    private fun showInputPopup() {
+        val dialog = Dialog(requireContext())
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.sort_button_view) // Replace with your input group layout
+        dialog.setCancelable(true)
+
+        // You can access the RadioButtons in the dialog and set their listeners here
+
+
+        // Set the window attributes to position the dialog at the bottom and fit the whole width
+        val window = dialog.window
+        val layoutParams = window?.attributes
+        layoutParams?.gravity = Gravity.BOTTOM
+        layoutParams?.width = WindowManager.LayoutParams.MATCH_PARENT
+        window?.attributes = layoutParams
+
+        dialog.show()
     }
 
 }
