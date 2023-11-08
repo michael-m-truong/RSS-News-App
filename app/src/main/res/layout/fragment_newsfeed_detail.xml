@@ -25,15 +25,56 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?attr/textAppearanceHeadline5"
-        android:text="@string/newsfeed_details_label" />
+        android:text="@string/newsfeed_details_label"
+        android:layout_marginBottom="16dp"/>
 
-
-
-    <!-- Add an EditText and Button for input -->
+    <!-- Add buttons for Exact Match and Exclude modes -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:clickable="true"
+        android:state_enabled="true">
+
+        <Button
+            android:id="@+id/exact_match_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+        android:layout_weight="1"
+            android:text="Exact"
+            android:textColor="@color/black"
+            android:elevation="0dp"
+            android:stateListAnimator="@null"
+            android:backgroundTint="@color/white"
+         />
+
+        <Button
+            android:id="@+id/exclude_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Exclude"
+            android:textColor="@color/black"
+            android:elevation="0dp"
+            android:stateListAnimator="@null"
+            android:backgroundTint="@color/white"
+            android:state_enabled="true"
+            />
+    </LinearLayout>
+
+    <!-- Add an EditText and Button for input -->
+    <View
+        android:id="@+id/underline"
+        android:layout_width="0dp"
+        android:layout_height="2dp"
+        android:background="#0000FF"
+    />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="16dp">
 
         <EditText
             android:id="@+id/input_word"
@@ -42,7 +83,7 @@
             android:layout_weight="1"
             android:hint="Enter a word"
             android:imeOptions="actionDone"
-            android:singleLine="true"/>
+            android:singleLine="true" />
 
         <Button
             android:id="@+id/add_chip_button"

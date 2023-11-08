@@ -1,5 +1,6 @@
 package com.bignerdranch.android.newsapp
 
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.KeyEvent
@@ -7,6 +8,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.widget.Button
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -41,13 +44,16 @@ class NewsFeedDetailFragment  : Fragment() {
     ): View? {
         _binding =
             FragmentNewsfeedDetailBinding.inflate(layoutInflater, container, false)
+
         return binding.root
     }
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         binding.apply {
+
             newsfeedTitle.doOnTextChanged { text, _, _, _ ->
                 newsFeedDetailViewModel.updateNewsFeed { oldNewsFeed ->
                     oldNewsFeed.copy(title = text.toString())
@@ -112,6 +118,44 @@ class NewsFeedDetailFragment  : Fragment() {
                 }
                 return@setOnEditorActionListener false
             }
+
+            exactMatchButton.setOnClickListener {
+                // Move the underline to the position of the exactMatchButton
+                val translationX = exactMatchButton.x
+                underline.animate().translationX(translationX).setDuration(200).start()
+                Log.d("exact", "exact")
+
+                // Change the text color of the exactMatchButton
+                exactMatchButton.setTextColor(Color.BLUE)
+                excludeButton.setTextColor(Color.BLACK)
+
+                // Dynamically set the width of the underline view to match the width of the exactMatchButton
+                val underlineParams = underline.layoutParams
+                underlineParams.width = exactMatchButton.width
+                underline.layoutParams = underlineParams
+
+                // Handle button click action
+            }
+
+            excludeButton.setOnClickListener {
+                // Move the underline to the position of the excludeButton
+                val translationX = excludeButton.x
+                underline.animate().translationX(translationX).setDuration(200).start()
+                Log.d("exclude", "exclude")
+
+                // Change the text color of the excludeButton
+                excludeButton.setTextColor(Color.BLUE)
+                exactMatchButton.setTextColor(Color.BLACK)
+
+                // Dynamically set the width of the underline view to match the width of the excludeButton
+                val underlineParams = underline.layoutParams
+                underlineParams.width = excludeButton.width
+                underline.layoutParams = underlineParams
+
+                // Handle button click action
+            }
+
+
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
