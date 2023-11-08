@@ -180,6 +180,14 @@ class NewsFeedDetailFragment  : Fragment() {
 
     private fun updateUi(newsFeed: NewsFeed) {
         binding.apply {
+
+            val translationX = exactMatchButton.x
+            underline.translationX = translationX
+
+            val underlineParams = underline.layoutParams
+            underlineParams.width = exactMatchButton.width
+            underline.layoutParams = underlineParams
+
             if (newsfeedTitle.text.toString() != newsFeed.title) {
                 newsfeedTitle.setText(newsFeed.title)
             }
