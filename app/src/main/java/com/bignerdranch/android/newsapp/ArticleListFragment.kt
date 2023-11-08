@@ -1,29 +1,23 @@
 package com.bignerdranch.android.newsapp
 
 import android.app.Dialog
-import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.view.WindowManager
-import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.bignerdranch.android.newsapp.databinding.FragmentArticleListBinding
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 private const val TAG = "ArticleListFragment"
@@ -69,23 +63,34 @@ class ArticleListFragment : Fragment() {
 
         })
 
-        val showInputButton = binding.filter1Button
+        val showSortButton = binding.filter1Button
+        val showReadButton = binding.filter2Button
+        val showViewButton = binding.filter3Button
+
 
         // Set a click listener for the button to show the popup
-        showInputButton.setOnClickListener {
-            showInputPopup()
+        showSortButton.setOnClickListener {
+            showInputPopup(R.layout.sort_button_view)
+        }
+
+        showReadButton.setOnClickListener {
+            showInputPopup(R.layout.read_time_view)
+        }
+
+        showViewButton.setOnClickListener {
+            showInputPopup(R.layout.sort_by_view)
         }
 
         return binding.root
     }
 
-    private fun showInputPopup() {
+    private fun showInputPopup(view: Int) {
         val dialog = Dialog(requireContext())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.setContentView(R.layout.sort_button_view) // Replace with your input group layout
+        dialog.setContentView(view) // Replace with your input group layout
         dialog.setCancelable(true)
 
-        // Make the dialog background transparent
+        // Make the dialog background white
         dialog.window?.setBackgroundDrawable(ColorDrawable(android.graphics.Color.WHITE))
 
         // Get the window attributes and set width and height
