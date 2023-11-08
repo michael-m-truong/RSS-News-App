@@ -23,6 +23,26 @@
             android:layout_height="wrap_content"
             android:text="Most Popular" />
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <!-- Cancel Button -->
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Cancel" />
+
+            <!-- Done Button -->
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Done" />
+        </LinearLayout>
+
     </RadioGroup>
 
 </LinearLayout>

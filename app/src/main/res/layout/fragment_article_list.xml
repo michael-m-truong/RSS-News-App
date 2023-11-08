@@ -13,6 +13,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
+            <Button
+                android:id="@+id/filter5_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Default"
+
+                android:textColor="#4C4C4C"
+                android:backgroundTint="#FFFFFF"
+                android:elevation="0dp"
+                android:stateListAnimator="@null"
+                />
 
             <Button
                 android:id="@+id/filter1_button"
