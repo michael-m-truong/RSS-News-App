@@ -96,12 +96,17 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true" />
 
-    <!-- RecyclerView (Initially set to invisible) -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/article_recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/horizontal_slider"
-        android:visibility="invisible" />
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipe_refresh_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        <!-- RecyclerView (Initially set to invisible) -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/article_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/horizontal_slider"
+            android:visibility="invisible" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </RelativeLayout>

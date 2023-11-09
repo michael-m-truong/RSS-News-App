@@ -40,7 +40,7 @@ class ArticleListViewModel : ViewModel() {
         fetchArticles()
     }
 
-    private fun fetchArticles() {
+    fun fetchArticles() {
         viewModelScope.launch(Dispatchers.IO) {
             // Load and display the initial articles
             val initialArticles = performWebScraping()
