@@ -81,6 +81,11 @@ class ArticleListFragment : Fragment() {
             showInputPopup(R.layout.sort_by_view)
         }
 
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            articleListViewModel.fetchArticles()
+            binding.swipeRefreshLayout.isRefreshing = false
+        }
+
         return binding.root
     }
 
