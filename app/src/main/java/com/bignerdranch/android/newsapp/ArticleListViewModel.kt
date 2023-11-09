@@ -34,6 +34,7 @@ class ArticleListViewModel : ViewModel() {
 
     companion object {
         var searchQueries: MutableList<String> = mutableListOf()
+        var excludeSearchQueries: MutableList<String> = mutableListOf()
     }
 
     init {
@@ -97,7 +98,9 @@ class ArticleListViewModel : ViewModel() {
 
 
     private suspend fun performWebScraping(): List<Article> {
-        val queryStrings = searchQueries.joinToString("+") { "%22$it%22" }
+        val exactStrings = searchQueries.joinToString("+") { "%22$it%22" }
+        val excludeStrings = excludeSearchQueries.joinToString("+") { "-$it"}
+        val queryStrings = exactStrings + excludeStrings
         val url = "https://news.google.com/search?q=$queryStrings&hl=en-US&gl=US&ceid=US:en"
         Log.d("url",url)
         val articles = mutableListOf<Article>()

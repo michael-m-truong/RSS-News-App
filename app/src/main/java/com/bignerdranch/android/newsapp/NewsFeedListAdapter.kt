@@ -19,6 +19,7 @@ class NewsFeedHolder(
 
         binding.root.setOnClickListener {
             ArticleListViewModel.searchQueries = newsFeed.wordBank
+            ArticleListViewModel.excludeSearchQueries = newsFeed.excludeWordBank
             val action = NewsFeedListFragmentDirections.showArticleList(newsFeed.id)
             it.findNavController().navigate(action)
         }
