@@ -160,6 +160,7 @@ class NewsFeedListFragment : Fragment() {
                 title = "",
                 date = Date(),
                 wordBank = mutableListOf<String>(),
+                excludeWordBank = mutableListOf<String>(),
                 orderNumber = newsFeedListViewModel.getCount() + 1
             )
             newsFeedListViewModel.addNewsFeed(newNewsFeed)

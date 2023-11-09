@@ -15,6 +15,7 @@ class NewsFeedDetailViewModel(newsfeedId: UUID) : ViewModel() {
     private val newsFeedRepository = NewsFeedRepository.get()
     private val _newsFeed: MutableStateFlow<NewsFeed?> = MutableStateFlow(null)
     val newsFeed: StateFlow<NewsFeed?> = _newsFeed.asStateFlow()
+    var filterState: Filter = Filter.EXACT
     init {
         viewModelScope.launch {
             _newsFeed.value = newsFeedRepository.getNewsFeed(newsfeedId)
