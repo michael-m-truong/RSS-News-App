@@ -44,6 +44,7 @@
 
             <!-- Apply Button -->
             <Button
+                android:id="@+id/newest_apply_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"

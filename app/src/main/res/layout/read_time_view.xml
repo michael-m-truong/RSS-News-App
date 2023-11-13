@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             android:text="1-3 mins"
             android:paddingLeft="16dp"
-            />
+            android:checked="false" />
 
         <!-- Read Choice 2 -->
         <CheckBox
@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:text="4-6 mins"
             android:paddingLeft="16dp"
-            />
+            android:checked="false" />
 
         <!-- Read Choice 3 -->
         <CheckBox
@@ -34,7 +34,8 @@
             android:layout_height="wrap_content"
             android:text="6+ mins"
             android:paddingLeft="16dp"
-            />
+            android:checked="false" />
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -57,6 +58,7 @@
 
             <!-- Apply Button -->
             <Button
+                android:id="@+id/read_apply_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
