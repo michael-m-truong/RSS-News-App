@@ -13,17 +13,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
-            <Button
-                android:id="@+id/filter5_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Default"
-
-                android:textColor="#4C4C4C"
-                android:backgroundTint="#FFFFFF"
-                android:elevation="0dp"
-                android:stateListAnimator="@null"
-                />
 
             <Button
                 android:id="@+id/filter1_button"
@@ -74,7 +63,7 @@
                 android:id="@+id/filter4_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Publisher"
+                android:text="PUBLISHER"
 
                 android:textColor="#4C4C4C"
                 android:backgroundTint="#FFFFFF"
@@ -82,7 +71,18 @@
                 android:stateListAnimator="@null"
                 android:drawableEnd="@drawable/baseline_arrow_drop_down_24"
 
+                />
 
+            <Button
+                android:id="@+id/filter5_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="CLEAR FILTERS"
+
+                android:textColor="#4C4C4C"
+                android:backgroundTint="#FFFFFF"
+                android:elevation="0dp"
+                android:stateListAnimator="@null"
                 />
 
             <!-- Add more buttons as needed for filtering -->

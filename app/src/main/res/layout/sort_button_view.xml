@@ -12,43 +12,52 @@
         <!-- Selector Choice 1 -->
         <RadioButton
             android:id="@+id/selector_choice1"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Today" />
 
         <!-- Selector Choice 2 -->
         <RadioButton
             android:id="@+id/selector_choice2"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Last week" />
 
         <!-- Selector Choice 3 -->
         <RadioButton
             android:id="@+id/selector_choice3"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="All" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
+            android:orientation="horizontal"
+            android:paddingStart="7dp"
+            android:paddingEnd="8dp"
+            >
             <!-- Cancel Button -->
             <Button
-                android:layout_width="0dp"
+                android:id="@+id/day_cancel_button"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Cancel" />
 
-            <!-- Done Button -->
+            <View
+                android:layout_width="30dp"
+                android:layout_height="1dp" />
+
+            <!-- Apply Button -->
             <Button
-                android:layout_width="0dp"
+                android:id="@+id/day_apply_button"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Done" />
+                android:text="Apply" />
         </LinearLayout>
+
     </RadioGroup>
 
 </LinearLayout>
