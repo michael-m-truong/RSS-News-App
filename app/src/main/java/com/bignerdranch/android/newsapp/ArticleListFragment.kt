@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.view.WindowManager
+import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -70,15 +71,14 @@ class ArticleListFragment : Fragment() {
 
         // Set a click listener for the button to show the popup
         showSortButton.setOnClickListener {
-            showInputPopup(R.layout.sort_button_view)
-        }
+            showInputPopup(R.layout.sort_button_view, R.id.day_cancel_button)        }
 
         showReadButton.setOnClickListener {
-            showInputPopup(R.layout.read_time_view)
+            showInputPopup(R.layout.read_time_view, R.id.read_cancel_button)
         }
 
         showViewButton.setOnClickListener {
-            showInputPopup(R.layout.sort_by_view)
+            showInputPopup(R.layout.sort_by_view, R.id.newest_cancel_button)
         }
 
         binding.swipeRefreshLayout.setOnRefreshListener {
@@ -86,10 +86,17 @@ class ArticleListFragment : Fragment() {
             binding.swipeRefreshLayout.isRefreshing = false
         }
 
+
+
         return binding.root
     }
 
-    private fun showInputPopup(view: Int) {
+    private fun cancelFilter(dialog: Dialog) {
+        // Dismiss the dialog
+        dialog.dismiss()
+    }
+
+    private fun showInputPopup(view: Int, cancelButtonId: Int) {
         val dialog = Dialog(requireContext())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(view) // Replace with your input group layout
@@ -109,6 +116,11 @@ class ArticleListFragment : Fragment() {
         lp.gravity = Gravity.BOTTOM
 
         window?.attributes = lp
+
+        val cancelButton = dialog.findViewById<Button>(cancelButtonId)
+        cancelButton.setOnClickListener {
+            dialog.dismiss()
+        }
 
         dialog.show()
     }
