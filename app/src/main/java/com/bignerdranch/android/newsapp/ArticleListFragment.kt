@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.view.Window
 import android.view.WindowManager
 import android.widget.Button
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -18,6 +19,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bignerdranch.android.newsapp.databinding.FragmentArticleListBinding
+import com.bignerdranch.android.newsapp.databinding.SortByViewBinding
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 
@@ -33,6 +35,9 @@ class ArticleListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val binding = FragmentArticleListBinding.inflate(inflater, container, false)
+        val binding_sortby: SortByViewBinding = DataBindingUtil.inflate(
+            inflater, R.layout.sort_by_view, container, false
+        )
 
         articleAdapter = ArticleListAdapter() // Initialize your RecyclerView adapter
         binding.articleRecyclerView.layoutManager = LinearLayoutManager(requireContext())
@@ -62,6 +67,23 @@ class ArticleListFragment : Fragment() {
             }
             articleListViewModel.isFiltered = false
 
+        })
+
+        binding_sortby.buttonGroup.setOnCheckedChangeListener { _, checkedId ->
+            when (checkedId) {
+                R.id.newest -> articleListViewModel.setSortByOption(SortByOption.NEWEST)
+                R.id.most_popular -> articleListViewModel.setSortByOption(SortByOption.MOST_POPULAR)
+                // Handle other sorting options if needed
+            }
+        }
+
+        // Observe changes in the sorting option
+        articleListViewModel.sortByOption.observe(viewLifecycleOwner, Observer { sortOption ->
+            when (sortOption) {
+                SortByOption.NEWEST -> binding_sortby.newest.isChecked = true
+                SortByOption.MOST_POPULAR -> binding_sortby.mostPopular.isChecked = false
+                // Handle other sorting options if needed
+            }
         })
 
         val showSortButton = binding.filter1Button

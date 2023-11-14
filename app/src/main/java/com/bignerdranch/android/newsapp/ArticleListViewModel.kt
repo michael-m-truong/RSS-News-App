@@ -3,6 +3,7 @@ package com.bignerdranch.android.newsapp
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -31,6 +32,16 @@ class ArticleListViewModel : ViewModel() {
 
     var loadedInitialArticles = false
     var isFiltered = false
+
+    private val _sortByOption = MutableLiveData<SortByOption>(SortByOption.NEWEST)
+    val sortByOption: LiveData<SortByOption>
+        get() = _sortByOption
+
+    // Add other properties and methods as needed
+
+    fun setSortByOption(sortOption: SortByOption) {
+        _sortByOption.value = sortOption
+    }
 
     companion object {
         var searchQueries: MutableList<String> = mutableListOf()

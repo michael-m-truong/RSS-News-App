@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+        <import type="com.bignerdranch.android.newsapp.SortByOption" />
         <variable
             name="viewModel"
             type="com.bignerdranch.android.newsapp.ArticleListViewModel" />
@@ -14,23 +15,26 @@
     android:orientation="vertical">
 
     <RadioGroup
+        android:id="@+id/button_group"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <!-- Sorting Choice 1 -->
         <RadioButton
-            android:id="@+id/sorting_choice1"
+            android:id="@+id/newest"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Newest"
+            android:checked="@{viewModel.sortByOption == SortByOption.NEWEST}"
             />
 
         <!-- Sorting Choice 2 -->
         <RadioButton
-            android:id="@+id/read_choice2"
+            android:id="@+id/most_popular"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Most Popular" />
+            android:text="Most Popular"
+            android:checked="@{viewModel.sortByOption == SortByOption.MOST_POPULAR}"/>
 
         <!-- Linear Layout for Buttons -->
         <LinearLayout
