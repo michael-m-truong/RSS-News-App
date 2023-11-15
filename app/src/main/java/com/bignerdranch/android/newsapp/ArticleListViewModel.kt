@@ -33,7 +33,7 @@ class ArticleListViewModel : ViewModel() {
     var loadedInitialArticles = false
     var isFiltered = false
 
-    private val _sortByOption = MutableLiveData<SortByOption>(SortByOption.NEWEST)
+    private val _sortByOption = MutableLiveData<SortByOption>()
     val sortByOption: LiveData<SortByOption>
         get() = _sortByOption
 
@@ -43,6 +43,12 @@ class ArticleListViewModel : ViewModel() {
         _sortByOption.value = sortOption
     }
 
+    // Method to check if the given sort option is selected
+    fun isSortOptionSelected(option: SortByOption): Boolean {
+        return true
+        return sortByOption.value == option
+    }
+
     companion object {
         var searchQueries: MutableList<String> = mutableListOf()
         var excludeSearchQueries: MutableList<String> = mutableListOf()
@@ -50,6 +56,7 @@ class ArticleListViewModel : ViewModel() {
 
     init {
         fetchArticles()
+        setSortByOption(SortByOption.NEWEST);
     }
 
     fun fetchArticles() {

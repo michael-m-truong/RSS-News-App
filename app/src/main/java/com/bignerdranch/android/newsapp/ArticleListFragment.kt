@@ -3,6 +3,7 @@ package com.bignerdranch.android.newsapp
 import android.app.Dialog
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -10,7 +11,7 @@ import android.view.ViewGroup
 import android.view.Window
 import android.view.WindowManager
 import android.widget.Button
-import androidx.databinding.DataBindingUtil
+import android.widget.RadioButton
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -19,6 +20,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bignerdranch.android.newsapp.databinding.FragmentArticleListBinding
+import com.bignerdranch.android.newsapp.databinding.SortButtonViewBinding
 import com.bignerdranch.android.newsapp.databinding.SortByViewBinding
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
@@ -35,9 +37,6 @@ class ArticleListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val binding = FragmentArticleListBinding.inflate(inflater, container, false)
-        val binding_sortby: SortByViewBinding = DataBindingUtil.inflate(
-            inflater, R.layout.sort_by_view, container, false
-        )
 
         articleAdapter = ArticleListAdapter() // Initialize your RecyclerView adapter
         binding.articleRecyclerView.layoutManager = LinearLayoutManager(requireContext())
@@ -69,22 +68,6 @@ class ArticleListFragment : Fragment() {
 
         })
 
-        binding_sortby.buttonGroup.setOnCheckedChangeListener { _, checkedId ->
-            when (checkedId) {
-                R.id.newest -> articleListViewModel.setSortByOption(SortByOption.NEWEST)
-                R.id.most_popular -> articleListViewModel.setSortByOption(SortByOption.MOST_POPULAR)
-                // Handle other sorting options if needed
-            }
-        }
-
-        // Observe changes in the sorting option
-        articleListViewModel.sortByOption.observe(viewLifecycleOwner, Observer { sortOption ->
-            when (sortOption) {
-                SortByOption.NEWEST -> binding_sortby.newest.isChecked = true
-                SortByOption.MOST_POPULAR -> binding_sortby.mostPopular.isChecked = false
-                // Handle other sorting options if needed
-            }
-        })
 
         val showSortButton = binding.filter1Button
         val showReadButton = binding.filter2Button
@@ -93,7 +76,8 @@ class ArticleListFragment : Fragment() {
 
         // Set a click listener for the button to show the popup
         showSortButton.setOnClickListener {
-            showInputPopup(R.layout.sort_button_view, R.id.day_cancel_button)        }
+            showInputPopup(R.layout.sort_button_view, R.id.day_cancel_button)
+        }
 
         showReadButton.setOnClickListener {
             showInputPopup(R.layout.read_time_view, R.id.read_cancel_button)
@@ -107,7 +91,6 @@ class ArticleListFragment : Fragment() {
             articleListViewModel.fetchArticles()
             binding.swipeRefreshLayout.isRefreshing = false
         }
-
 
 
         return binding.root
@@ -143,6 +126,9 @@ class ArticleListFragment : Fragment() {
         cancelButton.setOnClickListener {
             dialog.dismiss()
         }
+
+        val radioButton = dialog.findViewById<RadioButton>(R.id.newest) // Replace with the actual ID
+        radioButton.isChecked = true
 
         dialog.show()
     }
