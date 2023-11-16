@@ -14,18 +14,18 @@
 
         <!-- Sorting Choice 1 -->
         <RadioButton
+            android:id="@+id/most_popular"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Most Popular" />
+
+        <!-- Sorting Choice 2 -->
+        <RadioButton
             android:id="@+id/newest"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Newest"
             />
-
-        <!-- Sorting Choice 2 -->
-        <RadioButton
-            android:id="@+id/most_popular"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Most Popular" />
 
         <!-- Linear Layout for Buttons -->
         <LinearLayout

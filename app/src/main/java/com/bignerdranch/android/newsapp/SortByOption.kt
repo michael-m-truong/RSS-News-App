@@ -1,7 +1,7 @@
 package com.bignerdranch.android.newsapp
 
 enum class SortByOption {
-    NEWEST,
     MOST_POPULAR,
+    NEWEST,
     // Add other sorting options if needed
 }
