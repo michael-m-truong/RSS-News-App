@@ -37,13 +37,23 @@ class ArticleListViewModel : ViewModel() {
     /* Filter variables */
 
     private var _sortByOption: SortByOption = SortByOption.MOST_POPULAR
+
     val sortByOption: SortByOption
         get() = _sortByOption
+
+    private var _dateOption: DateRelevance = DateRelevance.TODAY
+    val dateRelevance: DateRelevance
+        get() = _dateOption
 
 
     fun setSortByOption(sortOption: SortByOption) {
         _sortByOption = sortOption
     }
+
+    fun setDateRelevance(dateOption: DateRelevance) {
+        _dateOption = dateOption
+    }
+
 
     /* Static variables */
     companion object {
@@ -54,6 +64,7 @@ class ArticleListViewModel : ViewModel() {
     init {
         fetchArticles()
         setSortByOption(SortByOption.MOST_POPULAR);
+        setDateRelevance(DateRelevance.ANYTIME);
     }
 
     fun fetchArticles() {

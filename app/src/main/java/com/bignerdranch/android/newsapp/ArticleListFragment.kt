@@ -12,6 +12,7 @@ import android.view.Window
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.RadioButton
+import android.widget.RadioGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -133,8 +134,71 @@ class ArticleListFragment : Fragment() {
             initalize_sortby(dialog)
         }
 
+        if(view == R.layout.sort_button_view)
+        {
+            initalize_date(dialog)
+        }
+
+
+
 
         dialog.show()
+    }
+
+
+    private fun initalize_date(dialog: Dialog) {
+        val dateOption = articleListViewModel.dateRelevance
+        val anytimeButton = dialog.findViewById<RadioButton>(R.id.anytime)
+        val todayButton = dialog.findViewById<RadioButton>(R.id.today)
+        val lastWeekButton = dialog.findViewById<RadioButton>(R.id.last_week)
+        val allButton = dialog.findViewById<RadioButton>(R.id.all)
+
+        val radioGroup = dialog.findViewById<RadioGroup>(R.id.datePicker)
+
+        radioGroup.setOnCheckedChangeListener { _, checkedId ->
+            when (checkedId) {
+                R.id.anytime -> {
+                    articleListViewModel.setDateRelevance(DateRelevance.ANYTIME)
+                }
+                R.id.today -> {
+                    articleListViewModel.setDateRelevance(DateRelevance.TODAY)
+                }
+                R.id.last_week -> {
+                    articleListViewModel.setDateRelevance(DateRelevance.LASTWEEK)
+                }
+                R.id.all -> {
+                    articleListViewModel.setDateRelevance(DateRelevance.ALL)
+                }
+            }
+        }
+
+        when (dateOption) {
+            DateRelevance.ANYTIME -> {
+                anytimeButton.isChecked = true
+                todayButton.isChecked = false
+                lastWeekButton.isChecked = false
+                allButton.isChecked = false
+            }
+            DateRelevance.TODAY -> {
+                anytimeButton.isChecked = false
+                todayButton.isChecked = true
+                lastWeekButton.isChecked = false
+                allButton.isChecked = false
+            }
+            DateRelevance.LASTWEEK -> {
+                anytimeButton.isChecked = false
+                todayButton.isChecked = false
+                lastWeekButton.isChecked = true
+                allButton.isChecked = false
+            }
+            DateRelevance.ALL -> {
+                anytimeButton.isChecked = false
+                todayButton.isChecked = false
+                lastWeekButton.isChecked = false
+                allButton.isChecked = true
+            }
+
+        }
     }
 
 
@@ -148,10 +212,6 @@ class ArticleListFragment : Fragment() {
                 popularityButton.isChecked = false
             }
             SortByOption.MOST_POPULAR -> {
-                newestButton.isChecked = false
-                popularityButton.isChecked = true
-            }
-            else -> {
                 newestButton.isChecked = false
                 popularityButton.isChecked = true
             }
