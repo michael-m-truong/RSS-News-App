@@ -153,7 +153,7 @@ class ArticleListFragment : Fragment() {
         }
         else if(view == R.layout.sort_publisher_view)
         {
-            initalize_publisher(dialog)
+            initialize_publisher(dialog)
         }
 
         dialog.show()
@@ -252,16 +252,48 @@ class ArticleListFragment : Fragment() {
         }
     }
 
-    private fun initalize_publisher(dialog: Dialog) {
+    private fun initialize_publisher(dialog: Dialog) {
         val publishers = articleListViewModel.publishers
+        val checkBoxContainer = dialog.findViewById<RadioGroup>(R.id.button_group)
+        val applyButton = dialog.findViewById<MaterialButton>(R.id.apply_button)
         val radioGroup = dialog.findViewById<RadioGroup>(R.id.button_group)
 
+        // Create a set to track selected publishers temporarily
+        val selectedPublishers: MutableSet<String> = mutableSetOf()
+
+        // Create a listener to handle checkbox clicks
+        val checkBoxClickListener = View.OnClickListener { view ->
+            if (view is CheckBox) {
+                if (view.isChecked) {
+                    // Checkbox is checked, add the publisher to the temporary set
+                    selectedPublishers.add(view.text.toString())
+                    Log.d("heree!","bad")
+                } else {
+                    // Checkbox is unchecked, remove the publisher from the temporary set
+                    selectedPublishers.remove(view.text.toString())
+                }
+            }
+        }
+
+        // Set the listener for each checkbox
         for (publisher in publishers) {
             val checkBox = CheckBox(requireContext())
             checkBox.text = publisher
-            radioGroup.addView(checkBox)
+            checkBoxContainer.addView(checkBox)
+            checkBox.setOnClickListener(checkBoxClickListener)
+        }
+
+        // Set the click listener for the Apply button
+        applyButton.setOnClickListener {
+            // Apply the selected publishers to the ViewModel only when Apply is clicked
+            articleListViewModel.setPublisherOption(selectedPublishers)
+
+            // Dismiss the dialog or perform other actions if needed
+            articleListViewModel.fetchArticles()
+            dialog.dismiss()
         }
     }
+
 
 
     private fun initalize_sortby(dialog: Dialog) {

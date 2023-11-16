@@ -15,6 +15,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.jsoup.Connection
 import org.jsoup.Jsoup
+import java.lang.Math.ceil
 import java.text.SimpleDateFormat
 import java.util.Date
 
@@ -48,6 +49,10 @@ class ArticleListViewModel : ViewModel() {
     val readTimeOption: ReadTimeOption
         get() = _readTimeOption
 
+    private var _publisherOption: MutableSet<String> = mutableSetOf()
+    val publisherOption: MutableSet<String>
+        get() = _publisherOption
+
     fun setSortByOption(sortOption: SortByOption) {
         _sortByOption = sortOption
     }
@@ -58,6 +63,18 @@ class ArticleListViewModel : ViewModel() {
 
     fun setReadTimeOption(readTimeOption: ReadTimeOption){
         _readTimeOption = readTimeOption
+    }
+
+    fun addPublisherOption(publisher: String){
+        _publisherOption.add(publisher)
+    }
+
+    fun removePublisherOption(publisher: String){
+        _publisherOption.remove(publisher)
+    }
+
+    fun setPublisherOption(publisherOption: MutableSet<String>) {
+        _publisherOption = publisherOption
     }
 
     /* Static variables */
@@ -98,7 +115,7 @@ class ArticleListViewModel : ViewModel() {
 
                 // Wait for all updates to complete
                 deferredUpdates.awaitAll()
-
+                var filteredArticles = emptyList<Article>()
                 // Filter articles based on word count and reading time
                 /*val filteredArticles = articlesToUpdate.filter { article ->
                     val text = article.text
@@ -113,16 +130,32 @@ class ArticleListViewModel : ViewModel() {
                     (text.isEmpty() || minutesToRead in 4..6)
                 } */
 
+                if (_publishers.isNotEmpty()) {
+                    filteredArticles= filterByPublisher(initialArticles)
+                }
+
                 // Update the articles with the filtered data
-                /* withContext(Dispatchers.Main) {
-                    _articles.value = filteredArticles
-                    onDataFetched.postValue(Unit) // Notify the completion of data fetching
-                    isFiltered = true
-                } */
+                if (filteredArticles.isNotEmpty()) {
+                    withContext(Dispatchers.Main) {
+                        _articles.value = filteredArticles
+                        onDataFetched.postValue(Unit) // Notify the completion of data fetching
+                        isFiltered = true
+                    }
+                }
             }
         }
 
     }
+
+    private fun filterByPublisher(initialArticles: List<Article>): List<Article> {
+        // Filter articles based on the selected publishers
+        return initialArticles.filter { article ->
+            // Check if the article's publisher is in the selected publishers set
+            val isPublisherSelected = _publisherOption.isEmpty() || article.publisher in _publisherOption
+            isPublisherSelected
+        }
+    }
+
 
     private suspend fun performWebScraping(): List<Article> {
         val exactStrings = searchQueries.joinToString("+") { "%22$it%22" }
