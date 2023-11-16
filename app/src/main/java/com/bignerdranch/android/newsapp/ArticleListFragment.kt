@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bignerdranch.android.newsapp.databinding.FragmentArticleListBinding
 import com.bignerdranch.android.newsapp.databinding.SortButtonViewBinding
 import com.bignerdranch.android.newsapp.databinding.SortByViewBinding
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 
@@ -66,7 +67,7 @@ class ArticleListFragment : Fragment() {
                 Snackbar.make(requireView(), snackbarMessage, Snackbar.LENGTH_SHORT).show()
             }
             articleListViewModel.isFiltered = false
-
+            binding.articleRecyclerView.smoothScrollToPosition(0)
         })
 
 
@@ -85,7 +86,7 @@ class ArticleListFragment : Fragment() {
         }
 
         showViewButton.setOnClickListener {
-            showInputPopup(R.layout.sort_by_view, R.id.newest_cancel_button)
+            showInputPopup(R.layout.sort_by_view, R.id.cancel_button)
         }
 
         binding.swipeRefreshLayout.setOnRefreshListener {
@@ -207,16 +208,25 @@ class ArticleListFragment : Fragment() {
         val newestButton = dialog.findViewById<RadioButton>(R.id.newest) // Replace with the actual ID
         val popularityButton = dialog.findViewById<RadioButton>(R.id.most_popular)
         val radioGroup = dialog.findViewById<RadioGroup>(R.id.button_group)
+        val applyButton = dialog.findViewById<MaterialButton>(R.id.apply_button)
 
-        radioGroup.setOnCheckedChangeListener { _, checkedId ->
-            when (checkedId) {
-                R.id.newest -> {
-                    articleListViewModel.setSortByOption(SortByOption.NEWEST)
-                }
-                R.id.most_popular -> {
-                    articleListViewModel.setSortByOption(SortByOption.MOST_POPULAR)
-                }
+
+        applyButton.setOnClickListener {
+            // Save the selected sorting option to the ViewModel here
+            // This will only be executed when the apply button is clicked
+            val selectedSortByOption = when (radioGroup.checkedRadioButtonId) {
+                R.id.newest -> SortByOption.NEWEST
+                R.id.most_popular -> SortByOption.MOST_POPULAR
+                else -> null // Handle the case when no option is selected
             }
+
+            selectedSortByOption?.let {
+                articleListViewModel.setSortByOption(it)
+            }
+
+            // Dismiss the dialog or perform other actions if needed
+            articleListViewModel.fetchArticles()
+            dialog.dismiss()
         }
 
         when (sortByOption) {

@@ -1,18 +1,13 @@
 package com.bignerdranch.android.newsapp
 
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.bignerdranch.android.newsapp.Article
 import com.bignerdranch.android.newsapp.database.NewsFeedRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -22,8 +17,6 @@ import org.jsoup.Connection
 import org.jsoup.Jsoup
 import java.text.SimpleDateFormat
 import java.util.Date
-import kotlin.math.ceil
-import kotlin.math.floor
 
 class ArticleListViewModel : ViewModel() {
     private val newsFeedRepository = NewsFeedRepository.get()
@@ -88,10 +81,9 @@ class ArticleListViewModel : ViewModel() {
             }
 
             // Asynchronously update the articles in the background
-            val articlesToUpdate = initialArticles
 
-            if (articlesToUpdate.isNotEmpty()) {
-                val deferredUpdates = articlesToUpdate.map { article ->
+            if (initialArticles.isNotEmpty()) {
+                val deferredUpdates = initialArticles.map { article ->
                     async {
                         updateArticleUrlAndText(article.link, article)
                     }
@@ -101,7 +93,7 @@ class ArticleListViewModel : ViewModel() {
                 deferredUpdates.awaitAll()
 
                 // Filter articles based on word count and reading time
-                val filteredArticles = articlesToUpdate.filter { article ->
+                /*val filteredArticles = articlesToUpdate.filter { article ->
                     val text = article.text
                     val words = text.split(Regex("\\s+"))
                     val wordCount = words.size
@@ -112,25 +104,18 @@ class ArticleListViewModel : ViewModel() {
 
                     // Adjust the conditions as needed
                     (text.isEmpty() || minutesToRead in 4..6)
-                }
+                } */
 
                 // Update the articles with the filtered data
-                withContext(Dispatchers.Main) {
+                /* withContext(Dispatchers.Main) {
                     _articles.value = filteredArticles
                     onDataFetched.postValue(Unit) // Notify the completion of data fetching
                     isFiltered = true
-                }
+                } */
             }
         }
 
     }
-
-    // Function to update search queries based on the selected NewsFeed
-    fun setSearchQueriesFromNewsFeed(newsFeed: NewsFeed) {
-        // Use the wordBank from the selected NewsFeed as search queries
-        searchQueries = newsFeed.wordBank
-    }
-
 
     private suspend fun performWebScraping(): List<Article> {
         val exactStrings = searchQueries.joinToString("+") { "%22$it%22" }
@@ -197,7 +182,7 @@ class ArticleListViewModel : ViewModel() {
             Log.d("bad","bad")
             e.printStackTrace()
         }
-        val sortedArticles = articles.sortedByDescending { it.datetime }
+
         /*viewModelScope.launch(Dispatchers.IO) {
             val deferredUpdates = articles.map { article ->
                 async {
@@ -208,8 +193,14 @@ class ArticleListViewModel : ViewModel() {
             deferredUpdates.awaitAll()
         }*/
 
+        if (sortByOption == SortByOption.NEWEST) {
+            val sortedArticles = articles.sortedByDescending { it.datetime }
+            return sortedArticles
+        }
+        else {
+            return articles
+        }
 
-        return sortedArticles
     }
 
     // Define the parseDateTime function

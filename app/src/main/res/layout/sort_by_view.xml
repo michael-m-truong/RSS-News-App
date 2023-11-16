@@ -37,7 +37,7 @@
             >
             <!-- Cancel Button -->
             <Button
-                android:id="@+id/newest_cancel_button"
+                android:id="@+id/cancel_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -49,7 +49,7 @@
 
             <!-- Apply Button -->
             <Button
-                android:id="@+id/newest_apply_button"
+                android:id="@+id/apply_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
