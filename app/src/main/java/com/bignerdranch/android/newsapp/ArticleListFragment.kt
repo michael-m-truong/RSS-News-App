@@ -127,12 +127,36 @@ class ArticleListFragment : Fragment() {
             dialog.dismiss()
         }
 
-        val radioButton = dialog.findViewById<RadioButton>(R.id.newest) // Replace with the actual ID
-        radioButton.isChecked = true
+        //val radioButton = dialog.findViewById<RadioButton>(R.id.newest) // Replace with the actual ID
+        //radioButton.isChecked = true
+        if (view == R.layout.sort_by_view) {
+            initalize_sortby(dialog)
+        }
+
 
         dialog.show()
     }
 
+
+    private fun initalize_sortby(dialog: Dialog) {
+        val sortByOption = articleListViewModel.sortByOption
+        val newestButton = dialog.findViewById<RadioButton>(R.id.newest) // Replace with the actual ID
+        val popularityButton = dialog.findViewById<RadioButton>(R.id.most_popular)
+        when (sortByOption) {
+            SortByOption.NEWEST -> {
+                newestButton.isChecked = true
+                popularityButton.isChecked = false
+            }
+            SortByOption.MOST_POPULAR -> {
+                newestButton.isChecked = false
+                popularityButton.isChecked = true
+            }
+            else -> {
+                newestButton.isChecked = false
+                popularityButton.isChecked = true
+            }
+        }
+    }
 
 
 }

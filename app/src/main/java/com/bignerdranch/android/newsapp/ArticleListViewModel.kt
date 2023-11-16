@@ -33,22 +33,19 @@ class ArticleListViewModel : ViewModel() {
     var loadedInitialArticles = false
     var isFiltered = false
 
-    private val _sortByOption = MutableLiveData<SortByOption>()
-    val sortByOption: LiveData<SortByOption>
+
+    /* Filter variables */
+
+    private var _sortByOption: SortByOption = SortByOption.MOST_POPULAR
+    val sortByOption: SortByOption
         get() = _sortByOption
 
-    // Add other properties and methods as needed
 
     fun setSortByOption(sortOption: SortByOption) {
-        _sortByOption.value = sortOption
+        _sortByOption = sortOption
     }
 
-    // Method to check if the given sort option is selected
-    fun isSortOptionSelected(option: SortByOption): Boolean {
-        return true
-        return sortByOption.value == option
-    }
-
+    /* Static variables */
     companion object {
         var searchQueries: MutableList<String> = mutableListOf()
         var excludeSearchQueries: MutableList<String> = mutableListOf()
@@ -56,7 +53,7 @@ class ArticleListViewModel : ViewModel() {
 
     init {
         fetchArticles()
-        setSortByOption(SortByOption.NEWEST);
+        setSortByOption(SortByOption.MOST_POPULAR);
     }
 
     fun fetchArticles() {
