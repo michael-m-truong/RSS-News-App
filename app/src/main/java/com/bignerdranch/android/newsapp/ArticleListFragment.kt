@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.view.Window
 import android.view.WindowManager
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import androidx.fragment.app.Fragment
@@ -75,6 +76,7 @@ class ArticleListFragment : Fragment() {
         val showSortButton = binding.filter1Button
         val showReadButton = binding.filter2Button
         val showViewButton = binding.filter3Button
+        val showPublisherButton = binding.filter4Button
 
 
         // Set a click listener for the button to show the popup
@@ -88,6 +90,10 @@ class ArticleListFragment : Fragment() {
 
         showViewButton.setOnClickListener {
             showInputPopup(R.layout.sort_by_view, R.id.cancel_button)
+        }
+
+        showPublisherButton.setOnClickListener {
+            showInputPopup(R.layout.sort_publisher_view, R.id.cancel_button)
         }
 
         binding.swipeRefreshLayout.setOnRefreshListener {
@@ -136,14 +142,18 @@ class ArticleListFragment : Fragment() {
             initalize_sortby(dialog)
         }
 
-        if(view == R.layout.sort_button_view)
+        else if(view == R.layout.sort_button_view)
         {
             initalize_date(dialog)
         }
 
-        if(view == R.layout.read_time_view)
+        else if(view == R.layout.read_time_view)
         {
             initalize_reading(dialog)
+        }
+        else if(view == R.layout.sort_publisher_view)
+        {
+            initalize_publisher(dialog)
         }
 
         dialog.show()
@@ -239,6 +249,17 @@ class ArticleListFragment : Fragment() {
             ReadTimeOption.sixPlus-> {
                 sixPlusButton.isChecked = true
             }
+        }
+    }
+
+    private fun initalize_publisher(dialog: Dialog) {
+        val publishers = articleListViewModel.publishers
+        val radioGroup = dialog.findViewById<RadioGroup>(R.id.button_group)
+
+        for (publisher in publishers) {
+            val checkBox = CheckBox(requireContext())
+            checkBox.text = publisher
+            radioGroup.addView(checkBox)
         }
     }
 

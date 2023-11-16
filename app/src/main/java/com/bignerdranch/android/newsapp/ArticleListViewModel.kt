@@ -19,13 +19,12 @@ import java.text.SimpleDateFormat
 import java.util.Date
 
 class ArticleListViewModel : ViewModel() {
-    private val newsFeedRepository = NewsFeedRepository.get()
-    private val _newsFeeds: MutableStateFlow<List<NewsFeed>> = MutableStateFlow(emptyList())
-    val newsFeeds: StateFlow<List<NewsFeed>>
-        get() = _newsFeeds.asStateFlow()
 
     private val _articles: MutableStateFlow<List<Article>> = MutableStateFlow(emptyList())
     val articles: StateFlow<List<Article>> get() = _articles.asStateFlow()
+
+    private val _publishers: MutableSet<String> = mutableSetOf()
+    val publishers: Set<String> get() = _publishers
 
     val onDataFetched: MutableLiveData<Unit> = MutableLiveData()
 
@@ -77,6 +76,7 @@ class ArticleListViewModel : ViewModel() {
     }
 
     fun fetchArticles() {
+        _publishers.clear()
         viewModelScope.launch(Dispatchers.IO) {
             // Load and display the initial articles
             val initialArticles = performWebScraping()
@@ -183,6 +183,7 @@ class ArticleListViewModel : ViewModel() {
 
                     var article = Article(headlineText, headlineLink, headlineDate, parsedDate, headlinePublisher, imgSrc, publisherImgSrc, articleText)
                     articles.add(article)
+                    _publishers.add(headlinePublisher)
                 }
             }
         } catch (e: Exception) {
