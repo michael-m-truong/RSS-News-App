@@ -40,10 +40,14 @@ class ArticleListViewModel : ViewModel() {
     val sortByOption: SortByOption
         get() = _sortByOption
 
-    private var _dateOption: DateRelevance = DateRelevance.TODAY
+    private var _dateOption: DateRelevance = DateRelevance.ANYTIME
     val dateRelevance: DateRelevance
         get() = _dateOption
 
+
+    private var _readTimeOption: ReadTimeOption = ReadTimeOption.oneTOthree
+    val readTimeOption: ReadTimeOption
+        get() = _readTimeOption
 
     fun setSortByOption(sortOption: SortByOption) {
         _sortByOption = sortOption
@@ -53,6 +57,9 @@ class ArticleListViewModel : ViewModel() {
         _dateOption = dateOption
     }
 
+    fun setReadTimeOption(readTimeOption: ReadTimeOption){
+        _readTimeOption = readTimeOption
+    }
 
     /* Static variables */
     companion object {
@@ -65,8 +72,8 @@ class ArticleListViewModel : ViewModel() {
         fetchArticles()
         val sortByOption = SortByOption.values().getOrElse(ArticleListViewModel.sortByOption) { SortByOption.NEWEST }
         setSortByOption(sortByOption)
-
         setDateRelevance(DateRelevance.ANYTIME);
+        setReadTimeOption(ReadTimeOption.oneTOthree);
     }
 
     fun fetchArticles() {

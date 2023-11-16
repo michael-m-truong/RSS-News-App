@@ -24,6 +24,7 @@ import com.bignerdranch.android.newsapp.databinding.FragmentArticleListBinding
 import com.bignerdranch.android.newsapp.databinding.SortButtonViewBinding
 import com.bignerdranch.android.newsapp.databinding.SortByViewBinding
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.checkbox.MaterialCheckBox
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 
@@ -140,8 +141,10 @@ class ArticleListFragment : Fragment() {
             initalize_date(dialog)
         }
 
-
-
+        if(view == R.layout.read_time_view)
+        {
+            initalize_reading(dialog)
+        }
 
         dialog.show()
     }
@@ -199,6 +202,43 @@ class ArticleListFragment : Fragment() {
                 allButton.isChecked = true
             }
 
+        }
+    }
+
+
+    private fun initalize_reading(dialog: Dialog) {
+        val readOption = articleListViewModel.readTimeOption
+        val oneTothreeButton = dialog.findViewById<MaterialCheckBox>(R.id.read_choice1)
+        val fourTosixButton = dialog.findViewById<MaterialCheckBox>(R.id.read_choice2)
+        val sixPlusButton = dialog.findViewById<MaterialCheckBox>(R.id.read_choice3)
+
+        val radioGroup = dialog.findViewById<RadioGroup>(R.id.button_group)
+
+        radioGroup.setOnCheckedChangeListener { _, checkedId ->
+            when (checkedId) {
+                R.id.read_choice1 -> {
+                    articleListViewModel.setReadTimeOption(ReadTimeOption.oneTOthree)
+                }
+                R.id.read_choice2 -> {
+                    articleListViewModel.setReadTimeOption(ReadTimeOption.fourTOsix)
+                }
+                R.id.read_choice3 -> {
+                    articleListViewModel.setReadTimeOption(ReadTimeOption.sixPlus)
+                }
+
+            }
+        }
+
+        when (readOption) {
+            ReadTimeOption.oneTOthree -> {
+                oneTothreeButton.isChecked = true
+            }
+            ReadTimeOption.fourTOsix -> {
+                fourTosixButton.isChecked = true
+            }
+            ReadTimeOption.sixPlus-> {
+                sixPlusButton.isChecked = true
+            }
         }
     }
 

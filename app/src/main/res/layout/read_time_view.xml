@@ -7,8 +7,8 @@
 
     <RadioGroup
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
+        android:layout_height="wrap_content"
+        android:id="@+id/button_group">
         <!-- Read Choice 1 -->
         <CheckBox
             android:id="@+id/read_choice1"
