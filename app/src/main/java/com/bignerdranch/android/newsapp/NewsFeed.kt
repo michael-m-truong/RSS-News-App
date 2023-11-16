@@ -12,7 +12,8 @@ data class NewsFeed(
     val date: Date,
     val wordBank: MutableList<String>,  // exact match word bank
     val excludeWordBank: MutableList<String>,
-    val orderNumber: Int
+    val orderNumber: Int,
+    val sortByOption: Int,
 )
 
 

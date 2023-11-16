@@ -30,5 +30,11 @@ interface NewsFeedDao {
     @Query("UPDATE NewsFeed SET orderNumber = :newOrderNumber WHERE id = :newsFeedId")
     fun updateOrderNumber(newsFeedId: UUID, newOrderNumber: Int)
 
+    @Query("UPDATE NewsFeed SET sortByOption = :defaultSortOption WHERE id = :newsFeedId")
+    suspend fun initializeSortByOption(newsFeedId: UUID, defaultSortOption: Int)
+
+    @Query("UPDATE NewsFeed SET sortByOption = :newSortOption WHERE id = :newsFeedId")
+    suspend fun updateSortByOption(newsFeedId: UUID, newSortOption: Int)
+
 
 }

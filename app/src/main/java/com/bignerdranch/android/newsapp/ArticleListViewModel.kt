@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bignerdranch.android.newsapp.Article
+import com.bignerdranch.android.newsapp.database.NewsFeedRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -25,6 +26,11 @@ import kotlin.math.ceil
 import kotlin.math.floor
 
 class ArticleListViewModel : ViewModel() {
+    private val newsFeedRepository = NewsFeedRepository.get()
+    private val _newsFeeds: MutableStateFlow<List<NewsFeed>> = MutableStateFlow(emptyList())
+    val newsFeeds: StateFlow<List<NewsFeed>>
+        get() = _newsFeeds.asStateFlow()
+
     private val _articles: MutableStateFlow<List<Article>> = MutableStateFlow(emptyList())
     val articles: StateFlow<List<Article>> get() = _articles.asStateFlow()
 
@@ -49,11 +55,14 @@ class ArticleListViewModel : ViewModel() {
     companion object {
         var searchQueries: MutableList<String> = mutableListOf()
         var excludeSearchQueries: MutableList<String> = mutableListOf()
+        var sortByOption: Int = 0
     }
 
     init {
         fetchArticles()
-        setSortByOption(SortByOption.MOST_POPULAR);
+        val sortByOption = SortByOption.values().getOrElse(ArticleListViewModel.sortByOption) { SortByOption.NEWEST }
+        setSortByOption(sortByOption)
+
     }
 
     fun fetchArticles() {

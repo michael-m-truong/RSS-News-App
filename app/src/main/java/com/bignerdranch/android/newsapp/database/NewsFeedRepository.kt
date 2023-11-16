@@ -47,6 +47,15 @@ class NewsFeedRepository private constructor
         database.newsfeedDao().updateOrderNumber(newsFeedId, newOrderNumber)
     }
 
+    suspend fun initializeSortByOption(newsFeedId: UUID, defaultSortOption: Int) {
+        database.newsfeedDao().initializeSortByOption(newsFeedId, defaultSortOption)
+    }
+
+    suspend fun updateSortByOption(newsFeedId: UUID, newSortOption: Int) {
+        database.newsfeedDao().updateSortByOption(newsFeedId, newSortOption)
+    }
+
+
     companion object {
         private var INSTANCE: NewsFeedRepository? = null
         fun initialize(context: Context) {

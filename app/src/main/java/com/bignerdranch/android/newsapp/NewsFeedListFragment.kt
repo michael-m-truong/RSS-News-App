@@ -161,7 +161,8 @@ class NewsFeedListFragment : Fragment() {
                 date = Date(),
                 wordBank = mutableListOf<String>(),
                 excludeWordBank = mutableListOf<String>(),
-                orderNumber = newsFeedListViewModel.getCount() + 1
+                orderNumber = newsFeedListViewModel.getCount() + 1,
+                sortByOption = 0
             )
             newsFeedListViewModel.addNewsFeed(newNewsFeed)
             findNavController().navigate(

@@ -12,6 +12,7 @@ import android.view.Window
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.RadioButton
+import android.widget.RadioGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -142,16 +143,25 @@ class ArticleListFragment : Fragment() {
         val sortByOption = articleListViewModel.sortByOption
         val newestButton = dialog.findViewById<RadioButton>(R.id.newest) // Replace with the actual ID
         val popularityButton = dialog.findViewById<RadioButton>(R.id.most_popular)
+        val radioGroup = dialog.findViewById<RadioGroup>(R.id.button_group)
+
+        radioGroup.setOnCheckedChangeListener { _, checkedId ->
+            when (checkedId) {
+                R.id.newest -> {
+                    articleListViewModel.setSortByOption(SortByOption.NEWEST)
+                }
+                R.id.most_popular -> {
+                    articleListViewModel.setSortByOption(SortByOption.MOST_POPULAR)
+                }
+            }
+        }
+
         when (sortByOption) {
             SortByOption.NEWEST -> {
                 newestButton.isChecked = true
                 popularityButton.isChecked = false
             }
             SortByOption.MOST_POPULAR -> {
-                newestButton.isChecked = false
-                popularityButton.isChecked = true
-            }
-            else -> {
                 newestButton.isChecked = false
                 popularityButton.isChecked = true
             }
