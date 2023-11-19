@@ -53,6 +53,10 @@ class ArticleListViewModel : ViewModel() {
     val publisherOption: MutableSet<String>
         get() = _publisherOption
 
+    private var _resourceOption: ResourceOption = ResourceOption.Google
+    val resourceOption: ResourceOption
+        get() = _resourceOption
+
     fun setSortByOption(sortOption: SortByOption) {
         _sortByOption = sortOption
     }
@@ -77,6 +81,11 @@ class ArticleListViewModel : ViewModel() {
         _publisherOption = publisherOption
     }
 
+    fun setResourceOption(resourceOption: ResourceOption){
+        _resourceOption = resourceOption
+    }
+
+
     /* Static variables */
     companion object {
         var searchQueries: MutableList<String> = mutableListOf()
@@ -90,6 +99,8 @@ class ArticleListViewModel : ViewModel() {
         setSortByOption(sortByOption)
         setDateRelevance(DateRelevance.ANYTIME);
         setReadTimeOption(ReadTimeOption.oneTOthree);
+        setResourceOption(ResourceOption.Google);
+
     }
 
     fun fetchArticles() {

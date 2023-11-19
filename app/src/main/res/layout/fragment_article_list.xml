@@ -42,7 +42,7 @@
                 android:stateListAnimator="@null"
                 android:drawableEnd="@drawable/baseline_arrow_drop_down_24"
                 android:onClick="showPopUpFilter2"/>
-                />
+
 
             <Button
                 android:id="@+id/filter3_button"
@@ -75,6 +75,19 @@
 
             <Button
                 android:id="@+id/filter5_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="RESOURCE BY"
+
+                android:textColor="#4C4C4C"
+                android:backgroundTint="#FFFFFF"
+                android:elevation="0dp"
+                android:stateListAnimator="@null"
+                android:drawableEnd="@drawable/baseline_arrow_drop_down_24"
+                />
+
+            <Button
+                android:id="@+id/filter6_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="CLEAR FILTERS"

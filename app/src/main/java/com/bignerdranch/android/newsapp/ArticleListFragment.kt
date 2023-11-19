@@ -77,6 +77,7 @@ class ArticleListFragment : Fragment() {
         val showReadButton = binding.filter2Button
         val showViewButton = binding.filter3Button
         val showPublisherButton = binding.filter4Button
+        val showResourceButton = binding.filter5Button
 
 
         // Set a click listener for the button to show the popup
@@ -94,6 +95,10 @@ class ArticleListFragment : Fragment() {
 
         showPublisherButton.setOnClickListener {
             showInputPopup(R.layout.sort_publisher_view, R.id.cancel_button)
+        }
+
+        showResourceButton.setOnClickListener {
+            showInputPopup(R.layout.sort_by_sources, R.id.cancel_button)
         }
 
         binding.swipeRefreshLayout.setOnRefreshListener {
@@ -139,28 +144,32 @@ class ArticleListFragment : Fragment() {
         //val radioButton = dialog.findViewById<RadioButton>(R.id.newest) // Replace with the actual ID
         //radioButton.isChecked = true
         if (view == R.layout.sort_by_view) {
-            initalize_sortby(dialog)
+            initialize_sortby(dialog)
         }
 
         else if(view == R.layout.sort_button_view)
         {
-            initalize_date(dialog)
+            initialize_date(dialog)
         }
 
         else if(view == R.layout.read_time_view)
         {
-            initalize_reading(dialog)
+            initialize_reading(dialog)
         }
         else if(view == R.layout.sort_publisher_view)
         {
             initialize_publisher(dialog)
+        }
+        else if(view == R.layout.sort_by_sources)
+        {
+            initialize_resource(dialog)
         }
 
         dialog.show()
     }
 
 
-    private fun initalize_date(dialog: Dialog) {
+    private fun initialize_date(dialog: Dialog) {
         val dateOption = articleListViewModel.dateRelevance
         val anytimeButton = dialog.findViewById<RadioButton>(R.id.anytime)
         val todayButton = dialog.findViewById<RadioButton>(R.id.today)
@@ -216,7 +225,7 @@ class ArticleListFragment : Fragment() {
     }
 
 
-    private fun initalize_reading(dialog: Dialog) {
+    private fun initialize_reading(dialog: Dialog) {
         val readOption = articleListViewModel.readTimeOption
         val oneTothreeButton = dialog.findViewById<MaterialCheckBox>(R.id.read_choice1)
         val fourTosixButton = dialog.findViewById<MaterialCheckBox>(R.id.read_choice2)
@@ -296,7 +305,7 @@ class ArticleListFragment : Fragment() {
 
 
 
-    private fun initalize_sortby(dialog: Dialog) {
+    private fun initialize_sortby(dialog: Dialog) {
         val sortByOption = articleListViewModel.sortByOption
         val newestButton = dialog.findViewById<RadioButton>(R.id.newest) // Replace with the actual ID
         val popularityButton = dialog.findViewById<RadioButton>(R.id.most_popular)
@@ -332,6 +341,51 @@ class ArticleListFragment : Fragment() {
                 popularityButton.isChecked = true
             }
         }
+    }
+
+    private fun initialize_resource(dialog: Dialog) {
+        val resourceOption = articleListViewModel.resourceOption
+        val googleButton = dialog.findViewById<MaterialCheckBox>(R.id.google)
+        val redditButton = dialog.findViewById<MaterialCheckBox>(R.id.reddit)
+        val twitterButton = dialog.findViewById<MaterialCheckBox>(R.id.twitter)
+        val resourceAllButton = dialog.findViewById<MaterialCheckBox>(R.id.resource_all)
+
+        val radioGroup = dialog.findViewById<RadioGroup>(R.id.button_group)
+
+        radioGroup.setOnCheckedChangeListener { _, checkedId ->
+            when (checkedId) {
+                R.id.read_choice1 -> {
+                    articleListViewModel.setResourceOption(ResourceOption.Google)
+                }
+                R.id.reddit -> {
+                    articleListViewModel.setResourceOption(ResourceOption.Reddit)
+                }
+                R.id.twitter -> {
+                    articleListViewModel.setResourceOption(ResourceOption.Twitter)
+                }
+                R.id.resource_all -> {
+                    articleListViewModel.setResourceOption(ResourceOption.All)
+                }
+
+            }
+        }
+
+        when (resourceOption) {
+            ResourceOption.Google -> {
+                googleButton.isChecked = true
+            }
+            ResourceOption.Reddit -> {
+                redditButton.isChecked = true
+            }
+            ResourceOption.Twitter-> {
+                twitterButton.isChecked = true
+            }
+            ResourceOption.All-> {
+                resourceAllButton.isChecked = true
+            }
+        }
+
+
     }
 
 
