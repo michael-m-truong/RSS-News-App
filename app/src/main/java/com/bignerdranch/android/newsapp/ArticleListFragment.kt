@@ -98,7 +98,7 @@ class ArticleListFragment : Fragment() {
         }
 
         showResourceButton.setOnClickListener {
-            showInputPopup(R.layout.sort_by_sources, R.id.cancel_button)
+            showInputPopup(R.layout.sort_by_sources, R.id.sources_cancel_button)
         }
 
         binding.swipeRefreshLayout.setOnRefreshListener {
