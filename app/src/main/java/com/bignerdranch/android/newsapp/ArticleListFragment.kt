@@ -1,6 +1,7 @@
 package com.bignerdranch.android.newsapp
 
 import android.app.Dialog
+import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
@@ -14,6 +15,7 @@ import android.widget.Button
 import android.widget.CheckBox
 import android.widget.RadioButton
 import android.widget.RadioGroup
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -121,8 +123,14 @@ class ArticleListFragment : Fragment() {
         dialog.setContentView(view) // Replace with your input group layout
         dialog.setCancelable(true)
 
-        // Make the dialog background white
-        dialog.window?.setBackgroundDrawable(ColorDrawable(android.graphics.Color.WHITE))
+        val nightMode = AppCompatDelegate.getDefaultNightMode()
+
+        val backgroundColor = if (nightMode == AppCompatDelegate.MODE_NIGHT_YES) {
+            Color.BLACK
+        } else {
+            Color.WHITE
+        }
+        dialog.window?.setBackgroundDrawable(ColorDrawable(backgroundColor))
 
         // Get the window attributes and set width and height
         val lp = WindowManager.LayoutParams()
