@@ -109,6 +109,7 @@ class ArticleListFragment : Fragment() {
         val showViewButton = binding.filter3Button
         val showPublisherButton = binding.filter4Button
         val showResourceButton = binding.filter5Button
+        val clearFiltersButton = binding.filter6Button
 
 
         // Set a click listener for the button to show the popup
@@ -135,6 +136,11 @@ class ArticleListFragment : Fragment() {
         binding.swipeRefreshLayout.setOnRefreshListener {
             articleListViewModel.fetchArticles()
             binding.swipeRefreshLayout.isRefreshing = false
+        }
+
+        clearFiltersButton.setOnClickListener {
+            articleListViewModel.clearFilters(requireView())
+            articleListViewModel.applyFilters()
         }
 
 

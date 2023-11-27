@@ -2,10 +2,12 @@ package com.bignerdranch.android.newsapp
 
 import android.text.format.DateUtils
 import android.util.Log
+import android.view.View
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.bignerdranch.android.newsapp.models.*
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -45,7 +47,7 @@ class ArticleListViewModel : ViewModel() {
 
 
     private var _readTimeOption: MutableSet<ReadTimeOption> =
-        mutableSetOf(ReadTimeOption.oneTOthree, ReadTimeOption.fourTOsix, ReadTimeOption.sixPlus)
+        ReadTimeOption.values().toMutableSet()
     val readTimeOption: MutableSet<ReadTimeOption>
         get() = _readTimeOption
 
@@ -95,12 +97,12 @@ class ArticleListViewModel : ViewModel() {
 
     init {
         fetchArticles()
-        val sortByOption = SortByOption.values().getOrElse(ArticleListViewModel.sortByOption) { SortByOption.NEWEST }
+        val sortByOption =
+            SortByOption.values().getOrElse(ArticleListViewModel.sortByOption) { SortByOption.MOST_POPULAR }
         setSortByOption(sortByOption)
         setDateRelevance(DateRelevance.ANYTIME)
-        setReadTimeOption(mutableSetOf(ReadTimeOption.oneTOthree, ReadTimeOption.fourTOsix, ReadTimeOption.sixPlus))
+        setReadTimeOption(ReadTimeOption.values().toMutableSet())
         setResourceOption(ResourceOption.Google)
-
     }
 
     fun applyFilters() {
@@ -113,6 +115,19 @@ class ArticleListViewModel : ViewModel() {
                 //onDataFetched.postValue(Unit) // Notify the initial data load
                 //loadedInitialArticles = true
             }
+        }
+    }
+
+    fun clearFilters(view: View? = null) {
+        _dateOption = DateRelevance.ALL
+        _readTimeOption = ReadTimeOption.values().toMutableSet()
+        _sortByOption = SortByOption.MOST_POPULAR
+        _publishers.clear()
+        _resourceOption = ResourceOption.Google
+
+        if (view != null) {
+            val snackbarMessage = "Filtered by reading time"
+            Snackbar.make(view, snackbarMessage, Snackbar.LENGTH_SHORT).show()
         }
     }
 
