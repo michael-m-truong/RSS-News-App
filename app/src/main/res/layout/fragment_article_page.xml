@@ -13,7 +13,7 @@
             android:layout_height="6dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" android:scaleY="2"/>
+            app:layout_constraintTop_toTopOf="parent" android:scaleY="2" android:progressTint="#03A9F4"/>
 
     <WebView
         android:id="@+id/web_view"
