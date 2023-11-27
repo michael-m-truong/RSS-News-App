@@ -274,42 +274,22 @@ class ArticleListFragment : Fragment() {
 
         val radioGroup = dialog.findViewById<RadioGroup>(R.id.button_group)
 
-        radioGroup.setOnCheckedChangeListener { _, checkedId ->
-            when (checkedId) {
-                R.id.read_choice1 -> {
-                    articleListViewModel.setReadTimeOption(ReadTimeOption.oneTOthree)
-                }
-
-                R.id.read_choice2 -> {
-                    articleListViewModel.setReadTimeOption(ReadTimeOption.fourTOsix)
-                }
-
-                R.id.read_choice3 -> {
-                    articleListViewModel.setReadTimeOption(ReadTimeOption.sixPlus)
-                }
-
-            }
-        }
-
         applyButton.setOnClickListener {
+            val readOptions = mutableSetOf<ReadTimeOption>()
+            if (oneTothreeButton.isChecked) readOptions.add(ReadTimeOption.oneTOthree)
+            if (fourTosixButton.isChecked) readOptions.add(ReadTimeOption.fourTOsix)
+            if (sixPlusButton.isChecked) readOptions.add(ReadTimeOption.sixPlus)
+
+            articleListViewModel.setReadTimeOption(readOptions)
+
             // Dismiss the dialog or perform other actions if needed
             articleListViewModel.fetchArticles()
             dialog.dismiss()
         }
 
-        when (readOption) {
-            ReadTimeOption.oneTOthree -> {
-                oneTothreeButton.isChecked = true
-            }
-
-            ReadTimeOption.fourTOsix -> {
-                fourTosixButton.isChecked = true
-            }
-
-            ReadTimeOption.sixPlus -> {
-                sixPlusButton.isChecked = true
-            }
-        }
+        if (readOption.contains(ReadTimeOption.oneTOthree)) oneTothreeButton.isChecked = true
+        if (readOption.contains(ReadTimeOption.fourTOsix)) fourTosixButton.isChecked = true
+        if (readOption.contains(ReadTimeOption.sixPlus)) sixPlusButton.isChecked = true
     }
 
     private fun initialize_publisher(dialog: Dialog) {
