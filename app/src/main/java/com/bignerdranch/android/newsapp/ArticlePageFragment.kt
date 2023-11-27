@@ -55,7 +55,8 @@ class ArticlePageFragment : Fragment() {
                         // Check if the fragment is still attached to an activity
                         if (isAdded) {
                             val parent = requireActivity() as AppCompatActivity
-                            parent.supportActionBar?.subtitle = title
+                            parent.supportActionBar?.hide()
+//                            parent.supportActionBar?.title = title
                         }
                     }
                 }
@@ -69,6 +70,7 @@ class ArticlePageFragment : Fragment() {
         super.onDestroyView()
 
         val parent = requireActivity() as AppCompatActivity
-        parent.supportActionBar?.subtitle = null
+        parent.supportActionBar?.show()
+//        parent.supportActionBar?.title = getString(R.string.app_name)
     }
 }
