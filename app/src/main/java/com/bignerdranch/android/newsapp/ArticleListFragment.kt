@@ -382,60 +382,29 @@ class ArticleListFragment : Fragment() {
     }
 
     private fun initialize_resource(dialog: Dialog) {
+
         val resourceOption = articleListViewModel.resourceOption
         val applyButton = dialog.findViewById<MaterialButton>(R.id.apply_button)
         val googleButton = dialog.findViewById<MaterialCheckBox>(R.id.google)
         val redditButton = dialog.findViewById<MaterialCheckBox>(R.id.reddit)
         val twitterButton = dialog.findViewById<MaterialCheckBox>(R.id.twitter)
-        val resourceAllButton = dialog.findViewById<MaterialCheckBox>(R.id.resource_all)
-
-        val radioGroup = dialog.findViewById<RadioGroup>(R.id.button_group)
-
-        radioGroup.setOnCheckedChangeListener { _, checkedId ->
-            when (checkedId) {
-                R.id.read_choice1 -> {
-                    articleListViewModel.setResourceOption(ResourceOption.Google)
-                }
-
-                R.id.reddit -> {
-                    articleListViewModel.setResourceOption(ResourceOption.Reddit)
-                }
-
-                R.id.twitter -> {
-                    articleListViewModel.setResourceOption(ResourceOption.Twitter)
-                }
-
-                R.id.resource_all -> {
-                    articleListViewModel.setResourceOption(ResourceOption.All)
-                }
-
-            }
-        }
 
         applyButton.setOnClickListener {
+            val sources = mutableSetOf<ResourceOption>()
+            if (googleButton.isChecked) sources.add(ResourceOption.Google)
+            if (redditButton.isChecked) sources.add(ResourceOption.Reddit)
+            if (twitterButton.isChecked) sources.add(ResourceOption.Twitter)
+
+            articleListViewModel.setResourceOption(sources)
+
             // Dismiss the dialog or perform other actions if needed
-            articleListViewModel.applyFilters()
+            articleListViewModel.fetchArticles()
             dialog.dismiss()
         }
 
-        when (resourceOption) {
-            ResourceOption.Google -> {
-                googleButton.isChecked = true
-            }
-
-            ResourceOption.Reddit -> {
-                redditButton.isChecked = true
-            }
-
-            ResourceOption.Twitter -> {
-                twitterButton.isChecked = true
-            }
-
-            ResourceOption.All -> {
-                resourceAllButton.isChecked = true
-            }
-        }
-
+        if (resourceOption.contains(ResourceOption.Google)) googleButton.isChecked = true
+        if (resourceOption.contains(ResourceOption.Reddit)) redditButton.isChecked = true
+        if (resourceOption.contains(ResourceOption.Twitter)) twitterButton.isChecked = true
 
     }
 

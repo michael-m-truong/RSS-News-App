@@ -55,8 +55,8 @@ class ArticleListViewModel : ViewModel() {
     val publisherOption: MutableSet<String>
         get() = _publisherOption
 
-    private var _resourceOption: ResourceOption = ResourceOption.Google
-    val resourceOption: ResourceOption
+    private var _resourceOption: MutableSet<ResourceOption> = mutableSetOf()
+    val resourceOption: MutableSet<ResourceOption>
         get() = _resourceOption
 
     fun setSortByOption(sortOption: SortByOption) {
@@ -83,7 +83,7 @@ class ArticleListViewModel : ViewModel() {
         _publisherOption = publisherOption
     }
 
-    fun setResourceOption(resourceOption: ResourceOption) {
+    fun setResourceOption(resourceOption: MutableSet<ResourceOption>) {
         _resourceOption = resourceOption
     }
 
@@ -102,7 +102,9 @@ class ArticleListViewModel : ViewModel() {
         setSortByOption(sortByOption)
         setDateRelevance(DateRelevance.ANYTIME)
         setReadTimeOption(ReadTimeOption.values().toMutableSet())
-        setResourceOption(ResourceOption.Google)
+
+        resourceOption.add(ResourceOption.Google)
+        setResourceOption(resourceOption)
     }
 
     fun applyFilters() {
@@ -123,7 +125,7 @@ class ArticleListViewModel : ViewModel() {
         _readTimeOption = ReadTimeOption.values().toMutableSet()
         _sortByOption = SortByOption.MOST_POPULAR
         _publishers.clear()
-        _resourceOption = ResourceOption.Google
+        _resourceOption = mutableSetOf(ResourceOption.Google)
 
         if (view != null) {
             val snackbarMessage = "Filtered by reading time"
@@ -274,7 +276,15 @@ class ArticleListViewModel : ViewModel() {
     private suspend fun performWebScraping(): List<Article> {
         val exactStrings = searchQueries.joinToString("+") { "%22$it%22" }
         val excludeStrings = excludeSearchQueries.joinToString("+") { "-$it" }
-        val queryStrings = exactStrings + excludeStrings
+        var queryStrings = exactStrings + excludeStrings
+
+        if (_resourceOption.contains(ResourceOption.Reddit)) {
+            queryStrings += "%20" + "site:reddit.com"
+        }
+        if (_resourceOption.contains(ResourceOption.Twitter)) {
+            queryStrings += "%20" + "site:twitter.com"
+        }
+
         val url = "https://news.google.com/search?q=$queryStrings&hl=en-US&gl=US&ceid=US:en"
         Log.d("url", url)
         val articles = mutableListOf<Article>()
