@@ -93,6 +93,7 @@ class ArticleListFragment : Fragment() {
         binding.filter1Button.setTextColor(filterButtonTextColor)
 
         binding.filter2Button.setBackgroundColor(filterButtonBackgroundColor)
+        binding.filter2Button.setTextColor(filterButtonTextColor)
 
         binding.filter3Button.setBackgroundColor(filterButtonBackgroundColor)
         binding.filter3Button.setTextColor(filterButtonTextColor)
