@@ -1,68 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
-
-    <RadioGroup
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/datePicker">
+        android:orientation="vertical"
+        android:padding="8dp">
+
+    <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/datePicker">
 
         <!-- Selector Choice 1 -->
         <RadioButton
-            android:id="@+id/anytime"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Anytime" />
+                android:id="@+id/anytime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Anytime"/>
 
         <RadioButton
-            android:id="@+id/today"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Today" />
+                android:id="@+id/today"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Today"/>
 
         <!-- Selector Choice 2 -->
         <RadioButton
-            android:id="@+id/last_week"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Last week" />
+                android:id="@+id/last_week"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Last week"/>
 
         <!-- Selector Choice 3 -->
         <RadioButton
-            android:id="@+id/all"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="All" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingStart="7dp"
-            android:paddingEnd="8dp"
-            >
-            <!-- Cancel Button -->
-            <Button
-                android:id="@+id/day_cancel_button"
+                android:id="@+id/all"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Cancel" />
+                android:text="All"/>
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingHorizontal="8dp"
+        >
+            <!-- Cancel Button -->
+            <Button
+                    android:id="@+id/day_cancel_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Cancel"/>
 
             <View
-                android:layout_width="30dp"
-                android:layout_height="1dp" />
+                    android:layout_width="8dp"
+                    android:layout_height="1dp"/>
 
             <!-- Apply Button -->
             <Button
-                android:id="@+id/day_apply_button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Apply" />
+                    android:id="@+id/day_apply_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Apply"/>
         </LinearLayout>
 
     </RadioGroup>

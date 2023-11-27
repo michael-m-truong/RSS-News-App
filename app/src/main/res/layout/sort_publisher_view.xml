@@ -1,43 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
-
-    <RadioGroup
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/button_group">
+        android:orientation="vertical"
+        android:padding="8dp">
+
+    <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/button_group">
     </RadioGroup>
 
-        <LinearLayout
+    <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:paddingStart="7dp"
-            android:paddingEnd="8dp"
-            >
-            <!-- Cancel Button -->
-            <Button
+            android:paddingHorizontal="8dp"
+    >
+        <!-- Cancel Button -->
+        <Button
                 android:id="@+id/cancel_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Cancel" />
+                android:text="Cancel"/>
 
-            <!-- Space for the middle of the button -->
-            <View
-                android:layout_width="30dp"
-                android:layout_height="1dp" />
+        <!-- Space for the middle of the button -->
+        <View
+                android:layout_width="8dp"
+                android:layout_height="1dp"/>
 
-            <!-- Apply Button -->
-            <Button
+        <!-- Apply Button -->
+        <Button
                 android:id="@+id/apply_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Apply" />
-        </LinearLayout>
+                android:text="Apply"/>
+    </LinearLayout>
 
 </LinearLayout>
