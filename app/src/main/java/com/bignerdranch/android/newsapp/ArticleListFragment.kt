@@ -228,7 +228,7 @@ class ArticleListFragment : Fragment() {
 
         applyButton.setOnClickListener {
             // Dismiss the dialog or perform other actions if needed
-            articleListViewModel.fetchArticles()
+            articleListViewModel.applyFilters()
             dialog.dismiss()
         }
 
@@ -283,7 +283,7 @@ class ArticleListFragment : Fragment() {
             articleListViewModel.setReadTimeOption(readOptions)
 
             // Dismiss the dialog or perform other actions if needed
-            articleListViewModel.fetchArticles()
+            articleListViewModel.applyFilters()
             dialog.dismiss()
         }
 
@@ -408,7 +408,7 @@ class ArticleListFragment : Fragment() {
 
         applyButton.setOnClickListener {
             // Dismiss the dialog or perform other actions if needed
-            articleListViewModel.fetchArticles()
+            articleListViewModel.applyFilters()
             dialog.dismiss()
         }
 

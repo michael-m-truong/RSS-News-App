@@ -116,9 +116,19 @@ class ArticleListViewModel : ViewModel() {
         }
     }
 
+    private fun getArticleReadTime(article: Article): Int {
+        val text = article.text
+        val words = text.split("\\s+".toRegex())
+        val numWords = words.size
+        val readTimeMinutes = numWords / 250.0
+        return kotlin.math.round(readTimeMinutes).toInt()
+    }
+
     private fun filterArticles(articles: List<Article>): List<Article> {
         // Apply your filter criteria here
         var filteredArticles = articles
+
+        print(filteredArticles.size)
 
         if (_dateOption == DateRelevance.ANYTIME) {
 
@@ -136,6 +146,33 @@ class ArticleListViewModel : ViewModel() {
 
         }
 
+        if (_readTimeOption.isNotEmpty()) {
+            val readTimeArticles = mutableListOf<Article>()
+
+            if (_readTimeOption.contains(ReadTimeOption.oneTOthree)) {
+                readTimeArticles += filteredArticles.filter {
+                    val readTimeMin = getArticleReadTime(it)
+                    readTimeMin <= 3
+                }
+            }
+
+            if (_readTimeOption.contains(ReadTimeOption.fourTOsix)) {
+                readTimeArticles += filteredArticles.filter {
+                    val readTimeMin = getArticleReadTime(it)
+                    readTimeMin in 4..6
+                }
+            }
+
+            if (_readTimeOption.contains(ReadTimeOption.oneTOthree)) {
+                readTimeArticles += filteredArticles.filter {
+                    val readTimeMin = getArticleReadTime(it)
+                    readTimeMin >= 7
+                }
+            }
+
+            filteredArticles = readTimeArticles
+        }
+
         if (_publishers.isNotEmpty()) {
             filteredArticles = filterByPublisher(filteredArticles)
         }
@@ -149,6 +186,8 @@ class ArticleListViewModel : ViewModel() {
         }
 
         // Add more filters as needed
+
+        print(filteredArticles.size)
 
         return filteredArticles
     }
