@@ -1,5 +1,6 @@
 package com.bignerdranch.android.newsapp
 
+import android.content.Intent
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -30,6 +31,18 @@ class ArticleListAdapter :
     inner class ArticleViewHolder(private val binding: ListItemArticleBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(article: Article) {
+            binding.root.setOnLongClickListener {
+                val shareIntent = Intent().apply {
+                    action = Intent.ACTION_SEND
+                    putExtra(Intent.EXTRA_TEXT, article.link)
+                    type = "text/plain"
+                }
+
+                itemView.context.startActivity(Intent.createChooser(shareIntent, null))
+
+                return@setOnLongClickListener true
+            }
+
             binding.textHeadline.text = article.headline
             binding.textDate.text = article.date
             if (article.imgSrc != null) {
