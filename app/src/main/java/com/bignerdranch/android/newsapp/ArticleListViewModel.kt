@@ -125,9 +125,7 @@ class ArticleListViewModel : ViewModel() {
         if (_sortByOption == SortByOption.MOST_POPULAR) {
             // TODO: ???, do we have this info?
         } else if (_sortByOption == SortByOption.NEWEST) {
-            filteredArticles.sortedBy {
-                it.datetime?.time ?: 0
-            }
+            filteredArticles = filteredArticles.sortedByDescending { it.datetime }
         }
 
         // Add more filters as needed

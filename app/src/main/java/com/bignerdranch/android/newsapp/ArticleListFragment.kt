@@ -364,7 +364,7 @@ class ArticleListFragment : Fragment() {
             }
 
             // Dismiss the dialog or perform other actions if needed
-            articleListViewModel.fetchArticles()
+            articleListViewModel.applyFilters()
             dialog.dismiss()
         }
 
