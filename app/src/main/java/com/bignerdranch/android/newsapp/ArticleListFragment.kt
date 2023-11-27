@@ -75,6 +75,37 @@ class ArticleListFragment : Fragment() {
         })
 
 
+        val nightMode = AppCompatDelegate.getDefaultNightMode()
+
+        val filterButtonBackgroundColor = if (nightMode == AppCompatDelegate.MODE_NIGHT_YES) {
+            Color.BLACK
+        } else {
+            Color.WHITE
+        }
+
+        val filterButtonTextColor = if (nightMode == AppCompatDelegate.MODE_NIGHT_YES) {
+            Color.WHITE
+        } else {
+            Color.parseColor("#4C4C4C")  // Use the color value for light mode
+        }
+
+        binding.filter1Button.setBackgroundColor(filterButtonBackgroundColor)
+        binding.filter1Button.setTextColor(filterButtonTextColor)
+
+        binding.filter2Button.setBackgroundColor(filterButtonBackgroundColor)
+
+        binding.filter3Button.setBackgroundColor(filterButtonBackgroundColor)
+        binding.filter3Button.setTextColor(filterButtonTextColor)
+
+        binding.filter4Button.setBackgroundColor(filterButtonBackgroundColor)
+        binding.filter4Button.setTextColor(filterButtonTextColor)
+
+        binding.filter5Button.setBackgroundColor(filterButtonBackgroundColor)
+        binding.filter5Button.setTextColor(filterButtonTextColor)
+
+        binding.filter6Button.setBackgroundColor(filterButtonBackgroundColor)
+        binding.filter6Button.setTextColor(filterButtonTextColor)
+
         val showSortButton = binding.filter1Button
         val showReadButton = binding.filter2Button
         val showViewButton = binding.filter3Button
