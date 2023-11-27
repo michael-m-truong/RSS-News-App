@@ -198,6 +198,7 @@ class ArticleListFragment : Fragment() {
 
     private fun initialize_date(dialog: Dialog) {
         val dateOption = articleListViewModel.dateRelevance
+        val applyButton = dialog.findViewById<MaterialButton>(R.id.apply_button)
         val anytimeButton = dialog.findViewById<RadioButton>(R.id.anytime)
         val todayButton = dialog.findViewById<RadioButton>(R.id.today)
         val lastWeekButton = dialog.findViewById<RadioButton>(R.id.last_week)
@@ -223,6 +224,12 @@ class ArticleListFragment : Fragment() {
                     articleListViewModel.setDateRelevance(DateRelevance.ALL)
                 }
             }
+        }
+
+        applyButton.setOnClickListener {
+            // Dismiss the dialog or perform other actions if needed
+            articleListViewModel.fetchArticles()
+            dialog.dismiss()
         }
 
         when (dateOption) {
@@ -260,6 +267,7 @@ class ArticleListFragment : Fragment() {
 
     private fun initialize_reading(dialog: Dialog) {
         val readOption = articleListViewModel.readTimeOption
+        val applyButton = dialog.findViewById<MaterialButton>(R.id.apply_button)
         val oneTothreeButton = dialog.findViewById<MaterialCheckBox>(R.id.read_choice1)
         val fourTosixButton = dialog.findViewById<MaterialCheckBox>(R.id.read_choice2)
         val sixPlusButton = dialog.findViewById<MaterialCheckBox>(R.id.read_choice3)
@@ -281,6 +289,12 @@ class ArticleListFragment : Fragment() {
                 }
 
             }
+        }
+
+        applyButton.setOnClickListener {
+            // Dismiss the dialog or perform other actions if needed
+            articleListViewModel.fetchArticles()
+            dialog.dismiss()
         }
 
         when (readOption) {
@@ -383,6 +397,7 @@ class ArticleListFragment : Fragment() {
 
     private fun initialize_resource(dialog: Dialog) {
         val resourceOption = articleListViewModel.resourceOption
+        val applyButton = dialog.findViewById<MaterialButton>(R.id.apply_button)
         val googleButton = dialog.findViewById<MaterialCheckBox>(R.id.google)
         val redditButton = dialog.findViewById<MaterialCheckBox>(R.id.reddit)
         val twitterButton = dialog.findViewById<MaterialCheckBox>(R.id.twitter)
@@ -409,6 +424,12 @@ class ArticleListFragment : Fragment() {
                 }
 
             }
+        }
+
+        applyButton.setOnClickListener {
+            // Dismiss the dialog or perform other actions if needed
+            articleListViewModel.fetchArticles()
+            dialog.dismiss()
         }
 
         when (resourceOption) {

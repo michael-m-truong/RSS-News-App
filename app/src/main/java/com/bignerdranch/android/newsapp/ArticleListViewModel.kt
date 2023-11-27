@@ -1,5 +1,6 @@
 package com.bignerdranch.android.newsapp
 
+import android.text.format.DateUtils
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -118,6 +119,22 @@ class ArticleListViewModel : ViewModel() {
         // Apply your filter criteria here
         var filteredArticles = articles
 
+        if (_dateOption == DateRelevance.ANYTIME) {
+
+        } else if (_dateOption == DateRelevance.TODAY) {
+            filteredArticles = filteredArticles.filter {
+                DateUtils.isToday(it.datetime?.time ?: 0)
+            }
+        } else if (_dateOption == DateRelevance.LASTWEEK) {
+            val oneWeekAgo = Calendar.getInstance()
+            oneWeekAgo.add(Calendar.WEEK_OF_YEAR, -1)
+            filteredArticles = filteredArticles.filter {
+                it.datetime?.after(oneWeekAgo.time) ?: false
+            }
+        } else if (_dateOption == DateRelevance.ALL) {
+
+        }
+
         if (_publishers.isNotEmpty()) {
             filteredArticles = filterByPublisher(filteredArticles)
         }
@@ -125,7 +142,9 @@ class ArticleListViewModel : ViewModel() {
         if (_sortByOption == SortByOption.MOST_POPULAR) {
             // TODO: ???, do we have this info?
         } else if (_sortByOption == SortByOption.NEWEST) {
-            filteredArticles = filteredArticles.sortedByDescending { it.datetime }
+            filteredArticles = filteredArticles.sortedBy {
+                it.datetime?.time ?: 0
+            }
         }
 
         // Add more filters as needed
