@@ -7,6 +7,7 @@ import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -52,12 +53,34 @@ class NewsFeedDetailFragment  : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val translationX = binding.exactMatchButton.x
+        // move it to binding.apply
+        /*val translationX = binding.exactMatchButton.x
         binding.underline.translationX = translationX
 
         val underlineParams = binding.underline.layoutParams
         underlineParams.width = binding.exactMatchButton.width
-        binding.underline.layoutParams = underlineParams
+        binding.underline.layoutParams = underlineParams */
+
+        binding.root.viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
+            override fun onPreDraw(): Boolean {
+                binding.root.viewTreeObserver.removeOnPreDrawListener(this)
+
+                binding.apply {
+                    val translationX = exactMatchButton.x
+                    underline.translationX = translationX
+
+                    val underlineParams = underline.layoutParams
+                    underlineParams.width = exactMatchButton.width
+                    underline.layoutParams = underlineParams
+
+                    exactMatchButton.setTextColor(Color.BLUE)
+
+                    // ... (rest of your onViewCreated code)
+                }
+
+                return true
+            }
+        })
 
         binding.apply {
 
