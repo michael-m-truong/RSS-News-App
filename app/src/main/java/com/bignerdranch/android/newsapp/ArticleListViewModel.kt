@@ -44,8 +44,9 @@ class ArticleListViewModel : ViewModel() {
         get() = _dateOption
 
 
-    private var _readTimeOption: ReadTimeOption = ReadTimeOption.oneTOthree
-    val readTimeOption: ReadTimeOption
+    private var _readTimeOption: MutableSet<ReadTimeOption> =
+        mutableSetOf(ReadTimeOption.oneTOthree, ReadTimeOption.fourTOsix, ReadTimeOption.sixPlus)
+    val readTimeOption: MutableSet<ReadTimeOption>
         get() = _readTimeOption
 
     private var _publisherOption: MutableSet<String> = mutableSetOf()
@@ -64,7 +65,7 @@ class ArticleListViewModel : ViewModel() {
         _dateOption = dateOption
     }
 
-    fun setReadTimeOption(readTimeOption: ReadTimeOption) {
+    fun setReadTimeOption(readTimeOption: MutableSet<ReadTimeOption>) {
         _readTimeOption = readTimeOption
     }
 
@@ -97,7 +98,7 @@ class ArticleListViewModel : ViewModel() {
         val sortByOption = SortByOption.values().getOrElse(ArticleListViewModel.sortByOption) { SortByOption.NEWEST }
         setSortByOption(sortByOption)
         setDateRelevance(DateRelevance.ANYTIME)
-        setReadTimeOption(ReadTimeOption.oneTOthree)
+        setReadTimeOption(mutableSetOf(ReadTimeOption.oneTOthree, ReadTimeOption.fourTOsix, ReadTimeOption.sixPlus))
         setResourceOption(ResourceOption.Google)
 
     }
