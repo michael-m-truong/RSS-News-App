@@ -9,10 +9,8 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
-import com.bignerdranch.android.newsapp.Article
 import com.bignerdranch.android.newsapp.databinding.ListItemArticleBinding
-import com.bignerdranch.android.newsapp.databinding.ListItemNewsfeedBinding
-
+import com.bignerdranch.android.newsapp.models.Article
 
 
 class ArticleListAdapter :
@@ -47,7 +45,7 @@ class ArticleListAdapter :
 
             // Make article clickable
             binding.root.setOnClickListener {
-                Log.d("click",article.link)
+                Log.d("click", article.link)
                 val action = ArticleListFragmentDirections.showArticle(article.articlePageUri)
                 it.findNavController().navigate(action)
             }

@@ -5,12 +5,7 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
-import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.Window
-import android.view.WindowManager
+import android.view.*
 import android.widget.Button
 import android.widget.CheckBox
 import android.widget.RadioButton
@@ -24,8 +19,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bignerdranch.android.newsapp.databinding.FragmentArticleListBinding
-import com.bignerdranch.android.newsapp.databinding.SortButtonViewBinding
-import com.bignerdranch.android.newsapp.databinding.SortByViewBinding
+import com.bignerdranch.android.newsapp.models.DateRelevance
+import com.bignerdranch.android.newsapp.models.ReadTimeOption
+import com.bignerdranch.android.newsapp.models.ResourceOption
+import com.bignerdranch.android.newsapp.models.SortByOption
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.checkbox.MaterialCheckBox
 import com.google.android.material.snackbar.Snackbar
@@ -41,7 +38,7 @@ class ArticleListFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val binding = FragmentArticleListBinding.inflate(inflater, container, false)
 
         articleAdapter = ArticleListAdapter() // Initialize your RecyclerView adapter
@@ -185,23 +182,13 @@ class ArticleListFragment : Fragment() {
         //radioButton.isChecked = true
         if (view == R.layout.sort_by_view) {
             initialize_sortby(dialog)
-        }
-
-        else if(view == R.layout.sort_button_view)
-        {
+        } else if (view == R.layout.sort_button_view) {
             initialize_date(dialog)
-        }
-
-        else if(view == R.layout.read_time_view)
-        {
+        } else if (view == R.layout.read_time_view) {
             initialize_reading(dialog)
-        }
-        else if(view == R.layout.sort_publisher_view)
-        {
+        } else if (view == R.layout.sort_publisher_view) {
             initialize_publisher(dialog)
-        }
-        else if(view == R.layout.sort_by_sources)
-        {
+        } else if (view == R.layout.sort_by_sources) {
             initialize_resource(dialog)
         }
 
@@ -223,12 +210,15 @@ class ArticleListFragment : Fragment() {
                 R.id.anytime -> {
                     articleListViewModel.setDateRelevance(DateRelevance.ANYTIME)
                 }
+
                 R.id.today -> {
                     articleListViewModel.setDateRelevance(DateRelevance.TODAY)
                 }
+
                 R.id.last_week -> {
                     articleListViewModel.setDateRelevance(DateRelevance.LASTWEEK)
                 }
+
                 R.id.all -> {
                     articleListViewModel.setDateRelevance(DateRelevance.ALL)
                 }
@@ -242,18 +232,21 @@ class ArticleListFragment : Fragment() {
                 lastWeekButton.isChecked = false
                 allButton.isChecked = false
             }
+
             DateRelevance.TODAY -> {
                 anytimeButton.isChecked = false
                 todayButton.isChecked = true
                 lastWeekButton.isChecked = false
                 allButton.isChecked = false
             }
+
             DateRelevance.LASTWEEK -> {
                 anytimeButton.isChecked = false
                 todayButton.isChecked = false
                 lastWeekButton.isChecked = true
                 allButton.isChecked = false
             }
+
             DateRelevance.ALL -> {
                 anytimeButton.isChecked = false
                 todayButton.isChecked = false
@@ -278,9 +271,11 @@ class ArticleListFragment : Fragment() {
                 R.id.read_choice1 -> {
                     articleListViewModel.setReadTimeOption(ReadTimeOption.oneTOthree)
                 }
+
                 R.id.read_choice2 -> {
                     articleListViewModel.setReadTimeOption(ReadTimeOption.fourTOsix)
                 }
+
                 R.id.read_choice3 -> {
                     articleListViewModel.setReadTimeOption(ReadTimeOption.sixPlus)
                 }
@@ -292,10 +287,12 @@ class ArticleListFragment : Fragment() {
             ReadTimeOption.oneTOthree -> {
                 oneTothreeButton.isChecked = true
             }
+
             ReadTimeOption.fourTOsix -> {
                 fourTosixButton.isChecked = true
             }
-            ReadTimeOption.sixPlus-> {
+
+            ReadTimeOption.sixPlus -> {
                 sixPlusButton.isChecked = true
             }
         }
@@ -345,8 +342,6 @@ class ArticleListFragment : Fragment() {
     }
 
 
-
-
     private fun initialize_sortby(dialog: Dialog) {
         val sortByOption = articleListViewModel.sortByOption
         val newestButton = dialog.findViewById<RadioButton>(R.id.newest) // Replace with the actual ID
@@ -378,6 +373,7 @@ class ArticleListFragment : Fragment() {
                 newestButton.isChecked = true
                 popularityButton.isChecked = false
             }
+
             SortByOption.MOST_POPULAR -> {
                 newestButton.isChecked = false
                 popularityButton.isChecked = true
@@ -399,12 +395,15 @@ class ArticleListFragment : Fragment() {
                 R.id.read_choice1 -> {
                     articleListViewModel.setResourceOption(ResourceOption.Google)
                 }
+
                 R.id.reddit -> {
                     articleListViewModel.setResourceOption(ResourceOption.Reddit)
                 }
+
                 R.id.twitter -> {
                     articleListViewModel.setResourceOption(ResourceOption.Twitter)
                 }
+
                 R.id.resource_all -> {
                     articleListViewModel.setResourceOption(ResourceOption.All)
                 }
@@ -416,13 +415,16 @@ class ArticleListFragment : Fragment() {
             ResourceOption.Google -> {
                 googleButton.isChecked = true
             }
+
             ResourceOption.Reddit -> {
                 redditButton.isChecked = true
             }
-            ResourceOption.Twitter-> {
+
+            ResourceOption.Twitter -> {
                 twitterButton.isChecked = true
             }
-            ResourceOption.All-> {
+
+            ResourceOption.All -> {
                 resourceAllButton.isChecked = true
             }
         }

@@ -1,38 +1,29 @@
 package com.bignerdranch.android.newsapp
 
 import android.annotation.SuppressLint
-import android.content.Context
+import android.app.AlertDialog
+import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
-import android.graphics.Canvas
 import android.util.Log
-import android.view.MotionEvent
+import android.view.*
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.bignerdranch.android.newsapp.databinding.FragmentNewsfeedListBinding
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.coroutines.CoroutineScope
+import com.bignerdranch.android.newsapp.database.NewsFeed
+import com.bignerdranch.android.newsapp.databinding.FragmentNewsfeedListBinding
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import java.util.Date
-import java.util.UUID
-import android.app.AlertDialog
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import java.util.*
 
 private const val TAG = "NewsFeedListFragment"
 
@@ -63,7 +54,7 @@ class NewsFeedListFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentNewsfeedListBinding.inflate(inflater, container, false)
 
         binding.newsfeedRecyclerView.layoutManager = LinearLayoutManager(context)
@@ -233,13 +224,13 @@ class NewsFeedListFragment : Fragment() {
 
                     // Draw the delete icon if the swipe is in progress
                     if (isCurrentlyActive) {
-                        deleteIcon?.setBounds(
+                        deleteIcon.setBounds(
                             itemView.right - iconMargin - deleteIcon.intrinsicWidth,
                             itemView.top + iconMargin,
                             itemView.right - iconMargin,
                             itemView.bottom - iconMargin
                         )
-                        deleteIcon?.draw(c)
+                        deleteIcon.draw(c)
                     }
                 }
 
@@ -277,13 +268,11 @@ class NewsFeedListFragment : Fragment() {
                 //Log.d("moving","moving")
                 if (isMoving) {
                     toPos = toPosition
-                }
-                else {
+                } else {
                     fromPos = fromPosition
                     toPos = toPosition
                 }
                 isMoving = true
-
 
 
                 //newsFeedListViewModel.reorderNewsFeeds(fromPosition, toPosition)
@@ -297,7 +286,7 @@ class NewsFeedListFragment : Fragment() {
                 super.clearView(recyclerView, viewHolder)
 
                 // Call notifyItemMoved here when the move is complete (user releases the item)
-                Log.d("noway","noway")
+                Log.d("noway", "noway")
                 if (fromPos != null && toPos != null) {
                     Log.d("changed", toPos.toString())
                     newsFeedListViewModel.reorderNewsFeeds(fromPos!!, toPos!!)
@@ -307,7 +296,7 @@ class NewsFeedListFragment : Fragment() {
                         fromPos = null
                         toPos = null
                     }
-                    isMoving =false
+                    isMoving = false
                     //fromPos = null
                     //toPos = null
                 }

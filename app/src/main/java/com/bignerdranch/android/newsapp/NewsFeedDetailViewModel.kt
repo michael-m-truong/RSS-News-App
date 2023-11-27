@@ -3,19 +3,22 @@ package com.bignerdranch.android.newsapp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.bignerdranch.android.newsapp.database.NewsFeed
 import com.bignerdranch.android.newsapp.database.NewsFeedRepository
+import com.bignerdranch.android.newsapp.models.Filter
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.util.UUID
+import java.util.*
 
 class NewsFeedDetailViewModel(newsfeedId: UUID) : ViewModel() {
     private val newsFeedRepository = NewsFeedRepository.get()
     private val _newsFeed: MutableStateFlow<NewsFeed?> = MutableStateFlow(null)
     val newsFeed: StateFlow<NewsFeed?> = _newsFeed.asStateFlow()
     var filterState: Filter = Filter.EXACT
+
     init {
         viewModelScope.launch {
             _newsFeed.value = newsFeedRepository.getNewsFeed(newsfeedId)
@@ -34,6 +37,7 @@ class NewsFeedDetailViewModel(newsfeedId: UUID) : ViewModel() {
     }
 
 }
+
 class NewsFeedDetailViewModelFactory(
     private val newsfeedId: UUID
 ) : ViewModelProvider.Factory {

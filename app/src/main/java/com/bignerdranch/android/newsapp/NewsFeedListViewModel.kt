@@ -3,17 +3,13 @@ package com.bignerdranch.android.newsapp
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bignerdranch.android.newsapp.database.NewsFeed
 import com.bignerdranch.android.newsapp.database.NewsFeedRepository
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.util.UUID
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
+import java.util.*
 
 
 private const val TAG = "NewsFeedListViewModel"

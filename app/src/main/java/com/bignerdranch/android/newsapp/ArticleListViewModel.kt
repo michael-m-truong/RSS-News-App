@@ -4,20 +4,15 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.bignerdranch.android.newsapp.database.NewsFeedRepository
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
+import com.bignerdranch.android.newsapp.models.*
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.jsoup.Connection
 import org.jsoup.Jsoup
-import java.lang.Math.ceil
 import java.text.SimpleDateFormat
-import java.util.Date
+import java.util.*
 
 class ArticleListViewModel : ViewModel() {
 
@@ -68,15 +63,15 @@ class ArticleListViewModel : ViewModel() {
         _dateOption = dateOption
     }
 
-    fun setReadTimeOption(readTimeOption: ReadTimeOption){
+    fun setReadTimeOption(readTimeOption: ReadTimeOption) {
         _readTimeOption = readTimeOption
     }
 
-    fun addPublisherOption(publisher: String){
+    fun addPublisherOption(publisher: String) {
         _publisherOption.add(publisher)
     }
 
-    fun removePublisherOption(publisher: String){
+    fun removePublisherOption(publisher: String) {
         _publisherOption.remove(publisher)
     }
 
@@ -84,7 +79,7 @@ class ArticleListViewModel : ViewModel() {
         _publisherOption = publisherOption
     }
 
-    fun setResourceOption(resourceOption: ResourceOption){
+    fun setResourceOption(resourceOption: ResourceOption) {
         _resourceOption = resourceOption
     }
 
@@ -100,9 +95,9 @@ class ArticleListViewModel : ViewModel() {
         fetchArticles()
         val sortByOption = SortByOption.values().getOrElse(ArticleListViewModel.sortByOption) { SortByOption.NEWEST }
         setSortByOption(sortByOption)
-        setDateRelevance(DateRelevance.ANYTIME);
-        setReadTimeOption(ReadTimeOption.oneTOthree);
-        setResourceOption(ResourceOption.Google);
+        setDateRelevance(DateRelevance.ANYTIME)
+        setReadTimeOption(ReadTimeOption.oneTOthree)
+        setResourceOption(ResourceOption.Google)
 
     }
 
@@ -125,6 +120,14 @@ class ArticleListViewModel : ViewModel() {
 
         if (_publishers.isNotEmpty()) {
             filteredArticles = filterByPublisher(filteredArticles)
+        }
+
+        if (_sortByOption == SortByOption.MOST_POPULAR) {
+            // TODO: ???, do we have this info?
+        } else if (_sortByOption == SortByOption.NEWEST) {
+            filteredArticles.sortedBy {
+                it.datetime?.time ?: 0
+            }
         }
 
         // Add more filters as needed
@@ -172,7 +175,7 @@ class ArticleListViewModel : ViewModel() {
                 } */
 
                 if (_publishers.isNotEmpty()) {
-                    filteredArticles= filterByPublisher(initialArticles)
+                    filteredArticles = filterByPublisher(initialArticles)
                 }
 
                 // Update the articles with the filtered data
@@ -200,10 +203,10 @@ class ArticleListViewModel : ViewModel() {
 
     private suspend fun performWebScraping(): List<Article> {
         val exactStrings = searchQueries.joinToString("+") { "%22$it%22" }
-        val excludeStrings = excludeSearchQueries.joinToString("+") { "-$it"}
+        val excludeStrings = excludeSearchQueries.joinToString("+") { "-$it" }
         val queryStrings = exactStrings + excludeStrings
         val url = "https://news.google.com/search?q=$queryStrings&hl=en-US&gl=US&ceid=US:en"
-        Log.d("url",url)
+        Log.d("url", url)
         val articles = mutableListOf<Article>()
 
         try {
@@ -222,22 +225,21 @@ class ArticleListViewModel : ViewModel() {
                     if (headlineText.isEmpty()) {
                         continue
                     }
-                    val headlineLink = "https://news.google.com" + articleElement.select("a").attr("href").substring(1)  //remove the initial "."
+                    val headlineLink = "https://news.google.com" + articleElement.select("a").attr("href")
+                        .substring(1)  //remove the initial "."
                     val headlineDate = articleElement.select("time[datetime]").text()
                     val headlinePublisher = articleElement.select("a[data-n-tid]").text()
                     var imgSrc: String?
 
                     if (articleElements.size > 1) {
                         imgSrc = articleElement.select("img").attr("src")
-                    }
-                    else{
+                    } else {
                         imgSrc = element.select("figure img").attr("src")
                     }
                     val publisherImgSrc: String?
                     if (articleElements.size > 1) {
                         publisherImgSrc = articleElement.select("div").select("img").attr("src")
-                    }
-                    else{
+                    } else {
                         publisherImgSrc = articleElement.select("img").attr("src")
                     }
 //                    val articleTextDeferred = viewModelScope.async {
@@ -246,22 +248,31 @@ class ArticleListViewModel : ViewModel() {
 //                    val articleText = articleTextDeferred.await()
                     //val articleText = getArticleText(headlineLink)
                     val articleText = ""
-                    count +=1
+                    count += 1
                     if (count == 10) {
                         break
                     }
                     val headlineDateElement = articleElement.select("time")
                     val headlineDateTime = headlineDateElement.attr("datetime")
-                    Log.d("datetime",headlineDateTime)
+                    Log.d("datetime", headlineDateTime)
                     val parsedDate = parseDateTime(headlineDateTime)
 
-                    var article = Article(headlineText, headlineLink, headlineDate, parsedDate, headlinePublisher, imgSrc, publisherImgSrc, articleText)
+                    var article = Article(
+                        headlineText,
+                        headlineLink,
+                        headlineDate,
+                        parsedDate,
+                        headlinePublisher,
+                        imgSrc,
+                        publisherImgSrc,
+                        articleText
+                    )
                     articles.add(article)
                     _publishers.add(headlinePublisher)
                 }
             }
         } catch (e: Exception) {
-            Log.d("bad","bad")
+            Log.d("bad", "bad")
             e.printStackTrace()
         }
 
@@ -278,8 +289,7 @@ class ArticleListViewModel : ViewModel() {
         if (sortByOption == SortByOption.NEWEST) {
             val sortedArticles = articles.sortedByDescending { it.datetime }
             return sortedArticles
-        }
-        else {
+        } else {
             return articles
         }
 
@@ -340,7 +350,7 @@ class ArticleListViewModel : ViewModel() {
             Log.d("finalurl", finalUrl)
             val paragraphs = articleDocument.select("p")
             article.text = paragraphs.joinToString(" ") { it.text() }
-            Log.d("huh",article.toString())
+            Log.d("huh", article.toString())
 
         } catch (e: Exception) {
             Log.d("exception", e.message.toString())

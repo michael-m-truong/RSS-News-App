@@ -1,4 +1,4 @@
-package com.bignerdranch.android.newsapp
+package com.bignerdranch.android.newsapp.models
 
 enum class SortByOption {
     MOST_POPULAR,

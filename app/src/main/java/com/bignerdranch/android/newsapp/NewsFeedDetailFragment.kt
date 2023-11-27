@@ -3,14 +3,8 @@ package com.bignerdranch.android.newsapp
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
-import android.view.KeyEvent
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.ViewTreeObserver
+import android.view.*
 import android.view.inputmethod.EditorInfo
-import android.widget.Button
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -18,13 +12,13 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.navArgs
+import com.bignerdranch.android.newsapp.database.NewsFeed
 import com.bignerdranch.android.newsapp.databinding.FragmentNewsfeedDetailBinding
+import com.bignerdranch.android.newsapp.models.Filter
 import com.google.android.material.chip.Chip
 import kotlinx.coroutines.launch
-import java.util.Date
-import java.util.UUID
-import kotlin.collections.*
-class NewsFeedDetailFragment  : Fragment() {
+
+class NewsFeedDetailFragment : Fragment() {
 
     //private lateinit var newsFeed: NewsFeed
     private var _binding: FragmentNewsfeedDetailBinding? = null
@@ -42,7 +36,7 @@ class NewsFeedDetailFragment  : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding =
             FragmentNewsfeedDetailBinding.inflate(layoutInflater, container, false)
 
@@ -106,8 +100,7 @@ class NewsFeedDetailFragment  : Fragment() {
                                 oldNewsFeed.wordBank.remove(word)
                                 oldNewsFeed.copy(wordBank = oldNewsFeed.wordBank)
                             }
-                        }
-                        else if (newsFeedDetailViewModel.filterState == Filter.EXCLUDE) {
+                        } else if (newsFeedDetailViewModel.filterState == Filter.EXCLUDE) {
                             newsFeedDetailViewModel.updateNewsFeed { oldNewsFeed ->
                                 oldNewsFeed.excludeWordBank.remove(word)
                                 oldNewsFeed.copy(excludeWordBank = oldNewsFeed.excludeWordBank)
@@ -124,8 +117,7 @@ class NewsFeedDetailFragment  : Fragment() {
                             oldNewsFeed.wordBank.add(word)
                             oldNewsFeed.copy(wordBank = oldNewsFeed.wordBank)
                         }
-                    }
-                    else if (newsFeedDetailViewModel.filterState == Filter.EXCLUDE) {
+                    } else if (newsFeedDetailViewModel.filterState == Filter.EXCLUDE) {
                         newsFeedDetailViewModel.updateNewsFeed { oldNewsFeed ->
                             oldNewsFeed.excludeWordBank.add(word)
                             oldNewsFeed.copy(excludeWordBank = oldNewsFeed.excludeWordBank)
@@ -153,8 +145,7 @@ class NewsFeedDetailFragment  : Fragment() {
                                     oldNewsFeed.wordBank.remove(word)
                                     oldNewsFeed.copy(wordBank = oldNewsFeed.wordBank)
                                 }
-                            }
-                            else if (newsFeedDetailViewModel.filterState == Filter.EXCLUDE) {
+                            } else if (newsFeedDetailViewModel.filterState == Filter.EXCLUDE) {
                                 newsFeedDetailViewModel.updateNewsFeed { oldNewsFeed ->
                                     oldNewsFeed.excludeWordBank.remove(word)
                                     oldNewsFeed.copy(excludeWordBank = oldNewsFeed.excludeWordBank)
@@ -278,8 +269,6 @@ class NewsFeedDetailFragment  : Fragment() {
         //include a date for users to see not select
 
 
-
-
     }
 
     override fun onDestroyView() {
@@ -306,9 +295,8 @@ class NewsFeedDetailFragment  : Fragment() {
             // Iterate over the wordBank and create Chips for each word
             var wordbank: MutableList<String>? = null
             if (newsFeedDetailViewModel.filterState == Filter.EXACT) {
-            wordbank = newsFeed.wordBank
-            }
-            else if (newsFeedDetailViewModel.filterState == Filter.EXCLUDE) {
+                wordbank = newsFeed.wordBank
+            } else if (newsFeedDetailViewModel.filterState == Filter.EXCLUDE) {
                 wordbank = newsFeed.excludeWordBank
             }
             if (wordbank != null) {

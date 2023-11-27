@@ -3,11 +3,11 @@ package com.bignerdranch.android.newsapp
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.bignerdranch.android.newsapp.database.NewsFeed
 import com.bignerdranch.android.newsapp.databinding.ListItemNewsfeedBinding
-import java.util.UUID
+import java.util.*
 
 class NewsFeedHolder(
     private val binding: ListItemNewsfeedBinding
@@ -40,14 +40,16 @@ class NewsFeedListAdapter(
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ) : NewsFeedHolder {
+    ): NewsFeedHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = ListItemNewsfeedBinding.inflate(inflater, parent, false)
         return NewsFeedHolder(binding)
     }
+
     override fun onBindViewHolder(holder: NewsFeedHolder, position: Int) {
         val newsFeed = newsFeeds[position]
         holder.bind(newsFeed, onNewsFeedClicked)
     }
+
     override fun getItemCount() = newsFeeds.size
 }
