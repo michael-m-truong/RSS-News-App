@@ -24,6 +24,9 @@ class ArticleListViewModel : ViewModel() {
     private val _articles: MutableStateFlow<List<Article>> = MutableStateFlow(emptyList())
     val articles: StateFlow<List<Article>> get() = _articles.asStateFlow()
 
+    private val _originalArticles: MutableStateFlow<List<Article>> = MutableStateFlow(emptyList())
+    val originalArticles: StateFlow<List<Article>> get() = _originalArticles.asStateFlow()
+
     private val _publishers: MutableSet<String> = mutableSetOf()
     val publishers: Set<String> get() = _publishers
 
@@ -103,6 +106,32 @@ class ArticleListViewModel : ViewModel() {
 
     }
 
+    fun applyFilters() {
+        viewModelScope.launch(Dispatchers.IO) {
+            // Apply your filter criteria
+            val filteredArticles = filterArticles(originalArticles.value)
+
+            withContext(Dispatchers.Main) {
+                _articles.value = filteredArticles
+                //onDataFetched.postValue(Unit) // Notify the initial data load
+                //loadedInitialArticles = true
+            }
+        }
+    }
+
+    private fun filterArticles(articles: List<Article>): List<Article> {
+        // Apply your filter criteria here
+        var filteredArticles = articles
+
+        if (_publishers.isNotEmpty()) {
+            filteredArticles = filterByPublisher(filteredArticles)
+        }
+
+        // Add more filters as needed
+
+        return filteredArticles
+    }
+
     fun fetchArticles() {
         _publishers.clear()
         viewModelScope.launch(Dispatchers.IO) {
@@ -111,6 +140,7 @@ class ArticleListViewModel : ViewModel() {
 
             withContext(Dispatchers.Main) {
                 _articles.value = initialArticles
+                _originalArticles.value = initialArticles.toList()
                 onDataFetched.postValue(Unit) // Notify the initial data load
                 loadedInitialArticles = true
             }

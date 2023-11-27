@@ -276,7 +276,7 @@ class ArticleListFragment : Fragment() {
         val radioGroup = dialog.findViewById<RadioGroup>(R.id.button_group)
 
         // Create a set to track selected publishers temporarily
-        val selectedPublishers: MutableSet<String> = mutableSetOf()
+        val selectedPublishers: MutableSet<String> = articleListViewModel.publisherOption.toMutableSet()
 
         // Create a listener to handle checkbox clicks
         val checkBoxClickListener = View.OnClickListener { view ->
@@ -284,7 +284,7 @@ class ArticleListFragment : Fragment() {
                 if (view.isChecked) {
                     // Checkbox is checked, add the publisher to the temporary set
                     selectedPublishers.add(view.text.toString())
-                    Log.d("heree!","bad")
+                    Log.d("heree!", "bad")
                 } else {
                     // Checkbox is unchecked, remove the publisher from the temporary set
                     selectedPublishers.remove(view.text.toString())
@@ -297,6 +297,7 @@ class ArticleListFragment : Fragment() {
             val checkBox = CheckBox(requireContext())
             checkBox.text = publisher
             checkBoxContainer.addView(checkBox)
+            checkBox.isChecked = selectedPublishers.contains(publisher) // Check if the publisher is already selected
             checkBox.setOnClickListener(checkBoxClickListener)
         }
 
@@ -306,10 +307,11 @@ class ArticleListFragment : Fragment() {
             articleListViewModel.setPublisherOption(selectedPublishers)
 
             // Dismiss the dialog or perform other actions if needed
-            articleListViewModel.fetchArticles()
+            articleListViewModel.applyFilters()
             dialog.dismiss()
         }
     }
+
 
 
 
