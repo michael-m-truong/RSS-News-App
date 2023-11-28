@@ -27,6 +27,8 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.checkbox.MaterialCheckBox
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
+import android.content.res.Configuration
+
 
 private const val TAG = "ArticleListFragment"
 
@@ -72,15 +74,16 @@ class ArticleListFragment : Fragment() {
         })
 
 
-        val nightMode = AppCompatDelegate.getDefaultNightMode()
+        //val nightMode = AppCompatDelegate.getDefaultNightMode()
+        val nightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
 
-        val filterButtonBackgroundColor = if (nightMode == AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM) {
+        val filterButtonBackgroundColor = if (nightMode == Configuration.UI_MODE_NIGHT_YES) {
             Color.BLACK
         } else {
             Color.WHITE
         }
 
-        val filterButtonTextColor = if (nightMode == AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM) {
+        val filterButtonTextColor = if (nightMode == Configuration.UI_MODE_NIGHT_YES) {
             Color.WHITE
         } else {
             Color.parseColor("#4C4C4C")  // Use the color value for light mode
@@ -158,9 +161,9 @@ class ArticleListFragment : Fragment() {
         dialog.setContentView(view) // Replace with your input group layout
         dialog.setCancelable(true)
 
-        val nightMode = AppCompatDelegate.getDefaultNightMode()
+        val nightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
         Log.d("night", nightMode.toString())
-        val backgroundColor = if (nightMode == AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM) {
+        val backgroundColor = if (nightMode == Configuration.UI_MODE_NIGHT_YES) {
             Color.BLACK
         } else {
             Color.WHITE
