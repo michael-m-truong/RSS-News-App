@@ -20,8 +20,8 @@
                 android:layout_height="wrap_content"
                 android:text="DATE RELEVANCE"
 
-                android:textColor="#4C4C4C"
-                android:backgroundTint="#FFFFFF"
+                android:textColor="?android:textColorPrimary"
+                android:backgroundTint="?android:colorBackground"
 
                 android:elevation="0dp"
                 android:stateListAnimator="@null"
@@ -36,8 +36,8 @@
                 android:layout_height="wrap_content"
                 android:text="READ TIME"
 
-                android:textColor="#4C4C4C"
-                android:backgroundTint="#FFFFFF"
+                android:textColor="?android:textColorPrimary"
+                android:backgroundTint="?android:colorBackground"
                 android:elevation="0dp"
                 android:stateListAnimator="@null"
                 android:drawableEnd="@drawable/baseline_arrow_drop_down_24"
