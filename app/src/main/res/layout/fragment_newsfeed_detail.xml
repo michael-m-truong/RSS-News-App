@@ -11,7 +11,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?attr/textAppearanceHeadline5"
-        android:text="@string/newsfeed_title_label" />
+        android:text="@string/newsfeed_title_label"
+        android:textColor="?android:textColorPrimary"
+        />
 
     <EditText
         android:id="@+id/newsfeed_title"
@@ -26,6 +28,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?attr/textAppearanceHeadline5"
         android:text="@string/newsfeed_details_label"
+        android:textColor="?android:textColorPrimary"
         android:layout_marginBottom="16dp"/>
 
     <!-- Add buttons for Exact Match and Exclude modes -->

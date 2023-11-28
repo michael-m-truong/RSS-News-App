@@ -3,8 +3,10 @@ package com.bignerdranch.android.newsapp
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
+import android.util.TypedValue
 import android.view.*
 import android.view.inputmethod.EditorInfo
+import androidx.core.graphics.toColor
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -16,6 +18,7 @@ import com.bignerdranch.android.newsapp.database.NewsFeed
 import com.bignerdranch.android.newsapp.databinding.FragmentNewsfeedDetailBinding
 import com.bignerdranch.android.newsapp.models.Filter
 import com.google.android.material.chip.Chip
+import com.google.android.material.color.MaterialColors
 import kotlinx.coroutines.launch
 
 class NewsFeedDetailFragment : Fragment() {
@@ -23,6 +26,7 @@ class NewsFeedDetailFragment : Fragment() {
     //private lateinit var newsFeed: NewsFeed
     private var _binding: FragmentNewsfeedDetailBinding? = null
     private val args: NewsFeedDetailFragmentArgs by navArgs()
+
 
     private val newsFeedDetailViewModel: NewsFeedDetailViewModel by viewModels {
         NewsFeedDetailViewModelFactory(args.newsfeedId)
@@ -46,6 +50,7 @@ class NewsFeedDetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val theme = context?.theme
 
         // move it to binding.apply
         /*val translationX = binding.exactMatchButton.x
@@ -186,7 +191,11 @@ class NewsFeedDetailFragment : Fragment() {
 
                 // Change the text color of the exactMatchButton
                 exactMatchButton.setTextColor(Color.BLUE)
-                excludeButton.setTextColor(Color.BLACK)
+
+                val typedValue = TypedValue()
+                context?.theme?.resolveAttribute(android.R.attr.textColorPrimary, typedValue, true)
+                Log.d("exact", "Resolved color: ${typedValue.data}")
+                excludeButton.setTextColor(typedValue.data)
 
                 // Dynamically set the width of the underline view to match the width of the exactMatchButton
                 val underlineParams = underline.layoutParams
@@ -224,7 +233,11 @@ class NewsFeedDetailFragment : Fragment() {
 
                 // Change the text color of the excludeButton
                 excludeButton.setTextColor(Color.BLUE)
-                exactMatchButton.setTextColor(Color.BLACK)
+
+                val typedValue = TypedValue()
+                context?.theme?.resolveAttribute(android.R.attr.textColorPrimary, typedValue, true)
+                Log.d("exact", "Resolved color: ${typedValue.data}")
+                exactMatchButton.setTextColor(typedValue.data)
 
                 // Dynamically set the width of the underline view to match the width of the excludeButton
                 val underlineParams = underline.layoutParams
