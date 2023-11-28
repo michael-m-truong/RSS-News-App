@@ -78,7 +78,7 @@ class ArticleListFragment : Fragment() {
         val nightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
 
         val filterButtonBackgroundColor = if (nightMode == Configuration.UI_MODE_NIGHT_YES) {
-            Color.BLACK
+            Color.parseColor("#141414")  // night mode color
         } else {
             Color.WHITE
         }
@@ -164,7 +164,7 @@ class ArticleListFragment : Fragment() {
         val nightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
         Log.d("night", nightMode.toString())
         val backgroundColor = if (nightMode == Configuration.UI_MODE_NIGHT_YES) {
-            Color.BLACK
+            Color.parseColor("#121212")
         } else {
             Color.WHITE
         }
