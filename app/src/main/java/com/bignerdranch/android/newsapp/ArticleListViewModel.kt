@@ -276,7 +276,7 @@ class ArticleListViewModel : ViewModel() {
     private suspend fun performWebScraping(): List<Article> {
         val exactStrings = searchQueries.joinToString("+") { "%22$it%22" }
         val excludeStrings = excludeSearchQueries.joinToString("+") { "-$it" }
-        var queryStrings = exactStrings + excludeStrings
+        var queryStrings = exactStrings + "%20" + excludeStrings
 
         if (_resourceOption.contains(ResourceOption.Reddit)) {
             queryStrings += "%20" + "site:reddit.com"
