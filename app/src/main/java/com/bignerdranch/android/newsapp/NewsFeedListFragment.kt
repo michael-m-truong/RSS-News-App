@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bignerdranch.android.newsapp.database.NewsFeed
 import com.bignerdranch.android.newsapp.databinding.FragmentNewsfeedListBinding
+import com.bignerdranch.android.newsapp.models.ReadTimeOption
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -153,7 +154,8 @@ class NewsFeedListFragment : Fragment() {
                 wordBank = mutableListOf<String>(),
                 excludeWordBank = mutableListOf<String>(),
                 orderNumber = newsFeedListViewModel.getCount() + 1,
-                sortByOption = 0
+                sortByOption = 0,
+                readTimeOption = mutableListOf<ReadTimeOption>(ReadTimeOption.oneTOthree)
             )
             newsFeedListViewModel.addNewsFeed(newNewsFeed)
             findNavController().navigate(

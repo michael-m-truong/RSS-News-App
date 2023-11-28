@@ -2,6 +2,7 @@ package com.bignerdranch.android.newsapp.database
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.bignerdranch.android.newsapp.models.ReadTimeOption
 import java.util.*
 
 @Entity
@@ -13,6 +14,7 @@ data class NewsFeed(
     val excludeWordBank: MutableList<String>,
     val orderNumber: Int,
     val sortByOption: Int,
+    val readTimeOption: MutableList<ReadTimeOption>
 )
 
 

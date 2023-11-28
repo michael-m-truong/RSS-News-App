@@ -143,7 +143,7 @@ class ArticleListFragment : Fragment() {
 
         clearFiltersButton.setOnClickListener {
             articleListViewModel.clearFilters(requireView())
-            articleListViewModel.applyFilters()
+            articleListViewModel.applyFilters(null)
         }
 
 
@@ -237,7 +237,7 @@ class ArticleListFragment : Fragment() {
 
         applyButton.setOnClickListener {
             // Dismiss the dialog or perform other actions if needed
-            articleListViewModel.applyFilters()
+            articleListViewModel.applyFilters(DateRelevance::class)
             dialog.dismiss()
         }
 
@@ -292,7 +292,8 @@ class ArticleListFragment : Fragment() {
             articleListViewModel.setReadTimeOption(readOptions)
 
             // Dismiss the dialog or perform other actions if needed
-            articleListViewModel.applyFilters()
+            // not the cleanest solution, but for now to get type just do this XD
+            articleListViewModel.applyFilters(ReadTimeOption::class)
             dialog.dismiss()
         }
 
@@ -339,7 +340,7 @@ class ArticleListFragment : Fragment() {
             articleListViewModel.setPublisherOption(selectedPublishers)
 
             // Dismiss the dialog or perform other actions if needed
-            articleListViewModel.applyFilters()
+            articleListViewModel.applyFilters(null)
             dialog.dismiss()
         }
     }
@@ -367,7 +368,7 @@ class ArticleListFragment : Fragment() {
             }
 
             // Dismiss the dialog or perform other actions if needed
-            articleListViewModel.applyFilters(articleListViewModel.sortByOption)
+            articleListViewModel.applyFilters(SortByOption::class)
             dialog.dismiss()
         }
 

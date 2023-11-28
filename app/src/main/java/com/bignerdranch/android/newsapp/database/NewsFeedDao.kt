@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
+import com.bignerdranch.android.newsapp.models.ReadTimeOption
 import kotlinx.coroutines.flow.Flow
 import java.util.*
 
@@ -33,5 +34,6 @@ interface NewsFeedDao {
     @Query("UPDATE NewsFeed SET sortByOption = :newSortOption WHERE id = :newsFeedId")
     suspend fun updateSortByOption(newsFeedId: UUID, newSortOption: Int)
 
-
+    @Query("UPDATE NewsFeed SET readTimeOption = :newReadTimeOption WHERE id = :newsFeedId")
+    suspend fun updateReadTimeOption(newsFeedId: UUID, newReadTimeOption: MutableList<ReadTimeOption>)
 }

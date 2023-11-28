@@ -2,6 +2,7 @@ package com.bignerdranch.android.newsapp.database
 
 import android.content.Context
 import androidx.room.Room
+import com.bignerdranch.android.newsapp.models.ReadTimeOption
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
@@ -52,6 +53,10 @@ class NewsFeedRepository private constructor
 
     suspend fun updateSortByOption(newsFeedId: UUID, newSortOption: Int) {
         database.newsfeedDao().updateSortByOption(newsFeedId, newSortOption)
+    }
+
+    suspend fun updateReadTimeOption(newsFeedId: UUID, newReadTimeOption: MutableList<ReadTimeOption>) {
+        database.newsfeedDao().updateReadTimeOption(newsFeedId, newReadTimeOption)
     }
 
 

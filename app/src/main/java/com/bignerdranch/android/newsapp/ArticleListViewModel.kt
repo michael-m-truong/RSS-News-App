@@ -17,6 +17,7 @@ import org.jsoup.Connection
 import org.jsoup.Jsoup
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.reflect.KClass
 
 class ArticleListViewModel : ViewModel() {
 
@@ -79,6 +80,11 @@ class ArticleListViewModel : ViewModel() {
         _readTimeOption = readTimeOption
     }
 
+    suspend fun updateReadTimeOption() {
+        val readTimeOptionList: MutableList<ReadTimeOption> = readTimeOption.toMutableList()
+        newsFeedRepository.updateReadTimeOption(ArticleListViewModel.newsFeedId, readTimeOptionList)
+    }
+
     fun addPublisherOption(publisher: String) {
         _publisherOption.add(publisher)
     }
@@ -101,6 +107,7 @@ class ArticleListViewModel : ViewModel() {
         var searchQueries: MutableList<String> = mutableListOf()
         var excludeSearchQueries: MutableList<String> = mutableListOf()
         var sortByOption: Int = 0
+        var readTimeOption: MutableList<ReadTimeOption> = mutableListOf()
         var newsFeedId: UUID = UUID.randomUUID()
     }
 
@@ -110,20 +117,25 @@ class ArticleListViewModel : ViewModel() {
             SortByOption.values().getOrElse(ArticleListViewModel.sortByOption) { SortByOption.MOST_POPULAR }
         setSortByOption(sortByOption)
         setDateRelevance(DateRelevance.ANYTIME)
-        setReadTimeOption(ReadTimeOption.values().toMutableSet())
+        // add get or else
+        setReadTimeOption(ArticleListViewModel.readTimeOption.toMutableSet())
 
         resourceOption.add(ResourceOption.Google)
         setResourceOption(resourceOption)
     }
 
-    fun applyFilters(change: Any? = null) {
+    fun applyFilters(change: KClass<*>?) {
         viewModelScope.launch(Dispatchers.IO) {
             // Apply your filter criteria
             val filteredArticles = filterArticles(originalArticles.value)
             when (change) {
-                is SortByOption-> {
+                SortByOption::class-> {
                     // Code to handle String type
                     updateSortByOption()
+                }
+                ReadTimeOption::class-> {
+                    updateReadTimeOption()
+                    Log.d("readtime","readtime")
                 }
                 else -> {
                     // Code to handle other types
