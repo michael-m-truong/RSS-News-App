@@ -74,13 +74,13 @@ class ArticleListFragment : Fragment() {
 
         val nightMode = AppCompatDelegate.getDefaultNightMode()
 
-        val filterButtonBackgroundColor = if (nightMode == AppCompatDelegate.MODE_NIGHT_YES) {
+        val filterButtonBackgroundColor = if (nightMode == AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM) {
             Color.BLACK
         } else {
             Color.WHITE
         }
 
-        val filterButtonTextColor = if (nightMode == AppCompatDelegate.MODE_NIGHT_YES) {
+        val filterButtonTextColor = if (nightMode == AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM) {
             Color.WHITE
         } else {
             Color.parseColor("#4C4C4C")  // Use the color value for light mode
@@ -159,8 +159,8 @@ class ArticleListFragment : Fragment() {
         dialog.setCancelable(true)
 
         val nightMode = AppCompatDelegate.getDefaultNightMode()
-
-        val backgroundColor = if (nightMode == AppCompatDelegate.MODE_NIGHT_YES) {
+        Log.d("night", nightMode.toString())
+        val backgroundColor = if (nightMode == AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM) {
             Color.BLACK
         } else {
             Color.WHITE
