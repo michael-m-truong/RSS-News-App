@@ -7,4 +7,6 @@
 
     <string name="newsfeed_details_label">Details</string>
     <string name="new_newsfeed">New Newsfeed</string>
+    <string name="exact_button">Exact</string>
+    <string name="exclude_button">Exclude</string>
 </resources>

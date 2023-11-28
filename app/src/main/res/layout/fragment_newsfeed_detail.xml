@@ -11,7 +11,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?attr/textAppearanceHeadline5"
-        android:text="@string/newsfeed_title_label" />
+        android:text="@string/newsfeed_title_label"
+        android:textColor="?android:textColorPrimary"
+        />
 
     <EditText
         android:id="@+id/newsfeed_title"
@@ -26,6 +28,7 @@
         android:layout_height="wrap_content"
         android:textAppearance="?attr/textAppearanceHeadline5"
         android:text="@string/newsfeed_details_label"
+        android:textColor="?android:textColorPrimary"
         android:layout_marginBottom="16dp"/>
 
     <!-- Add buttons for Exact Match and Exclude modes -->
@@ -40,26 +43,27 @@
             android:id="@+id/exact_match_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-        android:layout_weight="1"
-            android:text="Exact"
-            android:textColor="@color/black"
+            android:layout_weight="1"
+            android:text="@string/exact_button"
+            android:textColor="?android:textColorPrimary"
             android:elevation="0dp"
             android:stateListAnimator="@null"
-            android:backgroundTint="@color/white"
-         />
+            android:backgroundTint="?android:colorBackground"
+            android:state_enabled="true"
+            style="?android:attr/buttonBarButtonStyle" />
 
         <Button
             android:id="@+id/exclude_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Exclude"
-            android:textColor="@color/black"
+            android:text="@string/exclude_button"
+            android:textColor="?android:textColorPrimary"
             android:elevation="0dp"
             android:stateListAnimator="@null"
-            android:backgroundTint="@color/white"
+            android:backgroundTint="?android:colorBackground"
             android:state_enabled="true"
-            />
+            style="?android:attr/buttonBarButtonStyle" />
     </LinearLayout>
 
     <!-- Add an EditText and Button for input -->
