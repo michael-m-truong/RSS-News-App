@@ -59,6 +59,10 @@ class NewsFeedRepository private constructor
         database.newsfeedDao().updateReadTimeOption(newsFeedId, newReadTimeOption)
     }
 
+    suspend fun updateDateRelevanceOption(newsFeedId: UUID, newDateRelevanceOption: Int) {
+        database.newsfeedDao().updateDateRelevanceOption(newsFeedId, newDateRelevanceOption)
+    }
+
 
     companion object {
         private var INSTANCE: NewsFeedRepository? = null

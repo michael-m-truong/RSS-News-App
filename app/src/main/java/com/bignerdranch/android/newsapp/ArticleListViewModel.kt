@@ -76,6 +76,12 @@ class ArticleListViewModel : ViewModel() {
         _dateOption = dateOption
     }
 
+    suspend fun updateDateRelevanceOption() {
+        val intValue = _dateOption.ordinal
+        Log.d("intval",intValue.toString())
+        newsFeedRepository.updateDateRelevanceOption(ArticleListViewModel.newsFeedId, intValue)
+    }
+
     fun setReadTimeOption(readTimeOption: MutableSet<ReadTimeOption>) {
         _readTimeOption = readTimeOption
     }
@@ -108,6 +114,7 @@ class ArticleListViewModel : ViewModel() {
         var excludeSearchQueries: MutableList<String> = mutableListOf()
         var sortByOption: Int = 0
         var readTimeOption: MutableList<ReadTimeOption> = mutableListOf()
+        var dateRelevanceOption: Int = 0
         var newsFeedId: UUID = UUID.randomUUID()
     }
 
@@ -116,7 +123,10 @@ class ArticleListViewModel : ViewModel() {
         val sortByOption =
             SortByOption.values().getOrElse(ArticleListViewModel.sortByOption) { SortByOption.MOST_POPULAR }
         setSortByOption(sortByOption)
-        setDateRelevance(DateRelevance.ANYTIME)
+
+        val dateRelevanceOption =
+            DateRelevance.values().getOrElse(ArticleListViewModel.dateRelevanceOption) { DateRelevance.ANYTIME }
+        setDateRelevance(dateRelevanceOption)
         // add get or else
         setReadTimeOption(ArticleListViewModel.readTimeOption.toMutableSet())
 
@@ -135,7 +145,10 @@ class ArticleListViewModel : ViewModel() {
                 }
                 ReadTimeOption::class-> {
                     updateReadTimeOption()
-                    Log.d("readtime","readtime")
+                }
+                DateRelevance::class-> {
+                    updateDateRelevanceOption()
+                    Log.d("daterel","daterel")
                 }
                 else -> {
                     // Code to handle other types
@@ -152,7 +165,7 @@ class ArticleListViewModel : ViewModel() {
     }
 
     fun clearFilters(view: View? = null) {
-        _dateOption = DateRelevance.ALL
+        _dateOption = DateRelevance.ANYTIME
         _readTimeOption = ReadTimeOption.values().toMutableSet()
         _sortByOption = SortByOption.MOST_POPULAR
         _publishers.clear()
@@ -178,9 +191,24 @@ class ArticleListViewModel : ViewModel() {
 
         print(filteredArticles.size)
 
+        if (_sortByOption == SortByOption.MOST_POPULAR) {
+            filteredArticles = _originalArticles.value
+        } else if (_sortByOption == SortByOption.NEWEST) {
+            filteredArticles = filteredArticles.sortedByDescending { it.datetime }
+        }
+
+
         if (_dateOption == DateRelevance.ANYTIME) {
 
-        } else if (_dateOption == DateRelevance.TODAY) {
+        } else if (_dateOption == DateRelevance.PASTHOUR) {
+            val currentDateTime = Date()
+            filteredArticles = filteredArticles
+                .filter { it.datetime?.let { datetime ->
+                    val oneHourAgo = currentDateTime.time - DateUtils.HOUR_IN_MILLIS
+                    datetime.time in oneHourAgo until currentDateTime.time
+                } ?: false }
+        }
+        else if (_dateOption == DateRelevance.TODAY) {
             filteredArticles = filteredArticles.filter {
                 DateUtils.isToday(it.datetime?.time ?: 0)
             }
@@ -190,8 +218,6 @@ class ArticleListViewModel : ViewModel() {
             filteredArticles = filteredArticles.filter {
                 it.datetime?.after(oneWeekAgo.time) ?: false
             }
-        } else if (_dateOption == DateRelevance.ALL) {
-
         }
 
         if (_readTimeOption.isNotEmpty()) {
@@ -225,11 +251,7 @@ class ArticleListViewModel : ViewModel() {
             filteredArticles = filterByPublisher(filteredArticles)
         }
 
-        if (_sortByOption == SortByOption.MOST_POPULAR) {
-            // TODO: ???, do we have this info?
-        } else if (_sortByOption == SortByOption.NEWEST) {
-            filteredArticles = filteredArticles.sortedByDescending { it.datetime }
-        }
+
 
         // Add more filters as needed
 

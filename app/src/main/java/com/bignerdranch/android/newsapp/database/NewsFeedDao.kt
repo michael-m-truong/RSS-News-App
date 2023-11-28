@@ -36,4 +36,7 @@ interface NewsFeedDao {
 
     @Query("UPDATE NewsFeed SET readTimeOption = :newReadTimeOption WHERE id = :newsFeedId")
     suspend fun updateReadTimeOption(newsFeedId: UUID, newReadTimeOption: MutableList<ReadTimeOption>)
+
+    @Query("UPDATE NewsFeed SET dateRelevanceOption = :newDateRelevanceOption WHERE id = :newsFeedId")
+    suspend fun updateDateRelevanceOption(newsFeedId: UUID, newDateRelevanceOption: Int)
 }
