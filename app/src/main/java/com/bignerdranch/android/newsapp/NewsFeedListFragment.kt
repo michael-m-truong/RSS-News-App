@@ -186,7 +186,7 @@ class NewsFeedListFragment : Fragment() {
                 val position = viewHolder.bindingAdapterPosition
                 val newsFeed = newsFeedListViewModel.getNewsFeedByPosition(position)
 
-                AlertDialog.Builder(context)
+                val alertdialog = AlertDialog.Builder(context)
                     .setTitle("Delete Item")
                     .setMessage("Are you sure you want to delete this item?")
                     .setPositiveButton("Delete") { _, _ ->
@@ -198,6 +198,11 @@ class NewsFeedListFragment : Fragment() {
                     }
                     .setNegativeButton("Cancel") { dialog, _ ->
                         dialog.dismiss() // Close the dialog when the user clicks "Cancel"
+                        viewHolder.bindingAdapter?.notifyItemChanged(position)
+                    }
+                    .setCancelable(true) // Allow dialog dismissal by clicking outside
+                    .setOnCancelListener {
+                        // Handle cancellation as needed (equivalent to clicking "Cancel" button)
                         viewHolder.bindingAdapter?.notifyItemChanged(position)
                     }
                     .show()
