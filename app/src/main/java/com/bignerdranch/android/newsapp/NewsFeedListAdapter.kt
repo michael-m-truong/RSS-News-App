@@ -21,6 +21,7 @@ class NewsFeedHolder(
             ArticleListViewModel.searchQueries = newsFeed.wordBank
             ArticleListViewModel.excludeSearchQueries = newsFeed.excludeWordBank
             ArticleListViewModel.sortByOption = newsFeed.sortByOption
+            ArticleListViewModel.newsFeedId = newsFeed.id
             val action = NewsFeedListFragmentDirections.showArticleList(newsFeed.id)
             it.findNavController().navigate(action)
         }

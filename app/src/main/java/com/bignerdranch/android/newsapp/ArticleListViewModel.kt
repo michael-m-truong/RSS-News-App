@@ -6,6 +6,7 @@ import android.view.View
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bignerdranch.android.newsapp.database.NewsFeedRepository
 import com.bignerdranch.android.newsapp.models.*
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.*
@@ -18,6 +19,8 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class ArticleListViewModel : ViewModel() {
+
+    private val newsFeedRepository = NewsFeedRepository.get()
 
     private val _articles: MutableStateFlow<List<Article>> = MutableStateFlow(emptyList())
     val articles: StateFlow<List<Article>> get() = _articles.asStateFlow()
@@ -61,6 +64,11 @@ class ArticleListViewModel : ViewModel() {
 
     fun setSortByOption(sortOption: SortByOption) {
         _sortByOption = sortOption
+
+    }
+    suspend fun updateSortByOption() {
+        val intValue = sortByOption.ordinal
+        newsFeedRepository.updateSortByOption(ArticleListViewModel.newsFeedId, intValue)
     }
 
     fun setDateRelevance(dateOption: DateRelevance) {
@@ -93,6 +101,7 @@ class ArticleListViewModel : ViewModel() {
         var searchQueries: MutableList<String> = mutableListOf()
         var excludeSearchQueries: MutableList<String> = mutableListOf()
         var sortByOption: Int = 0
+        var newsFeedId: UUID = UUID.randomUUID()
     }
 
     init {
@@ -107,10 +116,20 @@ class ArticleListViewModel : ViewModel() {
         setResourceOption(resourceOption)
     }
 
-    fun applyFilters() {
+    fun applyFilters(change: Any? = null) {
         viewModelScope.launch(Dispatchers.IO) {
             // Apply your filter criteria
             val filteredArticles = filterArticles(originalArticles.value)
+            when (change) {
+                is SortByOption-> {
+                    // Code to handle String type
+                    updateSortByOption()
+                }
+                else -> {
+                    // Code to handle other types
+                    println("Input is of an unknown type")
+                }
+            }
 
             withContext(Dispatchers.Main) {
                 _articles.value = filteredArticles
@@ -276,7 +295,7 @@ class ArticleListViewModel : ViewModel() {
     private suspend fun performWebScraping(): List<Article> {
         val exactStrings = searchQueries.joinToString("+") { "%22$it%22" }
         val excludeStrings = excludeSearchQueries.joinToString("+") { "-$it" }
-        var queryStrings = exactStrings + excludeStrings
+        var queryStrings = exactStrings + "%20" + excludeStrings
 
         if (_resourceOption.contains(ResourceOption.Reddit)) {
             queryStrings += "%20" + "site:reddit.com"
