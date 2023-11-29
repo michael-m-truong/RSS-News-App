@@ -86,7 +86,7 @@ class NewsFeedDetailFragment : Fragment() {
                     oldNewsFeed.copy(title = text.toString())
                 }
             }
-            
+
             inputWord.setOnEditorActionListener { v, actionId, event ->
                 if (actionId == EditorInfo.IME_ACTION_DONE || (event != null && event.action == KeyEvent.ACTION_DOWN && event.keyCode == KeyEvent.KEYCODE_ENTER)) {
                     val word = inputWord.text.toString().trim()
@@ -95,6 +95,7 @@ class NewsFeedDetailFragment : Fragment() {
                         val chip = Chip(requireContext())
                         chip.text = word
                         chip.isCloseIconVisible = true
+                        chip.chipMinHeight = 140f
                         chip.setOnCloseIconClickListener {
                             //newsFeed.wordBank.remove(word)
                             if (newsFeedDetailViewModel.filterState == Filter.EXACT) {
@@ -161,6 +162,7 @@ class NewsFeedDetailFragment : Fragment() {
                     if (word.isNotEmpty()) { // Add this condition to skip empty words
                         val chip = Chip(requireContext())
                         chip.text = word
+                        chip.chipMinHeight = 140f
                         chip.isCloseIconVisible = true
 
                         chip.setOnCloseIconClickListener {
@@ -203,6 +205,7 @@ class NewsFeedDetailFragment : Fragment() {
                     if (word.isNotEmpty()) { // Add this condition to skip empty words
                         val chip = Chip(requireContext())
                         chip.text = word
+                        chip.chipMinHeight = 140f
                         chip.isCloseIconVisible = true
 
                         chip.setOnCloseIconClickListener {
@@ -269,6 +272,7 @@ class NewsFeedDetailFragment : Fragment() {
                     if (word.isNotEmpty()) { // Add this condition to skip empty words
                         val chip = Chip(requireContext())
                         chip.text = word
+                        chip.chipMinHeight = 140f
                         chip.isCloseIconVisible = true
 
                         chip.setOnCloseIconClickListener {
