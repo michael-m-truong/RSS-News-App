@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">News Watcher</string>
+    <string name="app_name">News Radar</string>
 
     <string name="newsfeed_title">Feed name</string>
     <string name="newsfeed_title_label">My custom feed</string>
