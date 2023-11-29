@@ -20,14 +20,32 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <TextView
-            android:layout_marginTop="32dp"
+    <com.google.android.material.divider.MaterialDivider
+            android:layout_marginTop="8dp" android:layout_marginBottom="8dp" android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAppearance="?attr/textAppearanceHeadline5"
-            android:text="@string/newsfeed_details_label"
-            android:textColor="?android:textColorSecondary"
-            android:layout_marginBottom="8dp"/>
+            android:orientation="horizontal">
+
+        <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_margin="4dp"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:hint="Keyword">
+
+            <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/input_word"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionDone"
+                    android:singleLine="true"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+    </LinearLayout>
 
     <!-- Add buttons for Exact Match and Exclude modes -->
     <LinearLayout
@@ -71,30 +89,6 @@
             android:layout_height="2dp"
             android:background="#0000FF"
     />
-
-    <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingTop="8dp">
-
-        <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_margin="4dp"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:hint="Keyword">
-
-            <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/input_word"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:imeOptions="actionDone"
-                    android:singleLine="true"/>
-
-        </com.google.android.material.textfield.TextInputLayout>
-    </LinearLayout>
 
     <!-- Use a ChipGroup for the word bank -->
     <com.google.android.material.chip.ChipGroup
