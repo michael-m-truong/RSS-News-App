@@ -7,7 +7,6 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import android.widget.Button
 import android.widget.CheckBox
 import android.widget.RadioButton
 import android.widget.RadioGroup
@@ -124,23 +123,23 @@ class ArticleListFragment : Fragment() {
 
         // Set a click listener for the button to show the popup
         showSortButton.setOnClickListener {
-            showInputPopup(R.layout.sort_button_view, R.id.day_cancel_button)
+            showInputPopup(R.layout.sort_button_view)
         }
 
         showReadButton.setOnClickListener {
-            showInputPopup(R.layout.read_time_view, R.id.read_cancel_button)
+            showInputPopup(R.layout.sort_by_read_time_view)
         }
 
         showViewButton.setOnClickListener {
-            showInputPopup(R.layout.sort_by_view, R.id.cancel_button)
+            showInputPopup(R.layout.sort_by_view)
         }
 
         showPublisherButton.setOnClickListener {
-            showInputPopup(R.layout.sort_publisher_view, R.id.cancel_button)
+            showInputPopup(R.layout.sort_publisher_view)
         }
 
         showResourceButton.setOnClickListener {
-            showInputPopup(R.layout.sort_by_sources, R.id.sources_cancel_button)
+            showInputPopup(R.layout.sort_by_sources)
         }
 
         binding.swipeRefreshLayout.setOnRefreshListener {
@@ -162,7 +161,7 @@ class ArticleListFragment : Fragment() {
         dialog.dismiss()
     }
 
-    private fun showInputPopup(view: Int, cancelButtonId: Int) {
+    private fun showInputPopup(view: Int) {
         val dialog = Dialog(requireContext())
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         dialog.setContentView(view) // Replace with your input group layout
@@ -189,18 +188,13 @@ class ArticleListFragment : Fragment() {
 
         window?.attributes = lp
 
-        val cancelButton = dialog.findViewById<Button>(cancelButtonId)
-        cancelButton.setOnClickListener {
-            dialog.dismiss()
-        }
-
         //val radioButton = dialog.findViewById<RadioButton>(R.id.newest) // Replace with the actual ID
         //radioButton.isChecked = true
         if (view == R.layout.sort_by_view) {
             initialize_sortby(dialog)
         } else if (view == R.layout.sort_button_view) {
             initialize_date(dialog)
-        } else if (view == R.layout.read_time_view) {
+        } else if (view == R.layout.sort_by_read_time_view) {
             initialize_reading(dialog)
         } else if (view == R.layout.sort_publisher_view) {
             initialize_publisher(dialog)

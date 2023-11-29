@@ -44,7 +44,6 @@
                 android:id="@+id/edit_newsfeed"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:tint="?android:colorPrimary"
                 android:paddingLeft="24dp"
                 android:paddingRight="16dp"
                 android:paddingTop="18dp"
