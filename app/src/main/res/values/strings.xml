@@ -1,12 +1,12 @@
 <resources>
     <string name="app_name">NewsApp</string>
 
-    <string name="newsfeed_title">Enter a News Feed Title</string>
-    <string name="newsfeed_title_label">Title</string>
+    <string name="newsfeed_title">Feed name</string>
+    <string name="newsfeed_title_label">My custom feed</string>
     <string name="wordbank_label">Word Bank</string>
 
-    <string name="newsfeed_details_label">Details</string>
+    <string name="newsfeed_details_label">Keywords</string>
     <string name="new_newsfeed">New Newsfeed</string>
-    <string name="exact_button">Exact</string>
+    <string name="exact_button">Match</string>
     <string name="exclude_button">Exclude</string>
 </resources>
