@@ -6,7 +6,6 @@ import android.util.Log
 import android.util.TypedValue
 import android.view.*
 import android.view.inputmethod.EditorInfo
-import androidx.core.graphics.toColor
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -18,7 +17,6 @@ import com.bignerdranch.android.newsapp.database.NewsFeed
 import com.bignerdranch.android.newsapp.databinding.FragmentNewsfeedDetailBinding
 import com.bignerdranch.android.newsapp.models.Filter
 import com.google.android.material.chip.Chip
-import com.google.android.material.color.MaterialColors
 import kotlinx.coroutines.launch
 
 class NewsFeedDetailFragment : Fragment() {
@@ -88,53 +86,7 @@ class NewsFeedDetailFragment : Fragment() {
                     oldNewsFeed.copy(title = text.toString())
                 }
             }
-
-            addChipButton.setOnClickListener {
-                val word = inputWord.text.toString().trim()
-                if (word.isNotEmpty()) {
-                    //newsFeed.wordBank.add(word)
-                    // Create and add a chip
-                    val chip = Chip(requireContext())
-                    chip.text = word
-                    chip.isCloseIconVisible = true
-                    chip.setOnCloseIconClickListener {
-                        // Remove the word from the list and the chip
-                        //newsFeed.wordBank.remove(word)
-                        if (newsFeedDetailViewModel.filterState == Filter.EXACT) {
-                            newsFeedDetailViewModel.updateNewsFeed { oldNewsFeed ->
-                                oldNewsFeed.wordBank.remove(word)
-                                oldNewsFeed.copy(wordBank = oldNewsFeed.wordBank)
-                            }
-                        } else if (newsFeedDetailViewModel.filterState == Filter.EXCLUDE) {
-                            newsFeedDetailViewModel.updateNewsFeed { oldNewsFeed ->
-                                oldNewsFeed.excludeWordBank.remove(word)
-                                oldNewsFeed.copy(excludeWordBank = oldNewsFeed.excludeWordBank)
-                            }
-                        }
-                        chipGroup.removeView(chip)
-
-                    }
-                    chipGroup.addView(chip)
-                    inputWord.text.clear() // Clear the input field
-
-                    if (newsFeedDetailViewModel.filterState == Filter.EXACT) {
-                        newsFeedDetailViewModel.updateNewsFeed { oldNewsFeed ->
-                            oldNewsFeed.wordBank.add(word)
-                            oldNewsFeed.copy(wordBank = oldNewsFeed.wordBank)
-                        }
-                    } else if (newsFeedDetailViewModel.filterState == Filter.EXCLUDE) {
-                        newsFeedDetailViewModel.updateNewsFeed { oldNewsFeed ->
-                            oldNewsFeed.excludeWordBank.add(word)
-                            oldNewsFeed.copy(excludeWordBank = oldNewsFeed.excludeWordBank)
-                        }
-                    }
-
-                    var inputfield = binding.inputWord
-                    inputfield.requestFocus()
-                }
-            }
-
-
+            
             inputWord.setOnEditorActionListener { v, actionId, event ->
                 if (actionId == EditorInfo.IME_ACTION_DONE || (event != null && event.action == KeyEvent.ACTION_DOWN && event.keyCode == KeyEvent.KEYCODE_ENTER)) {
                     val word = inputWord.text.toString().trim()
@@ -163,7 +115,7 @@ class NewsFeedDetailFragment : Fragment() {
                             chipGroup.removeView(chip)
                         }
                         chipGroup.addView(chip)
-                        inputWord.text.clear()
+                        inputWord.text?.clear()
 
                         if (newsFeedDetailViewModel.filterState == Filter.EXACT) {
                             newsFeedDetailViewModel.updateNewsFeed { oldNewsFeed ->

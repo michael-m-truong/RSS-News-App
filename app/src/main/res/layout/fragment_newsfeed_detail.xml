@@ -1,108 +1,114 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_margin="16dp">
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="16dp">
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="?attr/textAppearanceHeadline5"
-        android:text="@string/newsfeed_title_label"
-        android:textColor="?android:textColorPrimary"
-        />
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?attr/textAppearanceHeadline6"
+            android:text="@string/newsfeed_title_label"
+            android:textColor="?android:textColorPrimary"
+    />
 
-    <EditText
-        android:id="@+id/newsfeed_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="@string/newsfeed_title"
-        android:importantForAutofill="no"
-        android:inputType="text" />
+    <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:hint="@string/newsfeed_title">
+
+        <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/newsfeed_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="?attr/textAppearanceHeadline5"
-        android:text="@string/newsfeed_details_label"
-        android:textColor="?android:textColorPrimary"
-        android:layout_marginBottom="16dp"/>
+            android:layout_marginTop="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?attr/textAppearanceHeadline6"
+            android:text="@string/newsfeed_details_label"
+            android:textColor="?android:textColorPrimary"
+            android:layout_marginBottom="8dp"/>
 
     <!-- Add buttons for Exact Match and Exclude modes -->
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:clickable="true"
-        android:state_enabled="true">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:clickable="true"
+            android:state_enabled="true">
 
         <Button
-            android:id="@+id/exact_match_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/exact_button"
-            android:textColor="?android:textColorPrimary"
-            android:elevation="0dp"
-            android:stateListAnimator="@null"
-            android:backgroundTint="?android:colorBackground"
-            android:state_enabled="true"
-            style="?android:attr/buttonBarButtonStyle" />
+                android:id="@+id/exact_match_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/exact_button"
+                android:textColor="?android:textColorPrimary"
+                android:elevation="0dp"
+                android:stateListAnimator="@null"
+                android:backgroundTint="?android:colorBackground"
+                android:state_enabled="true"
+                style="?android:attr/buttonBarButtonStyle"/>
 
         <Button
-            android:id="@+id/exclude_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/exclude_button"
-            android:textColor="?android:textColorPrimary"
-            android:elevation="0dp"
-            android:stateListAnimator="@null"
-            android:backgroundTint="?android:colorBackground"
-            android:state_enabled="true"
-            style="?android:attr/buttonBarButtonStyle" />
+                android:id="@+id/exclude_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/exclude_button"
+                android:textColor="?android:textColorPrimary"
+                android:elevation="0dp"
+                android:stateListAnimator="@null"
+                android:backgroundTint="?android:colorBackground"
+                android:state_enabled="true"
+                style="?android:attr/buttonBarButtonStyle"/>
     </LinearLayout>
 
     <!-- Add an EditText and Button for input -->
     <View
-        android:id="@+id/underline"
-        android:layout_width="0dp"
-        android:layout_height="2dp"
-        android:background="#0000FF"
+            android:id="@+id/underline"
+            android:layout_width="0dp"
+            android:layout_height="2dp"
+            android:background="#0000FF"
     />
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingTop="16dp">
-
-        <EditText
-            android:id="@+id/input_word"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="Enter a word"
-            android:imeOptions="actionDone"
-            android:singleLine="true" />
+            android:orientation="horizontal"
+            android:paddingTop="8dp">
 
-        <Button
-            android:id="@+id/add_chip_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Add" />
+        <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_margin="4dp"
+                android:hint="Keyword">
+
+            <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/input_word"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionDone"
+                    android:singleLine="true"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
     </LinearLayout>
 
     <!-- Use a ChipGroup for the word bank -->
     <com.google.android.material.chip.ChipGroup
-        android:id="@+id/chip_group"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp">
+            android:id="@+id/chip_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp">
         <!-- You can add Chip elements dynamically in code -->
     </com.google.android.material.chip.ChipGroup>
 </LinearLayout>
