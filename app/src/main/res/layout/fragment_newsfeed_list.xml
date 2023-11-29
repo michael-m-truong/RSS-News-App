@@ -18,18 +18,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:textColor="?android:attr/textColorPrimary"
-            android:text="No items to display"
-            android:visibility="visible"/> <!-- Initially set to gone -->
-
-    <!-- Button to perform an action when the list is empty -->
-    <Button
-            android:id="@+id/action_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/empty_text_view"
-            android:layout_centerHorizontal="true"
-            android:text="Create Newsfeed"
+            android:textColor="?android:attr/textColorSecondary"
+            android:text="Click the + to get started."
             android:visibility="visible"/> <!-- Initially set to gone -->
 
 </LinearLayout>
