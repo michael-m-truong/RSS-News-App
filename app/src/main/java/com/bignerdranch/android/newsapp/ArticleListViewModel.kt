@@ -354,23 +354,24 @@ class ArticleListViewModel : ViewModel() {
                     break
                 }
                 for (articleElement in articleElements) {
-                    val headlineText = articleElement.select("h3").text()
+                    val headlineText = articleElement.select("h4").text()
                     if (headlineText.isEmpty()) {
                         continue
                     }
                     val headlineLink = "https://news.google.com" + articleElement.select("a").attr("href")
                         .substring(1)  //remove the initial "."
                     val headlineDate = articleElement.select("time[datetime]").text()
-                    val headlinePublisher = articleElement.select("a[data-n-tid]").text()
+                    val headlinePublisher = articleElement.select("div[data-n-tid]").text()
                     var imgSrc: String?
 
-                    if (articleElements.size > 1) {
-                        imgSrc = articleElement.select("img").attr("src")
-                    } else {
-                        imgSrc = element.select("figure img").attr("src")
-                    }
+                    //if (articleElements.size <= 1) {
+                    //    imgSrc = articleElement.select("img").attr("src")
+                    //} else {
+                        imgSrc = articleElement.select("figure img").attr("src")
+                        Log.d("imgsrc", imgSrc)
+                    //}
                     val publisherImgSrc: String?
-                    if (articleElements.size > 1) {
+                    if (articleElements.size <= 1) {
                         publisherImgSrc = articleElement.select("div").select("img").attr("src")
                     } else {
                         publisherImgSrc = articleElement.select("img").attr("src")
