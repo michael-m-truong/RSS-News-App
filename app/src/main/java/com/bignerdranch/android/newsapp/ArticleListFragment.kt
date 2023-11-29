@@ -1,6 +1,7 @@
 package com.bignerdranch.android.newsapp
 
 import android.app.Dialog
+import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -10,7 +11,6 @@ import android.widget.Button
 import android.widget.CheckBox
 import android.widget.RadioButton
 import android.widget.RadioGroup
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -27,7 +27,6 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.checkbox.MaterialCheckBox
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
-import android.content.res.Configuration
 
 
 private const val TAG = "ArticleListFragment"
@@ -64,6 +63,14 @@ class ArticleListFragment : Fragment() {
             // Hide loading progress bar and show the RecyclerView when data is ready
             binding.loadingProgressBar.visibility = View.INVISIBLE
             binding.articleRecyclerView.visibility = View.VISIBLE
+
+            if (articleListViewModel.articles.value.isEmpty()) {
+                binding.articleRecyclerView.visibility = View.GONE
+                binding.emptyTextView.visibility = View.VISIBLE
+            } else {
+                binding.articleRecyclerView.visibility = View.VISIBLE
+                binding.emptyTextView.visibility = View.GONE
+            }
 
             if (articleListViewModel.isFiltered) {
                 val snackbarMessage = "Filtered by reading time"

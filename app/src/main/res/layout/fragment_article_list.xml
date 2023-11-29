@@ -1,102 +1,102 @@
 <RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
     <!-- Horizontal Slider for Buttons -->
     <HorizontalScrollView
-        android:id="@+id/horizontal_slider"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true">
-        <LinearLayout
-            android:layout_width="wrap_content"
+            android:id="@+id/horizontal_slider"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/filter1_button"
+            android:layout_alignParentTop="true">
+        <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="DATE RELEVANCE"
-
-                android:textColor="?android:textColorPrimary"
-                android:backgroundTint="?android:colorBackground"
-
-                android:elevation="0dp"
-                android:stateListAnimator="@null"
-                android:drawableEnd="@drawable/baseline_arrow_drop_down_24"
-
-                android:drawablePadding="0dp"
-                android:onClick="showPopUpFilter1"/>
+                android:orientation="horizontal">
 
             <Button
-                android:id="@+id/filter2_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="READ TIME"
+                    android:id="@+id/filter1_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="DATE RELEVANCE"
 
-                android:textColor="?android:textColorPrimary"
-                android:backgroundTint="?android:colorBackground"
-                android:elevation="0dp"
-                android:stateListAnimator="@null"
-                android:drawableEnd="@drawable/baseline_arrow_drop_down_24"
-                android:onClick="showPopUpFilter2"/>
+                    android:textColor="?android:textColorPrimary"
+                    android:backgroundTint="?android:colorBackground"
+
+                    android:elevation="0dp"
+                    android:stateListAnimator="@null"
+                    android:drawableEnd="@drawable/baseline_arrow_drop_down_24"
+
+                    android:drawablePadding="0dp"
+                    android:onClick="showPopUpFilter1"/>
+
+            <Button
+                    android:id="@+id/filter2_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="READ TIME"
+
+                    android:textColor="?android:textColorPrimary"
+                    android:backgroundTint="?android:colorBackground"
+                    android:elevation="0dp"
+                    android:stateListAnimator="@null"
+                    android:drawableEnd="@drawable/baseline_arrow_drop_down_24"
+                    android:onClick="showPopUpFilter2"/>
 
 
             <Button
-                android:id="@+id/filter3_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="SORT BY"
+                    android:id="@+id/filter3_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="SORT BY"
 
-                android:textColor="#4C4C4C"
-                android:backgroundTint="#FFFFFF"
-                android:elevation="0dp"
-                android:stateListAnimator="@null"
-                android:drawableEnd="@drawable/baseline_arrow_drop_down_24"
+                    android:textColor="#4C4C4C"
+                    android:backgroundTint="#FFFFFF"
+                    android:elevation="0dp"
+                    android:stateListAnimator="@null"
+                    android:drawableEnd="@drawable/baseline_arrow_drop_down_24"
 
 
-                />
-
-            <Button
-                android:id="@+id/filter4_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="PUBLISHER"
-
-                android:textColor="#4C4C4C"
-                android:backgroundTint="#FFFFFF"
-                android:elevation="0dp"
-                android:stateListAnimator="@null"
-                android:drawableEnd="@drawable/baseline_arrow_drop_down_24"
-
-                />
+            />
 
             <Button
-                android:id="@+id/filter5_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="RESOURCE BY"
+                    android:id="@+id/filter4_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="PUBLISHER"
 
-                android:textColor="#4C4C4C"
-                android:backgroundTint="#FFFFFF"
-                android:elevation="0dp"
-                android:stateListAnimator="@null"
-                android:drawableEnd="@drawable/baseline_arrow_drop_down_24"
-                />
+                    android:textColor="#4C4C4C"
+                    android:backgroundTint="#FFFFFF"
+                    android:elevation="0dp"
+                    android:stateListAnimator="@null"
+                    android:drawableEnd="@drawable/baseline_arrow_drop_down_24"
+
+            />
 
             <Button
-                android:id="@+id/filter6_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="CLEAR FILTERS"
+                    android:id="@+id/filter5_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="RESOURCE BY"
 
-                android:textColor="#4C4C4C"
-                android:backgroundTint="#FFFFFF"
-                android:elevation="0dp"
-                android:stateListAnimator="@null"
-                />
+                    android:textColor="#4C4C4C"
+                    android:backgroundTint="#FFFFFF"
+                    android:elevation="0dp"
+                    android:stateListAnimator="@null"
+                    android:drawableEnd="@drawable/baseline_arrow_drop_down_24"
+            />
+
+            <Button
+                    android:id="@+id/filter6_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="CLEAR FILTERS"
+
+                    android:textColor="#4C4C4C"
+                    android:backgroundTint="#FFFFFF"
+                    android:elevation="0dp"
+                    android:stateListAnimator="@null"
+            />
 
             <!-- Add more buttons as needed for filtering -->
         </LinearLayout>
@@ -104,23 +104,33 @@
 
     <!-- Loading ProgressBar (Optional) -->
     <ProgressBar
-        android:id="@+id/loading_progress_bar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true" />
+            android:id="@+id/loading_progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"/>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/swipe_refresh_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-        android:layout_below="@id/horizontal_slider">
+            android:layout_below="@id/horizontal_slider"
+    >
         <!-- RecyclerView (Initially set to invisible) -->
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/article_recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/horizontal_slider"
-            android:visibility="invisible" />
+                android:id="@+id/article_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/horizontal_slider"
+                android:visibility="invisible"/>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    <TextView
+            android:id="@+id/empty_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:textColor="?android:attr/textColorSecondary"
+            android:text="Nothing to show."
+            android:visibility="gone"/>
 
 </RelativeLayout>
