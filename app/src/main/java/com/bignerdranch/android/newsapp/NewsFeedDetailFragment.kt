@@ -34,6 +34,11 @@ class NewsFeedDetailFragment : Fragment() {
             "Cannot access binding because it is null. Is the view visible?"
         }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -292,5 +297,19 @@ class NewsFeedDetailFragment : Fragment() {
         }
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.fragment_newsfeed_detail, menu)
+    }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.save -> {
+                fragmentManager?.popBackStack()
+                true
+            }
+
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
 }
