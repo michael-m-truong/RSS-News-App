@@ -1,32 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:gravity="center">
 
     <!-- RecyclerView for displaying the list -->
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/newsfeed_recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone" /> <!-- Initially set to gone -->
+            android:id="@+id/newsfeed_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone"/> <!-- Initially set to gone -->
 
     <!-- TextView to display when the list is empty -->
     <TextView
-        android:id="@+id/empty_text_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:text="No items to display"
-        android:visibility="gone" /> <!-- Initially set to gone -->
+            android:id="@+id/empty_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:textColor="?android:attr/textColorPrimary"
+            android:text="No items to display"
+            android:visibility="visible"/> <!-- Initially set to gone -->
 
     <!-- Button to perform an action when the list is empty -->
     <Button
-        android:id="@+id/action_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/empty_text_view"
-        android:layout_centerHorizontal="true"
-        android:text="Create Newsfeed"
-        android:visibility="gone" /> <!-- Initially set to gone -->
+            android:id="@+id/action_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/empty_text_view"
+            android:layout_centerHorizontal="true"
+            android:text="Create Newsfeed"
+            android:visibility="visible"/> <!-- Initially set to gone -->
 
-</RelativeLayout>
+</LinearLayout>
