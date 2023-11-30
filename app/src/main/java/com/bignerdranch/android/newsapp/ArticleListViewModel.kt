@@ -137,7 +137,7 @@ class ArticleListViewModel : ViewModel() {
     fun applyFilters(change: KClass<*>?) {
         viewModelScope.launch(Dispatchers.IO) {
             // Apply your filter criteria
-            val filteredArticles = filterArticles(originalArticles.value)
+            val filteredArticles = filterArticles(originalArticles.value.toList())
             when (change) {
                 SortByOption::class-> {
                     // Code to handle String type
@@ -268,7 +268,6 @@ class ArticleListViewModel : ViewModel() {
 
             withContext(Dispatchers.Main) {
                 _articles.value = initialArticles
-                _originalArticles.value = initialArticles.toList()
                 onDataFetched.postValue(Unit) // Notify the initial data load
                 loadedInitialArticles = true
             }
@@ -284,7 +283,7 @@ class ArticleListViewModel : ViewModel() {
 
                 // Wait for all updates to complete
                 deferredUpdates.awaitAll()
-                var filteredArticles = emptyList<Article>()
+                //var filteredArticles = emptyList<Article>()
                 // Filter articles based on word count and reading time
                 /*val filteredArticles = articlesToUpdate.filter { article ->
                     val text = article.text
@@ -299,7 +298,7 @@ class ArticleListViewModel : ViewModel() {
                     (text.isEmpty() || minutesToRead in 4..6)
                 } */
 
-                if (_publishers.isNotEmpty()) {
+                /*if (_publishers.isNotEmpty()) {
                     filteredArticles = filterByPublisher(initialArticles)
                 }
 
@@ -310,7 +309,7 @@ class ArticleListViewModel : ViewModel() {
                         onDataFetched.postValue(Unit) // Notify the completion of data fetching
                         isFiltered = true
                     }
-                }
+                }*/
             }
         }
 
@@ -420,12 +419,13 @@ class ArticleListViewModel : ViewModel() {
             deferredUpdates.awaitAll()
         }*/
 
-        if (sortByOption == SortByOption.NEWEST) {
-            val sortedArticles = articles.sortedByDescending { it.datetime }
-            return sortedArticles
-        } else {
-            return articles
-        }
+        //if (sortByOption == SortByOption.NEWEST) {
+        //    val sortedArticles = articles.sortedByDescending { it.datetime }
+        //    return sortedArticles
+        //} else {
+        _originalArticles.value = articles.toList()
+        return filterArticles(articles)
+        //}
 
     }
 
