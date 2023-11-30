@@ -16,7 +16,8 @@ data class NewsFeed(
     val orderNumber: Int,
     val sortByOption: Int,
     val readTimeOption: MutableList<ReadTimeOption>,
-    val dateRelevanceOption: Int
+    val dateRelevanceOption: Int,
+    val publisherOption: MutableList<String>
 )
 
 

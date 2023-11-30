@@ -63,6 +63,10 @@ class NewsFeedRepository private constructor
         database.newsfeedDao().updateDateRelevanceOption(newsFeedId, newDateRelevanceOption)
     }
 
+    suspend fun updatePublisherOption(newsFeedId: UUID, newPublisherOption: MutableList<String>) {
+        database.newsfeedDao().updatePublisherOption(newsFeedId, newPublisherOption)
+    }
+
 
     companion object {
         private var INSTANCE: NewsFeedRepository? = null

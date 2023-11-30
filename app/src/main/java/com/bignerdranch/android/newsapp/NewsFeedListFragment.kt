@@ -154,7 +154,8 @@ class NewsFeedListFragment : Fragment() {
                     ReadTimeOption.fourTOsix,
                     ReadTimeOption.sixPlus
                 ),
-                dateRelevanceOption = 0
+                dateRelevanceOption = 0,
+                publisherOption = mutableListOf<String>("INIT_NEWSFEED")
             )
             newsFeedListViewModel.addNewsFeed(newNewsFeed)
             findNavController().navigate(

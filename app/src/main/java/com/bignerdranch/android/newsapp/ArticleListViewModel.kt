@@ -91,16 +91,17 @@ class ArticleListViewModel : ViewModel() {
         newsFeedRepository.updateReadTimeOption(ArticleListViewModel.newsFeedId, readTimeOptionList)
     }
 
-    fun addPublisherOption(publisher: String) {
-        _publisherOption.add(publisher)
-    }
-
-    fun removePublisherOption(publisher: String) {
-        _publisherOption.remove(publisher)
-    }
-
     fun setPublisherOption(publisherOption: MutableSet<String>) {
         _publisherOption = publisherOption
+    }
+
+    suspend fun updatePublisherOption() {
+        if (publisherOption.contains("INIT_NEWSFEED") && publisherOption.size >= 2) {
+            publisherOption.remove("INIT_NEWSFEED")
+            Log.d("betterbe",publisherOption.toString())
+        }
+        val publisherOptionList: MutableList<String> = publisherOption.toMutableList()
+        newsFeedRepository.updatePublisherOption(ArticleListViewModel.newsFeedId, publisherOptionList)
     }
 
     fun setResourceOption(resourceOption: MutableSet<ResourceOption>) {
@@ -115,6 +116,7 @@ class ArticleListViewModel : ViewModel() {
         var sortByOption: Int = 0
         var readTimeOption: MutableList<ReadTimeOption> = mutableListOf()
         var dateRelevanceOption: Int = 0
+        var publisherOption: MutableList<String> = mutableListOf()
         var newsFeedId: UUID = UUID.randomUUID()
     }
 
@@ -129,6 +131,7 @@ class ArticleListViewModel : ViewModel() {
         setDateRelevance(dateRelevanceOption)
         // add get or else
         setReadTimeOption(ArticleListViewModel.readTimeOption.toMutableSet())
+        setPublisherOption(ArticleListViewModel.publisherOption.toMutableSet())
 
         resourceOption.add(ResourceOption.Google)
         setResourceOption(resourceOption)
@@ -149,6 +152,10 @@ class ArticleListViewModel : ViewModel() {
                 DateRelevance::class-> {
                     updateDateRelevanceOption()
                     Log.d("daterel","daterel")
+                }
+                String::class-> {
+                    Log.d("kkkk","here")
+                    updatePublisherOption()
                 }
                 else -> {
                     // Code to handle other types
@@ -247,10 +254,13 @@ class ArticleListViewModel : ViewModel() {
             filteredArticles = readTimeArticles
         }
 
-        if (_publishers.isNotEmpty()) {
-            filteredArticles = filterByPublisher(filteredArticles)
-        }
 
+        if (_publishers.isNotEmpty() && !publisherOption.contains("INIT_NEWSFEED")) {
+            Log.d("da_articles",filteredArticles.toString())
+            filteredArticles = filterByPublisher(filteredArticles)
+            Log.d("da_articles",filteredArticles.toString())
+        }
+        Log.d("filtered", filteredArticles.toString())
 
 
         // Add more filters as needed

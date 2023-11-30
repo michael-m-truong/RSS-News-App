@@ -324,12 +324,13 @@ class ArticleListFragment : Fragment() {
         val checkBoxContainer = dialog.findViewById<RadioGroup>(R.id.button_group)
         val applyButton = dialog.findViewById<MaterialButton>(R.id.apply_button)
         val radioGroup = dialog.findViewById<RadioGroup>(R.id.button_group)
+        val checkBoxes = mutableListOf<CheckBox>()
 
         // Create a set to track selected publishers temporarily
-        val selectedPublishers: MutableSet<String> = articleListViewModel.publisherOption.toMutableSet()
+        val selectedPublishers: MutableSet<String> = articleListViewModel.publisherOption
 
         // Create a listener to handle checkbox clicks
-        val checkBoxClickListener = View.OnClickListener { view ->
+        /*val checkBoxClickListener = View.OnClickListener { view ->
             if (view is CheckBox) {
                 if (view.isChecked) {
                     // Checkbox is checked, add the publisher to the temporary set
@@ -340,24 +341,41 @@ class ArticleListFragment : Fragment() {
                     selectedPublishers.remove(view.text.toString())
                 }
             }
-        }
+        }*/
 
         // Set the listener for each checkbox
         for (publisher in publishers) {
             val checkBox = CheckBox(requireContext())
+            checkBoxes.add(checkBox)
             checkBox.text = publisher
             checkBoxContainer.addView(checkBox)
-            checkBox.isChecked = selectedPublishers.contains(publisher) // Check if the publisher is already selected
-            checkBox.setOnClickListener(checkBoxClickListener)
+            Log.d("selectedpub",selectedPublishers.toString())
+            if (selectedPublishers.contains("INIT_NEWSFEED")) {
+                checkBox.isChecked = true
+            }
+            else if (selectedPublishers.contains(publisher)) {
+                checkBox.isChecked = true // Check if the publisher is already selected
+            }
+
+            //checkBox.setOnClickListener(checkBoxClickListener)
         }
 
         // Set the click listener for the Apply button
         applyButton.setOnClickListener {
             // Apply the selected publishers to the ViewModel only when Apply is clicked
-            articleListViewModel.setPublisherOption(selectedPublishers)
+            for (checkbox in checkBoxes) {
+                if (checkbox.isChecked) {
+                    selectedPublishers.add(checkbox.text.toString())
+                }
+                else {
+                    selectedPublishers.remove(checkbox.text.toString())
+                }
+            }
 
+            articleListViewModel.publisherOption.remove("INIT_NEWSFEED")
+            articleListViewModel.setPublisherOption(selectedPublishers)
             // Dismiss the dialog or perform other actions if needed
-            articleListViewModel.applyFilters(null)
+            articleListViewModel.applyFilters(String::class)
             dialog.dismiss()
         }
     }
