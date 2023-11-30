@@ -46,19 +46,6 @@
                     android:onClick="showPopUpFilter1"/>
 
             <Button
-                    android:id="@+id/filter2_button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="READ TIME"
-
-                    android:textColor="?android:textColorPrimary"
-                    android:backgroundTint="?android:colorBackground"
-                    android:elevation="0dp"
-                    android:stateListAnimator="@null"
-                    android:drawableEnd="@drawable/baseline_arrow_drop_down_24"
-                    android:onClick="showPopUpFilter2"/>
-
-            <Button
                     android:id="@+id/filter4_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -69,8 +56,20 @@
                     android:elevation="0dp"
                     android:stateListAnimator="@null"
                     android:drawableEnd="@drawable/baseline_arrow_drop_down_24"
-
             />
+
+            <Button
+                android:id="@+id/filter2_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="READ TIME"
+
+                android:textColor="?android:textColorPrimary"
+                android:backgroundTint="?android:colorBackground"
+                android:elevation="0dp"
+                android:stateListAnimator="@null"
+                android:drawableEnd="@drawable/baseline_arrow_drop_down_24"
+                android:onClick="showPopUpFilter2"/>
 
             <Button
                     android:id="@+id/filter5_button"
