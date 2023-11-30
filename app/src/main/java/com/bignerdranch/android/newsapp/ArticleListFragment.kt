@@ -1,5 +1,6 @@
 package com.bignerdranch.android.newsapp
 
+import android.app.AlertDialog
 import android.app.Dialog
 import android.content.res.Configuration
 import android.graphics.Color
@@ -148,8 +149,19 @@ class ArticleListFragment : Fragment() {
         }
 
         clearFiltersButton.setOnClickListener {
-            articleListViewModel.clearFilters(requireView())
-            articleListViewModel.applyFilters(null)
+            val alertdialog = AlertDialog.Builder(context)
+                .setTitle("Clear Filters")
+                .setMessage("Are you sure you want to clear filters?")
+                .setPositiveButton("YES") { _, _ ->
+                    articleListViewModel.clearFilters(requireView())
+                    articleListViewModel.applyFilters(null)
+                }
+                .setNegativeButton("NO") { dialog, _ ->
+                    dialog.dismiss() // Close the dialog when the user clicks "Cancel"
+                }
+                .setCancelable(true) // Allow dialog dismissal by clicking outside
+                .show()
+
         }
 
 
