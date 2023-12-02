@@ -18,6 +18,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bignerdranch.android.newsapp.databinding.FragmentArticleListBinding
 import com.bignerdranch.android.newsapp.models.DateRelevance
 import com.bignerdranch.android.newsapp.models.ReadTimeOption
@@ -35,7 +36,7 @@ class ArticleListFragment : Fragment() {
 
     private val articleListViewModel: ArticleListViewModel by viewModels()
     private lateinit var articleAdapter: ArticleListAdapter // Assuming you have an ArticleAdapter
-
+    private lateinit var recyclerView: RecyclerView
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -57,6 +58,7 @@ class ArticleListFragment : Fragment() {
                 }
             }
         }
+        recyclerView = binding.articleRecyclerView
 
         // Listen for data fetching completion and hide the progress bar
         articleListViewModel.onDataFetched.observe(viewLifecycleOwner, Observer {
@@ -255,6 +257,7 @@ class ArticleListFragment : Fragment() {
 
         applyButton.setOnClickListener {
             // Dismiss the dialog or perform other actions if needed
+            recyclerView.smoothScrollToPosition(0)
             articleListViewModel.applyFilters(DateRelevance::class)
             dialog.dismiss()
         }
@@ -322,6 +325,7 @@ class ArticleListFragment : Fragment() {
 
             // Dismiss the dialog or perform other actions if needed
             // not the cleanest solution, but for now to get type just do this XD
+            recyclerView.smoothScrollToPosition(0)
             articleListViewModel.applyFilters(ReadTimeOption::class)
             dialog.dismiss()
         }
@@ -387,6 +391,7 @@ class ArticleListFragment : Fragment() {
             articleListViewModel.publisherOption.remove("INIT_NEWSFEED")
             articleListViewModel.setPublisherOption(selectedPublishers)
             // Dismiss the dialog or perform other actions if needed
+            recyclerView.smoothScrollToPosition(0)
             articleListViewModel.applyFilters(String::class)
             dialog.dismiss()
         }
@@ -415,6 +420,7 @@ class ArticleListFragment : Fragment() {
             }
 
             // Dismiss the dialog or perform other actions if needed
+            recyclerView.smoothScrollToPosition(0)
             articleListViewModel.applyFilters(SortByOption::class)
             dialog.dismiss()
         }
@@ -449,6 +455,7 @@ class ArticleListFragment : Fragment() {
             articleListViewModel.setResourceOption(sources)
 
             // Dismiss the dialog or perform other actions if needed
+            recyclerView.smoothScrollToPosition(0)
             articleListViewModel.fetchArticles()
             dialog.dismiss()
         }
