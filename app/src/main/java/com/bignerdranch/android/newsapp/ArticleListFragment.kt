@@ -50,15 +50,18 @@ class ArticleListFragment : Fragment() {
         // Show loading animation
         binding.loadingProgressBar.visibility = View.VISIBLE
 
+        // Init recyclerview
+        recyclerView = binding.articleRecyclerView
+
         // Observe the articles from the ViewModel and update the RecyclerView when they change
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 articleListViewModel.articles.collect { articles ->
                     articleAdapter.submitList(articles)
+                    recyclerView.post { recyclerView.scrollToPosition(0) }
                 }
             }
         }
-        recyclerView = binding.articleRecyclerView
 
         // Listen for data fetching completion and hide the progress bar
         articleListViewModel.onDataFetched.observe(viewLifecycleOwner, Observer {
