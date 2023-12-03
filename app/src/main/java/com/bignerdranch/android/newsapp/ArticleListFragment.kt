@@ -71,10 +71,19 @@ class ArticleListFragment : Fragment() {
 
             if (articleListViewModel.articles.value.isEmpty()) {
                 binding.articleRecyclerView.visibility = View.GONE
-                binding.emptyTextView.visibility = View.VISIBLE
+                if (articleListViewModel.publishers.intersect(articleListViewModel.publisherOption).isEmpty()) {
+                    binding.noPublishersView.visibility = View.VISIBLE
+                    binding.emptyTextView.visibility = View.GONE
+                }
+                else {
+                    binding.emptyTextView.visibility = View.VISIBLE
+                    binding.noPublishersView.visibility = View.GONE
+                }
+
             } else {
                 binding.articleRecyclerView.visibility = View.VISIBLE
                 binding.emptyTextView.visibility = View.GONE
+                binding.noPublishersView.visibility = View.GONE
             }
 
             if (articleListViewModel.isFiltered) {
