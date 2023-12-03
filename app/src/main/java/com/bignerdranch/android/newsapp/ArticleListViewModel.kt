@@ -15,9 +15,12 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import org.jsoup.Connection
 import org.jsoup.Jsoup
+import org.jsoup.nodes.Attribute
+import org.jsoup.nodes.Attributes
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.reflect.KClass
+
 
 class ArticleListViewModel : ViewModel() {
 
@@ -338,7 +341,6 @@ class ArticleListViewModel : ViewModel() {
         }
     }
 
-
     private suspend fun performWebScraping(): List<Article> {
         val exactStrings = searchQueries.joinToString("+") { "%22$it%22" }
         val excludeStrings = excludeSearchQueries.joinToString("+") { "-$it" }
@@ -443,9 +445,132 @@ class ArticleListViewModel : ViewModel() {
 
     }
 
+    /*private suspend fun performWebScraping(): List<Article> {
+        val query = "nba"
+        val url = "https://www.reddit.com/search/?q=%22$query%22&sort=hot"
+        Log.d("url", url)
+        val articles = mutableListOf<Article>()
+
+        try {
+            val htmlContent = Jsoup.connect(url).get().html()
+            val document = Jsoup.parse(htmlContent)
+            Log.d("not empty", "test")
+            val postElements = document.select("post-consume-tracker")
+            val tf = document.select("faceplate-timeago")
+            Log.d("ongg", tf.size.toString())
+            Log.d("ongg", tf.outerHtml())
+            for (element in tf) {
+                val attributes = element.attributes()
+                for (attribute in attributes) {
+                    Log.d("Attribute", "${attribute.key} = ${attribute.value}")
+                }
+            }
+
+            val allElements = document.getAllElements()
+
+            for (element in allElements) {
+                if (element.text().contains("hours ago")) {
+                    // Log or process the element as needed
+                    Log.d("FoundElement", "Element with 'hours ago': ${element.outerHtml()}")
+                }
+            }
+            var count = 0
+
+            Log.d("totalamt", postElements.size.toString())
+            for (postElement in postElements) {
+                if (count == 10) {
+                    break
+                }
+
+                val title = postElement.select("span.invisible").text()
+                if (title.isEmpty()) {
+                    continue
+                }
+
+                val link = "https://www.reddit.com" + postElement.select("a[href^='/r/'][href*='/comments/']").attr("href")
+
+                var date = "2 days ago"  //postElement.select("faceplate-timeago[ts]").text()
+                var datetime = parseDateTime_reddit(postElement.select("faceplate-timeago").attr("ts"))
+                Log.d("plss",postElement.select("faceplate-timeago").attr("ts"))
+                val publisher = postElement.select("a[href^='/r/']").attr("href")
+                val imgs = postElement.select("faceplate-img")
+                for (img in imgs) {
+                    Log.d("imgz", img.attr("src"))
+                }
+                var imgSrc = ""
+                var publisherSrc = postElement.select("faceplate-img")[0].attr("src")
+                if (imgs.size == 3) {
+                    imgSrc = imgs[2].attr("src")
+                    publisherSrc = postElement.select("faceplate-img")[0].attr("src")
+                }
+                if (imgs.size == 4) {
+                    imgSrc = imgs[3].attr("src")
+                    publisherSrc = imgs[2].attr("src")
+                }
+
+                Log.d("testt", postElement.select("faceplate-img").size.toString())
+                if (imgSrc == null) {
+                    imgSrc = ""
+                }
+                if (publisherSrc == null) {
+                    publisherSrc = ""
+                }
+
+                val articleText = "" // You may fetch article text if needed
+
+                val article = Article(
+                    title,
+                    link,
+                    date,
+                    datetime,
+                    publisher,
+                    imgSrc,
+                    publisherSrc, // Reddit doesn't have a publisher image in the same way as Google News
+                    articleText
+                )
+
+                articles.add(article)
+                count++
+            }
+
+        } catch (e: Exception) {
+            Log.d("bad", "bad")
+            e.printStackTrace()
+        }
+
+        /*viewModelScope.launch(Dispatchers.IO) {
+            val deferredUpdates = articles.map { article ->
+                async {
+                    updateArticleUrlAndText(article.link, article)
+                }
+            }
+
+            deferredUpdates.awaitAll()
+        }*/
+
+        //if (sortByOption == SortByOption.NEWEST) {
+        //    val sortedArticles = articles.sortedByDescending { it.datetime }
+        //    return sortedArticles
+        //} else {
+        _originalArticles.value = articles.toList()
+        return filterArticles(articles)
+        //}
+
+    }*/
+
     // Define the parseDateTime function
     private fun parseDateTime(dateTimeString: String): Date? {
         val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
+        try {
+            return dateFormat.parse(dateTimeString)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return null
+    }
+
+    private fun parseDateTime_reddit(dateTimeString: String): Date? {
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSSXX")
         try {
             return dateFormat.parse(dateTimeString)
         } catch (e: Exception) {
