@@ -60,6 +60,7 @@ dependencies {
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
     implementation "io.coil-kt:coil:1.4.0"
     implementation "org.jsoup:jsoup:1.15.3"
+    implementation 'org.ocpsoft.prettytime:prettytime:5.0.4.Final'
 
 
     testImplementation 'junit:junit:4.13.2'

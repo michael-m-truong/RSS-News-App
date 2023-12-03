@@ -15,8 +15,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import org.jsoup.Connection
 import org.jsoup.Jsoup
-import org.jsoup.nodes.Attribute
-import org.jsoup.nodes.Attributes
+import org.ocpsoft.prettytime.PrettyTime
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.reflect.KClass
@@ -478,27 +477,32 @@ class ArticleListViewModel : ViewModel() {
 
             Log.d("totalamt", postElements.size.toString())
             for (postElement in postElements) {
-                if (count == 10) {
+                if (count == 25) {
                     break
                 }
 
                 val title = postElement.select("span.invisible").text()
+                Log.d("DISDATITLE",title)
                 if (title.isEmpty()) {
                     continue
                 }
 
                 val link = "https://www.reddit.com" + postElement.select("a[href^='/r/'][href*='/comments/']").attr("href")
 
-                var date = "2 days ago"  //postElement.select("faceplate-timeago[ts]").text()
                 var datetime = parseDateTime_reddit(postElement.select("faceplate-timeago").attr("ts"))
+                var date = formatPrettyTime(datetime)
                 Log.d("plss",postElement.select("faceplate-timeago").attr("ts"))
-                val publisher = postElement.select("a[href^='/r/']").attr("href")
+                var publisher = postElement.select("a[href^='/r/']").attr("href")
+                publisher = getSubReddit(publisher)
+
+                date += "  $publisher"
+
                 val imgs = postElement.select("faceplate-img")
                 for (img in imgs) {
                     Log.d("imgz", img.attr("src"))
                 }
-                var imgSrc = ""
-                var publisherSrc = postElement.select("faceplate-img")[0].attr("src")
+                var imgSrc = imgs[1].attr("src")
+                var publisherSrc = imgs[0].attr("src")
                 if (imgs.size == 3) {
                     imgSrc = imgs[2].attr("src")
                     publisherSrc = postElement.select("faceplate-img")[0].attr("src")
@@ -531,10 +535,12 @@ class ArticleListViewModel : ViewModel() {
 
                 articles.add(article)
                 count++
+
+                _publishers.add(publisher)
             }
 
         } catch (e: Exception) {
-            Log.d("bad", "bad")
+            Log.d("bad", e.message.toString())
             e.printStackTrace()
         }
 
@@ -577,6 +583,18 @@ class ArticleListViewModel : ViewModel() {
             e.printStackTrace()
         }
         return null
+    }
+
+    private fun formatPrettyTime(dateTime: Date?): String {
+        val prettyTime = PrettyTime()
+        return dateTime?.let { prettyTime.format(it) } ?: ""
+    }
+
+    private fun getSubReddit(input: String): String? {
+        val regex = """^(.*?/.*?/.*?)/.*$""".toRegex()
+        val matchResult = regex.find(input)
+
+        return matchResult?.groups?.get(1)?.value
     }
 
     // As of now,text will be null in the article object if ran async; but we dont need text rn
