@@ -420,18 +420,28 @@ class ArticleListFragment : Fragment() {
             //checkBox.setOnClickListener(checkBoxClickListener)
         }
 
+        allCheckBox.isChecked = selectedPublishers.contains("INIT_NEWSFEED") || selectedPublishers.contains("ALL_PUBLISHERS")
+
+
         // Set the click listener for the Apply button
         applyButton.setOnClickListener {
             // Apply the selected publishers to the ViewModel only when Apply is clicked
-            for (checkbox in checkBoxes) {
-                if (checkbox.isChecked) {
-                    selectedPublishers.add(checkbox.text.toString())
-                }
-                else {
-                    selectedPublishers.remove(checkbox.text.toString())
+            if (allCheckBox.isChecked) {
+                selectedPublishers.add("ALL_PUBLISHERS")
+            }
+            else {
+                selectedPublishers.remove("ALL_PUBLISHERS")
+                for (checkbox in checkBoxes) {
+                    if (checkbox.isChecked) {
+                        selectedPublishers.add(checkbox.text.toString())
+                    }
+                    else {
+                        selectedPublishers.remove(checkbox.text.toString())
+                    }
                 }
             }
 
+            Log.d("pubz",selectedPublishers.toString())
             articleListViewModel.publisherOption.remove("INIT_NEWSFEED")
             articleListViewModel.setPublisherOption(selectedPublishers)
             // Dismiss the dialog or perform other actions if needed

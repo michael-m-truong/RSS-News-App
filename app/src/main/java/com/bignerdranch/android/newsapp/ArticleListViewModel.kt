@@ -257,11 +257,10 @@ class ArticleListViewModel : ViewModel() {
         }
 
 
-        if (_publishers.isNotEmpty() && !publisherOption.contains("INIT_NEWSFEED")) {
-            Log.d("da_articles",filteredArticles.toString())
+        if (!publisherOption.contains("INIT_NEWSFEED")) {
             filteredArticles = filterByPublisher(filteredArticles)
-            Log.d("da_articles",filteredArticles.toString())
         }
+
         Log.d("filtered", filteredArticles.toString())
 
 
@@ -329,9 +328,12 @@ class ArticleListViewModel : ViewModel() {
 
     private fun filterByPublisher(initialArticles: List<Article>): List<Article> {
         // Filter articles based on the selected publishers
+        if (publisherOption.contains("ALL_PUBLISHERS"))  {
+            return initialArticles
+        }
         return initialArticles.filter { article ->
             // Check if the article's publisher is in the selected publishers set
-            val isPublisherSelected = _publisherOption.isEmpty() || article.publisher in _publisherOption
+            val isPublisherSelected = article.publisher in _publisherOption
             isPublisherSelected
         }
     }
