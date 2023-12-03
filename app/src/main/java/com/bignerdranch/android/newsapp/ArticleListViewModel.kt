@@ -33,6 +33,7 @@ class ArticleListViewModel : ViewModel() {
     val publishers: Set<String> get() = _publishers
 
     val onDataFetched: MutableLiveData<Unit> = MutableLiveData()
+    val onDataFiltered: MutableLiveData<Unit> = MutableLiveData()
 
     var loadedInitialArticles = false
     var isFiltered = false
@@ -165,6 +166,7 @@ class ArticleListViewModel : ViewModel() {
 
             withContext(Dispatchers.Main) {
                 _articles.value = filteredArticles
+                onDataFiltered.postValue(Unit)
                 //onDataFetched.postValue(Unit) // Notify the initial data load
                 //loadedInitialArticles = true
             }

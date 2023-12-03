@@ -58,17 +58,14 @@ class ArticleListFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 articleListViewModel.articles.collect { articles ->
                     articleAdapter.submitList(articles)
-                    recyclerView.post { recyclerView.scrollToPosition(0) }
+                    recyclerView.post {
+                        recyclerView.scrollToPosition(0)
+                    }
                 }
             }
         }
 
-        // Listen for data fetching completion and hide the progress bar
-        articleListViewModel.onDataFetched.observe(viewLifecycleOwner, Observer {
-            // Hide loading progress bar and show the RecyclerView when data is ready
-            binding.loadingProgressBar.visibility = View.INVISIBLE
-            binding.articleRecyclerView.visibility = View.VISIBLE
-
+        fun updateEmptyStateVisibility() {
             if (articleListViewModel.articles.value.isEmpty()) {
                 binding.articleRecyclerView.visibility = View.GONE
                 if (articleListViewModel.publishers.intersect(articleListViewModel.publisherOption).isEmpty() && !articleListViewModel.publisherOption.contains("INIT_NEWSFEED")) {
@@ -85,12 +82,27 @@ class ArticleListFragment : Fragment() {
                 binding.emptyTextView.visibility = View.GONE
                 binding.noPublishersView.visibility = View.GONE
             }
+        }
 
-            if (articleListViewModel.isFiltered) {
+        articleListViewModel.onDataFiltered.observe(viewLifecycleOwner, Observer {
+            updateEmptyStateVisibility()
+            recyclerView.post {
+                recyclerView.scrollToPosition(0)
+            }
+            /*if (articleListViewModel.isFiltered) {
                 val snackbarMessage = "Filtered by reading time"
                 Snackbar.make(requireView(), snackbarMessage, Snackbar.LENGTH_SHORT).show()
             }
-            articleListViewModel.isFiltered = false
+            articleListViewModel.isFiltered = false*/
+        })
+
+        // Listen for data fetching completion and hide the progress bar
+        articleListViewModel.onDataFetched.observe(viewLifecycleOwner, Observer {
+            // Hide loading progress bar and show the RecyclerView when data is ready
+            binding.loadingProgressBar.visibility = View.INVISIBLE
+            binding.articleRecyclerView.visibility = View.VISIBLE
+
+            updateEmptyStateVisibility()
             binding.articleRecyclerView.smoothScrollToPosition(0)
         })
 
@@ -370,6 +382,26 @@ class ArticleListFragment : Fragment() {
                 }
             }
         }*/
+
+        // Create the "All" checkbox
+        val allCheckBox = CheckBox(requireContext())
+        allCheckBox.text = "All"
+        checkBoxContainer.addView(allCheckBox)
+
+        // Add a listener to the "All" checkbox to handle checking/unchecking all other checkboxes
+        allCheckBox.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                for (checkBox in checkBoxes) {
+                    checkBox.isEnabled = false
+                    checkBox.isChecked = true
+                }
+            } else {
+                for (checkBox in checkBoxes) {
+                    checkBox.isEnabled = true
+                    checkBox.isChecked = selectedPublishers.contains(checkBox.text.toString())
+                }
+            }
+        }
 
         // Set the listener for each checkbox
         for (publisher in publishers) {
