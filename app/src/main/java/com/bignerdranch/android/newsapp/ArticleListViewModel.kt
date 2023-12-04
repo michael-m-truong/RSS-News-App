@@ -196,14 +196,33 @@ class ArticleListViewModel : ViewModel() {
         return kotlin.math.round(readTimeMinutes).toInt()
     }
 
-    private fun filterArticles(articles: List<Article>): List<Article> {
+    private fun filterArticles(articles: List<Article>, multiSourceArticles: List<List<Article>>? = null): List<Article> {
         // Apply your filter criteria here
         var filteredArticles = articles
 
         print(filteredArticles.size)
 
         if (_sortByOption == SortByOption.MOST_POPULAR) {
-            filteredArticles = _originalArticles.value
+            if (resourceOption.size == 1) {
+                filteredArticles = _originalArticles.value
+            }
+            else {
+                // Separate articles by source
+                val googleArticles = filteredArticles.filter { it.source == ResourceOption.Google }
+                val redditArticles = filteredArticles.filter { it.source == ResourceOption.Reddit }
+                val twitterArticles = filteredArticles.filter { it.source == ResourceOption.Twitter }
+
+                // Interleave articles in the desired pattern
+                val interleavedArticles = mutableListOf<Article>()
+                val maxCount = maxOf(googleArticles.size, redditArticles.size, twitterArticles.size)
+                for (i in 0 until maxCount) {
+                    if (i < googleArticles.size) interleavedArticles.add(googleArticles[i])
+                    if (i < redditArticles.size) interleavedArticles.add(redditArticles[i])
+                    if (i < twitterArticles.size) interleavedArticles.add(twitterArticles[i])
+                }
+
+                filteredArticles = interleavedArticles
+            }
         } else if (_sortByOption == SortByOption.NEWEST) {
             filteredArticles = filteredArticles.sortedByDescending { it.datetime }
         }
@@ -277,7 +296,17 @@ class ArticleListViewModel : ViewModel() {
         _publishers.clear()
         viewModelScope.launch(Dispatchers.IO) {
             // Load and display the initial articles
-            val initialArticles = performWebScraping()
+            _originalArticles.value = mutableListOf<Article>()
+            if (resourceOption.contains(ResourceOption.Google)) {
+                performWebScraping()
+            }
+            if (resourceOption.contains(ResourceOption.Reddit)) {
+                performWebScraping_Reddit()
+            }
+            if (resourceOption.contains(ResourceOption.Twitter)) {
+                performWebScraping(ResourceOption.Twitter)
+            }
+            val initialArticles = filterArticles(_originalArticles.value.toList())
 
             withContext(Dispatchers.Main) {
                 _articles.value = initialArticles
@@ -287,7 +316,7 @@ class ArticleListViewModel : ViewModel() {
 
             // Asynchronously update the articles in the background
 
-            if (initialArticles.isNotEmpty()) {
+            if (initialArticles.isNotEmpty() && resourceOption.size == 1 && resourceOption.contains(ResourceOption.Google)) {
                 val deferredUpdates = initialArticles.map { article ->
                     async {
                         updateArticleUrlAndText(article.link, article)
@@ -340,15 +369,12 @@ class ArticleListViewModel : ViewModel() {
         }
     }
 
-    private suspend fun performWebScraping(): List<Article> {
+    private suspend fun performWebScraping(option: ResourceOption? = null): List<Article> {
         val exactStrings = searchQueries.joinToString("+") { "%22$it%22" }
         val excludeStrings = excludeSearchQueries.joinToString("+") { "-$it" }
         var queryStrings = exactStrings + "%20" + excludeStrings
 
-        if (_resourceOption.contains(ResourceOption.Reddit)) {
-            queryStrings += "%20" + "site:reddit.com"
-        }
-        if (_resourceOption.contains(ResourceOption.Twitter)) {
+        if (option == ResourceOption.Twitter) {
             queryStrings += "%20" + "site:twitter.com"
         }
 
@@ -413,7 +439,8 @@ class ArticleListViewModel : ViewModel() {
                         headlinePublisher,
                         imgSrc,
                         publisherImgSrc,
-                        articleText
+                        articleText,
+                        if (option == ResourceOption.Twitter) option else ResourceOption.Google,
                     )
                     articles.add(article)
                     _publishers.add(headlinePublisher)
@@ -438,13 +465,13 @@ class ArticleListViewModel : ViewModel() {
         //    val sortedArticles = articles.sortedByDescending { it.datetime }
         //    return sortedArticles
         //} else {
-        _originalArticles.value = articles.toList()
+        _originalArticles.value += articles.toList()
         return filterArticles(articles)
         //}
 
     }
 
-    /*private suspend fun performWebScraping(): List<Article> {
+    private suspend fun performWebScraping_Reddit(): List<Article> {
         val query = "nba"
         val url = "https://www.reddit.com/search/?q=%22$query%22&sort=hot"
         Log.d("url", url)
@@ -530,7 +557,8 @@ class ArticleListViewModel : ViewModel() {
                     publisher,
                     imgSrc,
                     publisherSrc, // Reddit doesn't have a publisher image in the same way as Google News
-                    articleText
+                    articleText,
+                    ResourceOption.Reddit
                 )
 
                 articles.add(article)
@@ -558,11 +586,11 @@ class ArticleListViewModel : ViewModel() {
         //    val sortedArticles = articles.sortedByDescending { it.datetime }
         //    return sortedArticles
         //} else {
-        _originalArticles.value = articles.toList()
+        _originalArticles.value += articles.toList()
         return filterArticles(articles)
         //}
 
-    }*/
+    }
 
     // Define the parseDateTime function
     private fun parseDateTime(dateTimeString: String): Date? {

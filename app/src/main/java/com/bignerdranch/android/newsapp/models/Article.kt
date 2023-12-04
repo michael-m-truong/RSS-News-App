@@ -11,7 +11,8 @@ data class Article(
     val publisher: String,
     val imgSrc: String?,
     val publisherImgSrc: String?,
-    var text: String
+    var text: String,
+    val source: ResourceOption
 ) {
     val articlePageUri: Uri
         get() = Uri.parse(link)
