@@ -135,7 +135,21 @@ class NewsFeedListFragment : Fragment() {
                 true
             }
 
+            R.id.saved_newsfeed -> {
+                showSavedNewsFeed()
+                true
+            }
+
             else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    private fun showSavedNewsFeed() {
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            findNavController().navigate(
+                NewsFeedListFragmentDirections.showSavedArticles()
+            )
         }
     }
 

@@ -15,6 +15,10 @@
         <action
             android:id="@+id/show_article_list"
             app:destination="@id/articleListFragment" />
+        <action
+            android:id="@+id/show_saved_articles"
+            app:destination="@id/savedArticlesFragment"
+            />
     </fragment>
     <fragment
         android:id="@+id/crimeDetailFragment"
@@ -44,5 +48,12 @@
         <argument
             android:name="articlePageUri"
             app:argType="android.net.Uri" />
+    </fragment>
+    <fragment
+        android:id="@+id/savedArticlesFragment"
+        android:name="com.bignerdranch.android.newsapp.SavedArticlesListFragment"
+        android:label="SavedArticleListFragment"
+        tools:layout="@layout/fragment_saved_newsfeed_list">
+
     </fragment>
 </navigation>
