@@ -14,7 +14,7 @@ data class Article(
     val publisherImgSrc: String?,
     var text: String,
     val source: ResourceOption,
-    val image: Blob?
+    val dateAdded: Date
 ) {
     val articlePageUri: Uri
         get() = Uri.parse(link)

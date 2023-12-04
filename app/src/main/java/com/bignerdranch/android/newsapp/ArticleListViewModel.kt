@@ -72,7 +72,7 @@ class ArticleListViewModel : ViewModel() {
     }
     suspend fun updateSortByOption() {
         val intValue = sortByOption.ordinal
-        newsFeedRepository.updateSortByOption(ArticleListViewModel.newsFeedId, intValue)
+        newsFeedRepository.updateSortByOption(newsFeedId, intValue)
     }
 
     fun setDateRelevance(dateOption: DateRelevance) {
@@ -82,7 +82,7 @@ class ArticleListViewModel : ViewModel() {
     suspend fun updateDateRelevanceOption() {
         val intValue = _dateOption.ordinal
         Log.d("intval",intValue.toString())
-        newsFeedRepository.updateDateRelevanceOption(ArticleListViewModel.newsFeedId, intValue)
+        newsFeedRepository.updateDateRelevanceOption(newsFeedId, intValue)
     }
 
     fun setReadTimeOption(readTimeOption: MutableSet<ReadTimeOption>) {
@@ -91,7 +91,7 @@ class ArticleListViewModel : ViewModel() {
 
     suspend fun updateReadTimeOption() {
         val readTimeOptionList: MutableList<ReadTimeOption> = readTimeOption.toMutableList()
-        newsFeedRepository.updateReadTimeOption(ArticleListViewModel.newsFeedId, readTimeOptionList)
+        newsFeedRepository.updateReadTimeOption(newsFeedId, readTimeOptionList)
     }
 
     fun setPublisherOption(publisherOption: MutableSet<String>) {
@@ -104,7 +104,7 @@ class ArticleListViewModel : ViewModel() {
             Log.d("betterbe",publisherOption.toString())
         }
         val publisherOptionList: MutableList<String> = publisherOption.toMutableList()
-        newsFeedRepository.updatePublisherOption(ArticleListViewModel.newsFeedId, publisherOptionList)
+        newsFeedRepository.updatePublisherOption(newsFeedId, publisherOptionList)
     }
 
     fun setResourceOption(resourceOption: MutableSet<ResourceOption>) {
@@ -441,7 +441,7 @@ class ArticleListViewModel : ViewModel() {
                         publisherImgSrc,
                         articleText,
                         if (option == ResourceOption.Twitter) option else ResourceOption.Google,
-                        null,
+                        dateAdded = Date()
                     )
                     articles.add(article)
                     _publishers.add(headlinePublisher)
@@ -560,7 +560,7 @@ class ArticleListViewModel : ViewModel() {
                     publisherSrc, // Reddit doesn't have a publisher image in the same way as Google News
                     articleText,
                     ResourceOption.Reddit,
-                    null
+                    Date(),
                 )
 
                 articles.add(article)
