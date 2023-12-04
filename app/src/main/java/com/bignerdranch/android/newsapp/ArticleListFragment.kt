@@ -11,6 +11,7 @@ import android.view.*
 import android.widget.CheckBox
 import android.widget.RadioButton
 import android.widget.RadioGroup
+import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -37,6 +38,7 @@ class ArticleListFragment : Fragment() {
     private val articleListViewModel: ArticleListViewModel by viewModels()
     private lateinit var articleAdapter: ArticleListAdapter // Assuming you have an ArticleAdapter
     private lateinit var recyclerView: RecyclerView
+    private lateinit var loadingProgressBar: ProgressBar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,6 +61,7 @@ class ArticleListFragment : Fragment() {
 
         // Init recyclerview
         recyclerView = binding.articleRecyclerView
+        loadingProgressBar = binding.loadingProgressBar
 
         // Observe the articles from the ViewModel and update the RecyclerView when they change
         viewLifecycleOwner.lifecycleScope.launch {
@@ -519,6 +522,9 @@ class ArticleListFragment : Fragment() {
             articleListViewModel.setResourceOption(sources)
 
             // Dismiss the dialog or perform other actions if needed
+            recyclerView.visibility = View.INVISIBLE
+            loadingProgressBar.visibility = View.VISIBLE
+
             recyclerView.smoothScrollToPosition(0)
             articleListViewModel.fetchArticles()
             dialog.dismiss()
