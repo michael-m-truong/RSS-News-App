@@ -37,6 +37,13 @@ class ArticleListFragment : Fragment() {
     private val articleListViewModel: ArticleListViewModel by viewModels()
     private lateinit var articleAdapter: ArticleListAdapter // Assuming you have an ArticleAdapter
     private lateinit var recyclerView: RecyclerView
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        // Perform data fetching or any other setup tasks here
+        articleListViewModel.fetchArticles()
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -101,9 +108,12 @@ class ArticleListFragment : Fragment() {
             // Hide loading progress bar and show the RecyclerView when data is ready
             binding.loadingProgressBar.visibility = View.INVISIBLE
             binding.articleRecyclerView.visibility = View.VISIBLE
+            binding.swipeRefreshLayout.isRefreshing = false
 
             updateEmptyStateVisibility()
-            binding.articleRecyclerView.smoothScrollToPosition(0)
+            recyclerView.post {
+                recyclerView.scrollToPosition(0)
+            }
         })
 
 
@@ -171,7 +181,7 @@ class ArticleListFragment : Fragment() {
 
         binding.swipeRefreshLayout.setOnRefreshListener {
             articleListViewModel.fetchArticles()
-            binding.swipeRefreshLayout.isRefreshing = false
+            binding.swipeRefreshLayout.isRefreshing = true
         }
 
         clearFiltersButton.setOnClickListener {
