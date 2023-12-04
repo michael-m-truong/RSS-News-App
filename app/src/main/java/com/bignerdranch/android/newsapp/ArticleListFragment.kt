@@ -393,7 +393,7 @@ class ArticleListFragment : Fragment() {
             if (isChecked) {
                 for (checkBox in checkBoxes) {
                     checkBox.isEnabled = false
-                    checkBox.isChecked = true
+                    //checkBox.isChecked = true  // to make sure users know their selection saves
                 }
             } else {
                 for (checkBox in checkBoxes) {
