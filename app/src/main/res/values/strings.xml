@@ -9,4 +9,5 @@
     <string name="new_newsfeed">New Newsfeed</string>
     <string name="exact_button">Match</string>
     <string name="exclude_button">Exclude</string>
+    <string name="No_saved_articles_dialogue">Swipe left to save articles</string>
 </resources>

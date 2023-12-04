@@ -431,7 +431,7 @@ class ArticleListViewModel : ViewModel() {
                     Log.d("datetime", headlineDateTime)
                     val parsedDate = parseDateTime(headlineDateTime)
 
-                    var article = Article(
+                    val article = Article(
                         headlineText,
                         headlineLink,
                         headlineDate,
@@ -441,6 +441,7 @@ class ArticleListViewModel : ViewModel() {
                         publisherImgSrc,
                         articleText,
                         if (option == ResourceOption.Twitter) option else ResourceOption.Google,
+                        null,
                     )
                     articles.add(article)
                     _publishers.add(headlinePublisher)
@@ -558,7 +559,8 @@ class ArticleListViewModel : ViewModel() {
                     imgSrc,
                     publisherSrc, // Reddit doesn't have a publisher image in the same way as Google News
                     articleText,
-                    ResourceOption.Reddit
+                    ResourceOption.Reddit,
+                    null
                 )
 
                 articles.add(article)

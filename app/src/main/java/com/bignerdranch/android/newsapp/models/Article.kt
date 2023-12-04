@@ -1,6 +1,7 @@
 package com.bignerdranch.android.newsapp.models
 
 import android.net.Uri
+import java.sql.Blob
 import java.util.*
 
 data class Article(
@@ -12,7 +13,8 @@ data class Article(
     val imgSrc: String?,
     val publisherImgSrc: String?,
     var text: String,
-    val source: ResourceOption
+    val source: ResourceOption,
+    val image: Blob?
 ) {
     val articlePageUri: Uri
         get() = Uri.parse(link)
