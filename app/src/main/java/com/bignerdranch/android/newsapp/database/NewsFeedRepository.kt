@@ -77,7 +77,7 @@ class NewsFeedRepository private constructor
         }
 
         fun get(): NewsFeedRepository {
-            return INSTANCE ?: throw IllegalStateException("NewsFeedRepository must be initialized")
+            return INSTANCE?: throw IllegalStateException("NewsFeedRepository must be initialized")
         }
     }
 }

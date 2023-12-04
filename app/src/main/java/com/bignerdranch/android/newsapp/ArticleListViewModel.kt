@@ -228,26 +228,31 @@ class ArticleListViewModel : ViewModel() {
         }
 
 
-        if (_dateOption == DateRelevance.ANYTIME) {
-
-        } else if (_dateOption == DateRelevance.PASTHOUR) {
-            val currentDateTime = Date()
-            filteredArticles = filteredArticles
-                .filter { it.datetime?.let { datetime ->
-                    val oneHourAgo = currentDateTime.time - DateUtils.HOUR_IN_MILLIS
-                    datetime.time in oneHourAgo until currentDateTime.time
-                } ?: false }
-        }
-        else if (_dateOption == DateRelevance.TODAY) {
-            filteredArticles = filteredArticles.filter {
-                DateUtils.isToday(it.datetime?.time ?: 0)
+//        if (_dateOption == DateRelevance.ANYTIME) {
+//
+//        } else
+        when (_dateOption) {
+            DateRelevance.PASTHOUR -> {
+                val currentDateTime = Date()
+                filteredArticles = filteredArticles
+                    .filter { it.datetime?.let { datetime ->
+                        val oneHourAgo = currentDateTime.time - DateUtils.HOUR_IN_MILLIS
+                        datetime.time in oneHourAgo until currentDateTime.time
+                    } ?: false }
             }
-        } else if (_dateOption == DateRelevance.LASTWEEK) {
-            val oneWeekAgo = Calendar.getInstance()
-            oneWeekAgo.add(Calendar.WEEK_OF_YEAR, -1)
-            filteredArticles = filteredArticles.filter {
-                it.datetime?.after(oneWeekAgo.time) ?: false
+            DateRelevance.TODAY -> {
+                filteredArticles = filteredArticles.filter {
+                    DateUtils.isToday(it.datetime?.time ?: 0)
+                }
             }
+            DateRelevance.LASTWEEK -> {
+                val oneWeekAgo = Calendar.getInstance()
+                oneWeekAgo.add(Calendar.WEEK_OF_YEAR, -1)
+                filteredArticles = filteredArticles.filter {
+                    it.datetime?.after(oneWeekAgo.time) ?: false
+                }
+            }
+            else -> {}
         }
 
         if (_readTimeOption.isNotEmpty()) {
