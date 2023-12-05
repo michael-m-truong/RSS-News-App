@@ -188,6 +188,7 @@ class ArticleListViewModel : ViewModel() {
         _sortByOption = SortByOption.MOST_POPULAR
         _publishers.clear()
         _resourceOption = mutableSetOf(ResourceOption.Google)
+        fetchArticles()
 
         /*if (view != null) {
             val snackbarMessage = "Filtered by reading time"
