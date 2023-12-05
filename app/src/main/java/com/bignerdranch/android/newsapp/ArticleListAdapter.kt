@@ -27,7 +27,6 @@ import kotlin.math.atan2
 class ArticleListAdapter :
     ListAdapter<Article, ArticleListAdapter.ArticleViewHolder>(ArticleDiffCallback()) {
 
-    private val savedArticlesRepository = SavedArticlesRepository.get()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ArticleViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = ListItemArticleBinding.inflate(inflater, parent, false)
@@ -71,19 +70,6 @@ class ArticleListAdapter :
             binding.root.setOnClickListener {
 
                 val jsonString = Gson().toJson(article)
-
-//                savedArticlesRepository.addSavedArticles(SavedArticles(
-//                    link = article.link,
-//                    headline = article.headline,
-//                    date = article.date,
-//                    dateAdded = Date(),
-//                    publisher = article.publisher,
-//                    imgSrc = article.imgSrc,
-//                    text = article.text,
-//                    source = article.source,
-//                    datetime = article.datetime,
-//                    publisherImgSrc = article.publisherImgSrc
-//                ))
                 Log.d("click", article.link)
                 val action = ArticleListFragmentDirections.showArticle(jsonString)
                 it.findNavController().navigate(action)

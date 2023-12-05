@@ -55,5 +55,9 @@
         android:label="SavedArticleListFragment"
         tools:layout="@layout/fragment_saved_newsfeed_list">
 
+        <action
+            android:id="@+id/action_savedArticlesFragment_to_photoPageFragment"
+            app:destination="@id/photoPageFragment" />
+
     </fragment>
 </navigation>

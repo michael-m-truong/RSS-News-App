@@ -552,15 +552,10 @@ class SavedArticlesListViewModel: ViewModel(){
         return filteredArticles
     }
 
-    companion object {
-        var searchQueries: MutableList<String> = mutableListOf()
-        var excludeSearchQueries: MutableList<String> = mutableListOf()
-        var savedArticleId: UUID = UUID.randomUUID()
-    }
-
     init {
         viewModelScope.launch {
             savedArticlesRepository.getSavedArticles().collect() {
+                Log.d("savedArticlesListVIewModel", it.isEmpty().toString())
                 _savedArticles.value = it
                 _isListEmpty.value = it.isEmpty()
             }

@@ -2,6 +2,7 @@ package com.bignerdranch.android.newsapp
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -22,13 +23,14 @@ import com.bignerdranch.android.newsapp.databinding.FragmentArticlePageBinding
 import com.bignerdranch.android.newsapp.models.Article
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.Date
 
 class ArticlePageFragment : Fragment() {
 
     private val args: ArticlePageFragmentArgs by navArgs()
-    private val savedArticlesRepository = SavedArticlesRepository.get()
+    private val savedArticlesListViewModel : SavedArticlesListViewModel by viewModels()
     private var save : Boolean = false
     private lateinit var article : Article
 
@@ -96,23 +98,37 @@ class ArticlePageFragment : Fragment() {
         }
     }
 
+    override fun onPause() {
+
+        val savedArticle = SavedArticles(
+            link = article.link,
+            headline = article.headline,
+            date = article.date,
+            dateAdded = Date(),
+            publisher = article.publisher,
+            imgSrc = article.imgSrc,
+            text = article.text,
+            source = article.source,
+            datetime = article.datetime,
+            publisherImgSrc = article.publisherImgSrc
+        )
+        Log.d("articlePageFrag", "created article")
+
+
+
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+            if (save) {
+                savedArticlesListViewModel.addArticle(savedArticle)
+                Log.d("articlepagefrag","Added article")
+            }else {
+                savedArticlesListViewModel.removeArticle(savedArticle.link)
+                Log.d("articlepagefrag", "removed Article")
+            }
+        }
+        super.onPause()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
-        viewLifecycleOwner.lifecycleScope.launch {
-            val savedArticle = SavedArticles(
-                    link = article.link,
-                    headline = article.headline,
-                    date = article.date,
-                    dateAdded = Date(),
-                    publisher = article.publisher,
-                    imgSrc = article.imgSrc,
-                    text = article.text,
-                    source = article.source,
-                    datetime = article.datetime,
-                    publisherImgSrc = article.publisherImgSrc
-            )
-            if (save) savedArticlesRepository.addSavedArticles(savedArticle)
-            else savedArticlesRepository.deleteSavedArticle(savedArticle.link)
-        }
     }
 }
