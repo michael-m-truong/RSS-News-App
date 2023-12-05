@@ -35,6 +35,7 @@ class ArticlePageFragment : Fragment() {
 
             webView.apply {
                 settings.javaScriptEnabled = true
+                settings.domStorageEnabled = true
                 webViewClient = WebViewClient()
                 loadUrl(args.articlePageUri.toString())
 
