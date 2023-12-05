@@ -3,6 +3,7 @@ package com.bignerdranch.android.newsapp
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.res.Configuration
+import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -11,15 +12,19 @@ import android.view.*
 import android.widget.CheckBox
 import android.widget.RadioButton
 import android.widget.RadioGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bignerdranch.android.newsapp.database.SavedArticles
 import com.bignerdranch.android.newsapp.databinding.FragmentArticleListBinding
+import com.bignerdranch.android.newsapp.databinding.FragmentSavedNewsfeedListBinding
 import com.bignerdranch.android.newsapp.models.DateRelevance
 import com.bignerdranch.android.newsapp.models.ReadTimeOption
 import com.bignerdranch.android.newsapp.models.ResourceOption
@@ -37,10 +42,23 @@ class ArticleListFragment : Fragment() {
     private val articleListViewModel: ArticleListViewModel by viewModels()
     private lateinit var articleAdapter: ArticleListAdapter // Assuming you have an ArticleAdapter
     private lateinit var recyclerView: RecyclerView
+    private val savedArticlesListViewModel: SavedArticlesListViewModel by viewModels()
+
+    private var _savedArticleBinding: FragmentSavedNewsfeedListBinding? = null
+    private val savedArticleBinding
+        get() = checkNotNull(_savedArticleBinding) {
+            "Cannot access binding because it is null. Is the view Visible?"
+        }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
+        _savedArticleBinding = FragmentSavedNewsfeedListBinding.inflate(inflater, container, false)
+        savedArticleBinding.savedNewsFeedList.layoutManager = LinearLayoutManager(context)
+
+        swipeToSave()
         val binding = FragmentArticleListBinding.inflate(inflater, container, false)
 
         articleAdapter = ArticleListAdapter() // Initialize your RecyclerView adapter
@@ -520,6 +538,94 @@ class ArticleListFragment : Fragment() {
 
     }
 
+    private fun swipeToSave() {
+        val itemTouchHelperCallback = object : ItemTouchHelper.SimpleCallback(
+            0, ItemTouchHelper.LEFT
+        ) {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                return false
+            }
 
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val position = viewHolder.bindingAdapterPosition
+                val savedArticle = savedArticlesListViewModel.getArticleByPosition(position)
+
+                val alertdialog = AlertDialog.Builder(context)
+                    .setTitle("Save Article")
+                    .setMessage("Save Article?")
+                    .setPositiveButton("Save") { _, _ ->
+                        if (savedArticle != null) {
+                            viewLifecycleOwner.lifecycleScope.launch {
+                                savedArticlesListViewModel.addArticle(savedArticle)
+                            }
+                        }
+                    }
+                    .setNegativeButton("Cancel") { dialog, _ ->
+                        dialog.dismiss()
+                        viewHolder.bindingAdapter?.notifyItemChanged(position)
+                    }
+                    .setCancelable(true)
+                    .setOnCancelListener {
+                        viewHolder.bindingAdapter?.notifyItemChanged(position)
+                    }
+                    .show()
+            }
+
+            // Customize the swipe appearance
+            override fun onChildDraw(
+                c: Canvas,
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                dX: Float,
+                dY: Float,
+                actionState: Int,
+                isCurrentlyActive: Boolean
+            ) {
+                if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
+                    val itemView = viewHolder.itemView
+                    val background = ColorDrawable(Color.RED)
+                    val deleteIcon =
+                        ContextCompat.getDrawable(requireContext(), R.drawable.baseline_delete_24)
+                    val iconMargin = (itemView.height - deleteIcon?.intrinsicHeight!!) / 2
+
+                    // Draw the red background
+                    background.setBounds(
+                        itemView.right + dX.toInt(),
+                        itemView.top,
+                        itemView.right,
+                        itemView.bottom
+                    )
+                    background.draw(c)
+                    // Draw the delete icon if the swipe is in progress
+                    if (isCurrentlyActive) {
+                        deleteIcon.setBounds(
+                            itemView.right - iconMargin - deleteIcon.intrinsicWidth,
+                            itemView.top + iconMargin,
+                            itemView.right - iconMargin,
+                            itemView.bottom - iconMargin
+                        )
+                        deleteIcon.draw(c)
+                    }
+                }
+
+                super.onChildDraw(
+                    c,
+                    recyclerView,
+                    viewHolder,
+                    dX,
+                    dY,
+                    actionState,
+                    isCurrentlyActive
+                )
+            }
+        }
+
+        val itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
+        itemTouchHelper.attachToRecyclerView(savedArticleBinding.savedNewsFeedList)
+    }
 }
 

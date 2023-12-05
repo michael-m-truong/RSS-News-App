@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 
 class SavedArticlesListFragment: Fragment() {
 
-    private val savedArticlesListViewModel : SavedArticlesListViewModel? by viewModels()
+    private val savedArticlesListViewModel : SavedArticlesListViewModel by viewModels()
     private lateinit var articleAdapter: ArticleListAdapter // Assuming you have an ArticleAdapter
     private lateinit var recyclerView: RecyclerView
 
@@ -38,12 +38,14 @@ class SavedArticlesListFragment: Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                if (savedArticlesListViewModel?.articles?.value.isNullOrEmpty()) {
-                    binding.savedNewsFeedList.visibility = View.GONE
-                    binding.noSavedArticlesTextView.visibility = View.VISIBLE
-                } else {
-                    binding.savedNewsFeedList.visibility = View.VISIBLE
-                    binding.noSavedArticlesTextView.visibility = View.GONE
+                savedArticlesListViewModel.isListEmpty.collect {isEmpty ->
+                    if (isEmpty) {
+                        binding.savedNewsFeedList.visibility = View.GONE
+                        binding.noSavedArticlesTextView.visibility = View.VISIBLE
+                    } else {
+                        binding.savedNewsFeedList.visibility = View.VISIBLE
+                        binding.noSavedArticlesTextView.visibility = View.GONE
+                    }
                 }
             }
         }

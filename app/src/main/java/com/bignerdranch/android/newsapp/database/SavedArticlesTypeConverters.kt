@@ -1,5 +1,6 @@
 package com.bignerdranch.android.newsapp.database
 
+import android.net.Uri
 import androidx.room.TypeConverter
 import com.bignerdranch.android.newsapp.models.ReadTimeOption
 import java.util.Date

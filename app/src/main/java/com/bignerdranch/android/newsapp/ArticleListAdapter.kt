@@ -1,22 +1,33 @@
 package com.bignerdranch.android.newsapp
 
 import android.content.Intent
+import android.net.Uri
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModel
+import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import com.bignerdranch.android.newsapp.database.SavedArticles
+import com.bignerdranch.android.newsapp.database.SavedArticlesRepository
 import com.bignerdranch.android.newsapp.databinding.ListItemArticleBinding
 import com.bignerdranch.android.newsapp.models.Article
+import com.google.gson.Gson
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import java.util.Date
+import kotlin.math.atan2
 
 
 class ArticleListAdapter :
     ListAdapter<Article, ArticleListAdapter.ArticleViewHolder>(ArticleDiffCallback()) {
 
+    private val savedArticlesRepository = SavedArticlesRepository.get()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ArticleViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val binding = ListItemArticleBinding.inflate(inflater, parent, false)
@@ -58,10 +69,27 @@ class ArticleListAdapter :
 
             // Make article clickable
             binding.root.setOnClickListener {
+
+                val jsonString = Gson().toJson(article)
+
+//                savedArticlesRepository.addSavedArticles(SavedArticles(
+//                    link = article.link,
+//                    headline = article.headline,
+//                    date = article.date,
+//                    dateAdded = Date(),
+//                    publisher = article.publisher,
+//                    imgSrc = article.imgSrc,
+//                    text = article.text,
+//                    source = article.source,
+//                    datetime = article.datetime,
+//                    publisherImgSrc = article.publisherImgSrc
+//                ))
                 Log.d("click", article.link)
-                val action = ArticleListFragmentDirections.showArticle(article.articlePageUri)
+                val action = ArticleListFragmentDirections.showArticle(jsonString)
                 it.findNavController().navigate(action)
             }
+
+
         }
     }
 }

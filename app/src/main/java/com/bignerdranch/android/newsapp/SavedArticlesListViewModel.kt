@@ -1,10 +1,12 @@
 package com.bignerdranch.android.newsapp
 
+import android.net.Uri
 import android.text.format.DateUtils
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bignerdranch.android.newsapp.database.SavedArticles
 import com.bignerdranch.android.newsapp.database.SavedArticlesRepository
 import com.bignerdranch.android.newsapp.models.Article
 import com.bignerdranch.android.newsapp.models.DateRelevance
@@ -31,9 +33,18 @@ class SavedArticlesListViewModel: ViewModel(){
 
     private val savedArticlesRepository = SavedArticlesRepository.get()
 
-    private val _articles: MutableStateFlow<List<Article>> = MutableStateFlow(emptyList())
+    private val _savedArticles: MutableStateFlow<List<SavedArticles>> = MutableStateFlow(emptyList())
+    val savedArticles: StateFlow<List<SavedArticles>>
+        get() = _savedArticles.asStateFlow()
 
-    val articles: StateFlow<List<Article>> get() = _articles.asStateFlow()
+
+    private val _articles: MutableStateFlow<List<Article>> = MutableStateFlow(emptyList())
+    val articles: StateFlow<List<Article>>
+        get() = _articles.asStateFlow()
+
+    private val _isListEmpty: MutableStateFlow<Boolean> = MutableStateFlow(true)
+    val isListEmpty: StateFlow<Boolean>
+        get() = _isListEmpty.asStateFlow()
 
     private val _originalArticles: MutableStateFlow<List<Article>> = MutableStateFlow(emptyList())
 
@@ -548,6 +559,31 @@ class SavedArticlesListViewModel: ViewModel(){
     }
 
     init {
-        fetchArticles()
+        viewModelScope.launch {
+            savedArticlesRepository.getSavedArticles().collect() {
+                _savedArticles.value = it
+                _isListEmpty.value = it.isEmpty()
+            }
+        }
+    }
+
+    fun getArticleByPosition(index: Int): SavedArticles? {
+        val savedArticlesList = _savedArticles.value
+        if (index >= 0 && index < savedArticlesList.size) {
+            return savedArticlesList[index]
+        }
+        return null
+    }
+
+    suspend fun addArticle(article: SavedArticles) {
+        savedArticlesRepository.addSavedArticles(article)
+    }
+
+    suspend fun removeArticle(link: String) {
+        savedArticlesRepository.deleteSavedArticle(link)
+    }
+
+    fun getCount(): Int {
+        return _articles.value.size
     }
 }

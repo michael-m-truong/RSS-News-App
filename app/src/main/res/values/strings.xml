@@ -10,4 +10,6 @@
     <string name="exact_button">Match</string>
     <string name="exclude_button">Exclude</string>
     <string name="No_saved_articles_dialogue">Swipe left to save articles</string>
+    <string name="saved_article">Saved Article!</string>
+    <string name="removed_article">Removed Article!</string>
 </resources>

@@ -46,8 +46,8 @@
         android:name="com.bignerdranch.android.newsapp.ArticlePageFragment"
         android:label="ArticlePageFragment" >
         <argument
-            android:name="articlePageUri"
-            app:argType="android.net.Uri" />
+            android:name="saved_article_json"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/savedArticlesFragment"

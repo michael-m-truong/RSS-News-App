@@ -5,7 +5,6 @@ import androidx.room.Room
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
-import java.util.UUID
 
 
 private const val DATABASE_NAME = "savedarticles-database"
@@ -22,14 +21,14 @@ class SavedArticlesRepository private constructor(
 
     fun getSavedArticles(): Flow<List<SavedArticles>> = database.savedArticlesDao().getSavedArticles()
 
-    suspend fun getSavedArticles(id: UUID): SavedArticles = database.savedArticlesDao().getSavedArticles(id)
+    suspend fun getSavedArticles(link: String): SavedArticles = database.savedArticlesDao().getSavedArticles(link)
 
     suspend fun addSavedArticles(savedArticles: SavedArticles) {
         database.savedArticlesDao().addArticle(savedArticles)
     }
 
-    suspend fun deleteSavedArticle(id: UUID) {
-        database.savedArticlesDao().deleteArticle(id)
+    suspend fun deleteSavedArticle(link: String) {
+        database.savedArticlesDao().deleteArticle(link)
     }
 
     suspend fun searchByHeadline(headLine: String) {
