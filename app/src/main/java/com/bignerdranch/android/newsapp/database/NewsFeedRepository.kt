@@ -67,6 +67,9 @@ class NewsFeedRepository private constructor
         database.newsfeedDao().updatePublisherOption(newsFeedId, newPublisherOption)
     }
 
+    suspend fun updateNewsfeedDate(newsFeedId: UUID, newDate: Date) {
+        database.newsfeedDao().updateNewsfeedDate(newsFeedId, newDate)
+    }
 
     companion object {
         private var INSTANCE: NewsFeedRepository? = null

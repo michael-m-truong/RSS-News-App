@@ -29,6 +29,7 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.checkbox.MaterialCheckBox
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
+import java.util.Date
 
 
 private const val TAG = "ArticleListFragment"
@@ -39,6 +40,16 @@ class ArticleListFragment : Fragment() {
     private lateinit var articleAdapter: ArticleListAdapter // Assuming you have an ArticleAdapter
     private lateinit var recyclerView: RecyclerView
     private lateinit var loadingProgressBar: ProgressBar
+
+    override fun onPause() {
+        super.onPause()
+
+        // Start a coroutine to update the Newsfeed date in the database
+        lifecycleScope.launch {
+            articleListViewModel.updateLastCheckedDate()
+        }
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

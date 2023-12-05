@@ -113,6 +113,12 @@ class ArticleListViewModel : ViewModel() {
     }
 
 
+
+
+    suspend fun updateLastCheckedDate() {
+        newsFeedRepository.updateNewsfeedDate(newsFeedId, Date())
+    }
+
     /* Static variables */
     companion object {
         var searchQueries: MutableList<String> = mutableListOf()

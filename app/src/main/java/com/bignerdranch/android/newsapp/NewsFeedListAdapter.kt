@@ -7,6 +7,7 @@ import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bignerdranch.android.newsapp.database.NewsFeed
 import com.bignerdranch.android.newsapp.databinding.ListItemNewsfeedBinding
+import org.ocpsoft.prettytime.PrettyTime
 import java.util.*
 
 class NewsFeedHolder(
@@ -14,7 +15,9 @@ class NewsFeedHolder(
 ) : RecyclerView.ViewHolder(binding.root) {
     fun bind(newsFeed: NewsFeed, onNewsFeedClicked: (newsfeedId: UUID) -> Unit) {
         binding.newsfeedTitle.text = newsFeed.title
-        binding.newsfeedDate.text = newsFeed.date.toString()
+        val newsfeedDateString = "Last checked: " + formatPrettyTime(newsFeed.date)
+
+        binding.newsfeedDate.text = newsfeedDateString
         Log.d("init", "editnewsfeed")
 
         binding.root.setOnClickListener {
@@ -35,6 +38,11 @@ class NewsFeedHolder(
             // Handle the click on the "edit" button (e.g., navigate to the edit view)
             onNewsFeedClicked(newsFeed.id)
         }
+    }
+
+    private fun formatPrettyTime(dateTime: Date?): String {
+        val prettyTime = PrettyTime()
+        return dateTime?.let { prettyTime.format(it) } ?: ""
     }
 }
 
