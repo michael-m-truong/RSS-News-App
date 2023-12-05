@@ -42,13 +42,13 @@ class SavedArticlesListFragment: Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 savedArticlesListViewModel.isListEmpty.collect {isEmpty ->
-                    if (isEmpty) {
-                        binding.savedNewsFeedList.visibility = View.GONE
-                        binding.noSavedArticlesTextView.visibility = View.VISIBLE
-                    } else {
+//                    if (isEmpty) {
+//                        binding.savedNewsFeedList.visibility = View.GONE
+//                        binding.noSavedArticlesTextView.visibility = View.VISIBLE
+//                    } else {
                         binding.savedNewsFeedList.visibility = View.VISIBLE
                         binding.noSavedArticlesTextView.visibility = View.GONE
-                    }
+//                    }
                 }
             }
         }
@@ -63,13 +63,17 @@ class SavedArticlesListFragment: Fragment() {
             }
         }
 
-        savedArticlesListViewModel.onDataFiltered.observe(viewLifecycleOwner, Observer {
-            updateEmptyStateVisibility()
-            recyclerView.post {
-                recyclerView.scrollToPosition(0)
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                savedArticlesListViewModel.articles.collect { articles ->
+                    articleAdapter.submitList(articles)
+                    recyclerView.post {
+                        recyclerView.scrollToPosition(0)
+                    }
+                }
             }
-        })
-
+        }
+        
         return binding.root
 
     }

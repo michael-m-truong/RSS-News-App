@@ -70,7 +70,7 @@ class SavedArticleListAdapter :
             binding.root.setOnClickListener {
                 val jsonString = Gson().toJson(article)
                 Log.d("click", article.link)
-                val action = ArticleListFragmentDirections.showArticle(jsonString)
+                val action = SavedArticlesListFragmentDirections.actionSavedArticlesFragmentToPhotoPageFragment(jsonString)
                 it.findNavController().navigate(action)
             }
         }
