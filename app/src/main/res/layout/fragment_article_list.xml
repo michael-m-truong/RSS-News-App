@@ -128,7 +128,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:textColor="?android:attr/textColorSecondary"
-            android:text="Nothing to show."
+            android:text="No articles found."
             android:visibility="gone"/>
 
     <TextView
