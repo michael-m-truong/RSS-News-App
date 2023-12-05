@@ -12,14 +12,13 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bignerdranch.android.newsapp.databinding.FragmentNewsfeedListBinding
 import com.bignerdranch.android.newsapp.databinding.FragmentSavedNewsfeedListBinding
 import kotlinx.coroutines.launch
 
 class SavedArticlesListFragment: Fragment() {
 
     private val savedArticlesListViewModel : SavedArticlesListViewModel by viewModels()
-    private lateinit var articleAdapter: ArticleListAdapter // Assuming you have an ArticleAdapter
+    private lateinit var articleAdapter: SavedArticleListAdapter // Assuming you have an ArticleAdapter
     private lateinit var recyclerView: RecyclerView
 
     private var _binding: FragmentSavedNewsfeedListBinding? = null
@@ -33,7 +32,7 @@ class SavedArticlesListFragment: Fragment() {
         savedInstanceState: Bundle?
     ): View {
 
-        articleAdapter = ArticleListAdapter()
+        articleAdapter = SavedArticleListAdapter()
         _binding = FragmentSavedNewsfeedListBinding.inflate(inflater, container, false)
         binding.savedNewsFeedList.layoutManager = LinearLayoutManager(context)
         binding.savedNewsFeedList.adapter = articleAdapter

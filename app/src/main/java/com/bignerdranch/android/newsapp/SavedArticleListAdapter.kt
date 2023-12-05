@@ -24,8 +24,8 @@ import java.util.Date
 import kotlin.math.atan2
 
 
-class ArticleListAdapter :
-    ListAdapter<Article, ArticleListAdapter.ArticleViewHolder>(ArticleDiffCallback()) {
+class SavedArticleListAdapter :
+    ListAdapter<SavedArticles, SavedArticleListAdapter.ArticleViewHolder>(SavedArticleDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ArticleViewHolder {
         val inflater = LayoutInflater.from(parent.context)
@@ -34,13 +34,13 @@ class ArticleListAdapter :
     }
 
     override fun onBindViewHolder(holder: ArticleViewHolder, position: Int) {
-        val article = getItem(position)
-        holder.bind(article)
+        val savedArticles = getItem(position)
+        holder.bind(savedArticles)
     }
 
     inner class ArticleViewHolder(private val binding: ListItemArticleBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(article: Article) {
+        fun bind(article: SavedArticles) {
             binding.root.setOnLongClickListener {
                 val shareIntent = Intent().apply {
                     action = Intent.ACTION_SEND
@@ -77,12 +77,12 @@ class ArticleListAdapter :
     }
 }
 
-class ArticleDiffCallback : DiffUtil.ItemCallback<Article>() {
-    override fun areItemsTheSame(oldItem: Article, newItem: Article): Boolean {
+class SavedArticleDiffCallback : DiffUtil.ItemCallback<SavedArticles>() {
+    override fun areItemsTheSame(oldItem: SavedArticles, newItem: SavedArticles): Boolean {
         return oldItem.headline == newItem.headline
     }
 
-    override fun areContentsTheSame(oldItem: Article, newItem: Article): Boolean {
+    override fun areContentsTheSame(oldItem: SavedArticles, newItem: SavedArticles): Boolean {
         return oldItem == newItem
     }
 }
