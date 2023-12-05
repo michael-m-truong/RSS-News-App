@@ -399,6 +399,16 @@ class ArticleListFragment : Fragment() {
         // Create the "All" checkbox
         val allCheckBox = CheckBox(requireContext())
         allCheckBox.text = "All"
+        val layoutParams = ViewGroup.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+
+        // Set paddingLeft
+        allCheckBox.setPadding(8, 0, 0, 0);
+
+        // Apply the layout parameters
+        allCheckBox.layoutParams = layoutParams
         checkBoxContainer.addView(allCheckBox)
 
         // Add a listener to the "All" checkbox to handle checking/unchecking all other checkboxes
@@ -421,6 +431,17 @@ class ArticleListFragment : Fragment() {
             val checkBox = CheckBox(requireContext())
             checkBoxes.add(checkBox)
             checkBox.text = publisher
+            val layoutParams = ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+
+            // Set paddingLeft
+            checkBox.setPadding(8, 0, 0, 0);
+
+            // Apply the layout parameters
+            checkBox.layoutParams = layoutParams
+
             checkBoxContainer.addView(checkBox)
             Log.d("selectedpub",selectedPublishers.toString())
             if (selectedPublishers.contains("INIT_NEWSFEED")) {
@@ -520,6 +541,9 @@ class ArticleListFragment : Fragment() {
             if (twitterButton.isChecked) sources.add(ResourceOption.Twitter)
 
             articleListViewModel.setResourceOption(sources)
+
+            // so articles of diff sources appear
+            articleListViewModel.publisherOption.add("ALL_PUBLISHERS")
 
             // Dismiss the dialog or perform other actions if needed
             recyclerView.visibility = View.INVISIBLE
