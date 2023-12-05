@@ -183,10 +183,10 @@ class ArticleListViewModel : ViewModel() {
         _publishers.clear()
         _resourceOption = mutableSetOf(ResourceOption.Google)
 
-        if (view != null) {
+        /*if (view != null) {
             val snackbarMessage = "Filtered by reading time"
             Snackbar.make(view, snackbarMessage, Snackbar.LENGTH_SHORT).show()
-        }
+        }*/
     }
 
     private fun getArticleReadTime(article: Article): Int {

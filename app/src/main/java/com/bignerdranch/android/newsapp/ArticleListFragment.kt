@@ -78,7 +78,7 @@ class ArticleListFragment : Fragment() {
         fun updateEmptyStateVisibility() {
             if (articleListViewModel.articles.value.isEmpty()) {
                 binding.articleRecyclerView.visibility = View.GONE
-                if (articleListViewModel.publishers.intersect(articleListViewModel.publisherOption).isEmpty() && !articleListViewModel.publisherOption.contains("INIT_NEWSFEED")) {
+                if (articleListViewModel.publishers.intersect(articleListViewModel.publisherOption).isEmpty() && !articleListViewModel.publisherOption.contains("INIT_NEWSFEED") && !articleListViewModel.publisherOption.contains("ALL_NEWSFEEDS")) {
                     binding.noPublishersView.visibility = View.VISIBLE
                     binding.emptyTextView.visibility = View.GONE
                 }
