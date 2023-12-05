@@ -18,6 +18,7 @@ import org.jsoup.Jsoup
 import org.ocpsoft.prettytime.PrettyTime
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.CopyOnWriteArrayList
 import kotlin.reflect.KClass
 
 
@@ -112,6 +113,12 @@ class ArticleListViewModel : ViewModel() {
     }
 
 
+
+
+    suspend fun updateLastCheckedDate() {
+        newsFeedRepository.updateNewsfeedDate(newsFeedId, Date())
+    }
+
     /* Static variables */
     companion object {
         var searchQueries: MutableList<String> = mutableListOf()
@@ -124,7 +131,7 @@ class ArticleListViewModel : ViewModel() {
     }
 
     init {
-        fetchArticles()
+        //fetchArticles()
         val sortByOption =
             SortByOption.values().getOrElse(ArticleListViewModel.sortByOption) { SortByOption.MOST_POPULAR }
         setSortByOption(sortByOption)
@@ -181,11 +188,12 @@ class ArticleListViewModel : ViewModel() {
         _sortByOption = SortByOption.MOST_POPULAR
         _publishers.clear()
         _resourceOption = mutableSetOf(ResourceOption.Google)
+        fetchArticles()
 
-        if (view != null) {
+        /*if (view != null) {
             val snackbarMessage = "Filtered by reading time"
             Snackbar.make(view, snackbarMessage, Snackbar.LENGTH_SHORT).show()
-        }
+        }*/
     }
 
     private fun getArticleReadTime(article: Article): Int {
@@ -196,11 +204,11 @@ class ArticleListViewModel : ViewModel() {
         return kotlin.math.round(readTimeMinutes).toInt()
     }
 
-    private fun filterArticles(articles: List<Article>, multiSourceArticles: List<List<Article>>? = null): List<Article> {
+    private fun filterArticles(articles: List<Article>): List<Article> {
         // Apply your filter criteria here
         var filteredArticles = articles
 
-        print(filteredArticles.size)
+        Log.d("THE ARTICLES ORIGINAL", articles.toString())
 
         if (_sortByOption == SortByOption.MOST_POPULAR) {
             if (resourceOption.size == 1) {
@@ -298,9 +306,9 @@ class ArticleListViewModel : ViewModel() {
     }
 
     fun fetchArticles() {
-        _publishers.clear()
         viewModelScope.launch(Dispatchers.IO) {
             // Load and display the initial articles
+            _publishers.clear()
             _originalArticles.value = mutableListOf<Article>()
             if (resourceOption.contains(ResourceOption.Google)) {
                 performWebScraping()
@@ -395,7 +403,7 @@ class ArticleListViewModel : ViewModel() {
 
             for (element in toplevelElements) {
                 val articleElements = element.select("article")
-                if (count == 10) {
+                if (count == 20) {
                     break
                 }
                 for (articleElement in articleElements) {
@@ -426,9 +434,9 @@ class ArticleListViewModel : ViewModel() {
 //                    }
 //                    val articleText = articleTextDeferred.await()
                     //val articleText = getArticleText(headlineLink)
-                    val articleText = ""
+                    val articleText = "fill"
                     count += 1
-                    if (count == 10) {
+                    if (count == 20) {
                         break
                     }
                     val headlineDateElement = articleElement.select("time")
@@ -471,6 +479,7 @@ class ArticleListViewModel : ViewModel() {
         //    val sortedArticles = articles.sortedByDescending { it.datetime }
         //    return sortedArticles
         //} else {
+        Log.d("GOOGLE ARTICLES",articles.toString())
         _originalArticles.value += articles.toList()
         return filterArticles(articles)
         //}
@@ -478,8 +487,10 @@ class ArticleListViewModel : ViewModel() {
     }
 
     private suspend fun performWebScraping_Reddit(): List<Article> {
-        val query = "nba"
-        val url = "https://www.reddit.com/search/?q=%22$query%22&sort=hot"
+        val exactStrings = searchQueries
+            .filter { it.isNotEmpty() } // Filter out empty strings
+            .joinToString("+") { "%22$it%22"}
+        val url = "https://www.reddit.com/search/?q=$exactStrings&sort=hot"
         Log.d("url", url)
         val articles = mutableListOf<Article>()
 
@@ -553,7 +564,7 @@ class ArticleListViewModel : ViewModel() {
                     publisherSrc = ""
                 }
 
-                val articleText = "" // You may fetch article text if needed
+                val articleText = "fill" // You may fetch article text if needed
 
                 val article = Article(
                     title,
@@ -593,6 +604,19 @@ class ArticleListViewModel : ViewModel() {
         //    val sortedArticles = articles.sortedByDescending { it.datetime }
         //    return sortedArticles
         //} else {
+        articles.filter { article ->
+            // List of words to exclude (non-case-sensitive)
+            val excludeWords = excludeSearchQueries
+
+            // Splitting the article text by space and checking for exclusion
+            val articleWords = article.text.split("\\s+".toRegex())
+            val containsExcludedWord = articleWords.any { word ->
+                excludeWords.any { excluded -> word.equals(excluded, ignoreCase = true) }
+            }
+
+            // Only add the article to the list if it doesn't contain any excluded words
+            !containsExcludedWord
+        }
         _originalArticles.value += articles.toList()
         return filterArticles(articles)
         //}

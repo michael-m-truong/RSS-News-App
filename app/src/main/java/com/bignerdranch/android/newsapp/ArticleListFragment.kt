@@ -12,6 +12,7 @@ import android.view.*
 import android.widget.CheckBox
 import android.widget.RadioButton
 import android.widget.RadioGroup
+import android.widget.ProgressBar
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -33,6 +34,7 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.checkbox.MaterialCheckBox
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
+import java.util.Date
 
 
 private const val TAG = "ArticleListFragment"
@@ -50,6 +52,24 @@ class ArticleListFragment : Fragment() {
             "Cannot access binding because it is null. Is the view Visible?"
         }
 
+    private lateinit var loadingProgressBar: ProgressBar
+
+    override fun onPause() {
+        super.onPause()
+
+        // Start a coroutine to update the Newsfeed date in the database
+        lifecycleScope.launch {
+            articleListViewModel.updateLastCheckedDate()
+        }
+    }
+
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        // Perform data fetching or any other setup tasks here
+        articleListViewModel.fetchArticles()
+    }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -70,6 +90,7 @@ class ArticleListFragment : Fragment() {
 
         // Init recyclerview
         recyclerView = binding.articleRecyclerView
+        loadingProgressBar = binding.loadingProgressBar
 
         // Observe the articles from the ViewModel and update the RecyclerView when they change
         viewLifecycleOwner.lifecycleScope.launch {
@@ -86,7 +107,7 @@ class ArticleListFragment : Fragment() {
         fun updateEmptyStateVisibility() {
             if (articleListViewModel.articles.value.isEmpty()) {
                 binding.articleRecyclerView.visibility = View.GONE
-                if (articleListViewModel.publishers.intersect(articleListViewModel.publisherOption).isEmpty() && !articleListViewModel.publisherOption.contains("INIT_NEWSFEED")) {
+                if (articleListViewModel.publishers.intersect(articleListViewModel.publisherOption).isEmpty() && !articleListViewModel.publisherOption.contains("INIT_NEWSFEED") && !articleListViewModel.publisherOption.contains("ALL_NEWSFEEDS")) {
                     binding.noPublishersView.visibility = View.VISIBLE
                     binding.emptyTextView.visibility = View.GONE
                 }
@@ -119,9 +140,12 @@ class ArticleListFragment : Fragment() {
             // Hide loading progress bar and show the RecyclerView when data is ready
             binding.loadingProgressBar.visibility = View.INVISIBLE
             binding.articleRecyclerView.visibility = View.VISIBLE
+            binding.swipeRefreshLayout.isRefreshing = false
 
             updateEmptyStateVisibility()
-            binding.articleRecyclerView.smoothScrollToPosition(0)
+            recyclerView.post {
+                recyclerView.scrollToPosition(0)
+            }
         })
 
 
@@ -189,7 +213,7 @@ class ArticleListFragment : Fragment() {
 
         binding.swipeRefreshLayout.setOnRefreshListener {
             articleListViewModel.fetchArticles()
-            binding.swipeRefreshLayout.isRefreshing = false
+            binding.swipeRefreshLayout.isRefreshing = true
         }
 
         clearFiltersButton.setOnClickListener {
@@ -404,6 +428,16 @@ class ArticleListFragment : Fragment() {
         // Create the "All" checkbox
         val allCheckBox = CheckBox(requireContext())
         allCheckBox.text = "All"
+        val layoutParams = ViewGroup.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+
+        // Set paddingLeft
+        allCheckBox.setPadding(8, 0, 0, 0);
+
+        // Apply the layout parameters
+        allCheckBox.layoutParams = layoutParams
         checkBoxContainer.addView(allCheckBox)
 
         // Add a listener to the "All" checkbox to handle checking/unchecking all other checkboxes
@@ -411,7 +445,7 @@ class ArticleListFragment : Fragment() {
             if (isChecked) {
                 for (checkBox in checkBoxes) {
                     checkBox.isEnabled = false
-                    checkBox.isChecked = true
+                    //checkBox.isChecked = true  // to make sure users know their selection saves
                 }
             } else {
                 for (checkBox in checkBoxes) {
@@ -426,6 +460,17 @@ class ArticleListFragment : Fragment() {
             val checkBox = CheckBox(requireContext())
             checkBoxes.add(checkBox)
             checkBox.text = publisher
+            val layoutParams = ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+
+            // Set paddingLeft
+            checkBox.setPadding(8, 0, 0, 0);
+
+            // Apply the layout parameters
+            checkBox.layoutParams = layoutParams
+
             checkBoxContainer.addView(checkBox)
             Log.d("selectedpub",selectedPublishers.toString())
             if (selectedPublishers.contains("INIT_NEWSFEED")) {
@@ -526,7 +571,13 @@ class ArticleListFragment : Fragment() {
 
             articleListViewModel.setResourceOption(sources)
 
+            // so articles of diff sources appear
+            articleListViewModel.publisherOption.add("ALL_PUBLISHERS")
+
             // Dismiss the dialog or perform other actions if needed
+            recyclerView.visibility = View.INVISIBLE
+            loadingProgressBar.visibility = View.VISIBLE
+
             recyclerView.smoothScrollToPosition(0)
             articleListViewModel.fetchArticles()
             dialog.dismiss()

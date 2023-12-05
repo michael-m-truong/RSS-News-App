@@ -31,6 +31,15 @@ class NewsFeedTypeConverters {
 
     @TypeConverter
     fun toReadTimeOptions(ordinalList: List<String>): List<ReadTimeOption> {
-        return ordinalList.map { ReadTimeOption.values()[it.toInt()] }
+        return try {
+            ordinalList.map { ReadTimeOption.values()[it.toInt()] }
+        } catch (e: NumberFormatException) {
+            // Log the error or handle it as needed
+            e.printStackTrace()
+
+            // Provide a fallback value (empty list in this case)
+            emptyList()
+        }
     }
+
 }
