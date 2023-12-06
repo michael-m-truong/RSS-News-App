@@ -21,7 +21,7 @@ class SavedArticlesRepository private constructor(
 
     fun getSavedArticles(): Flow<List<SavedArticles>> = database.savedArticlesDao().getSavedArticles()
 
-    suspend fun getSavedArticles(link: String): SavedArticles = database.savedArticlesDao().getSavedArticles(link)
+    suspend fun getSavedArticles(link: String): SavedArticles? = database.savedArticlesDao().getSavedArticles(link)
 
     suspend fun addSavedArticles(savedArticles: SavedArticles) {
         database.savedArticlesDao().addArticle(savedArticles)

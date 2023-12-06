@@ -12,7 +12,7 @@ interface SavedArticlesDao {
     fun getSavedArticles(): Flow<List<SavedArticles>>
 
     @Query("SELECT * FROM SavedArticles WHERE link = (:link)")
-    suspend fun getSavedArticles(link: String): SavedArticles
+    suspend fun getSavedArticles(link: String): SavedArticles?
 
     @Query("SELECT * FROM SavedArticles WHERE headline LIKE '%' || :headline || '%'")
     suspend fun getArticleByHeadline(headline: String) : SavedArticles

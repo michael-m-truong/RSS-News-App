@@ -25,6 +25,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.lang.Exception
 import java.util.Date
 
 class ArticlePageFragment : Fragment() {
@@ -32,6 +33,7 @@ class ArticlePageFragment : Fragment() {
     private val args: ArticlePageFragmentArgs by navArgs()
     private val savedArticlesListViewModel : SavedArticlesListViewModel by viewModels()
     private var save : Boolean = false
+    private var contains: Boolean = false
     private lateinit var article : Article
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -48,6 +50,9 @@ class ArticlePageFragment : Fragment() {
 
         article = Gson().fromJson(args.savedArticleJson, Article::class.java)
 
+        checkIfContains()
+        save = contains
+        Log.d("articlePageFragment", "will save $save")
         setHasOptionsMenu(true)
 
         binding.apply {
@@ -99,6 +104,14 @@ class ArticlePageFragment : Fragment() {
         }
     }
 
+
+    private fun checkIfContains() {
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+            contains = savedArticlesListViewModel.contains(article.link)
+            Log.d("articlePageFragment", "contains is $contains")
+        }
+    }
+
     override fun onPause() {
 
         val savedArticle = SavedArticles(
@@ -118,9 +131,12 @@ class ArticlePageFragment : Fragment() {
 
 
         viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+            Log.d("articlePageFragment", "will save $save")
             if (save) {
-                savedArticlesListViewModel.addArticle(savedArticle)
-                Log.d("articlepagefrag","Added article")
+                if (!contains) {
+                    savedArticlesListViewModel.addArticle(savedArticle)
+                    Log.d("articlepagefrag", "Added article")
+                }
             }else {
                 savedArticlesListViewModel.removeArticle(savedArticle.link)
                 Log.d("articlepagefrag", "removed Article")

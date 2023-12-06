@@ -51,4 +51,8 @@ class SavedArticlesListViewModel: ViewModel(){
         savedArticlesRepository.deleteSavedArticle(link)
     }
 
+    suspend fun contains(link: String) : Boolean{
+        return savedArticlesRepository.getSavedArticles(link) != null
+    }
+
 }
