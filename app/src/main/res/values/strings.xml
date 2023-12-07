@@ -12,4 +12,7 @@
     <string name="No_saved_articles_dialogue">Swipe left to save articles</string>
     <string name="saved_article">Saved Article!</string>
     <string name="removed_article">Removed Article!</string>
+    <string name="helper_chip_exact">Includes only articles containing these keywords</string>
+    <string name="helper_chip_exclude">Excludes articles containing these keywords</string>
+
 </resources>

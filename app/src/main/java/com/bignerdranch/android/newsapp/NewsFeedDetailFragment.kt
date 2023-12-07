@@ -6,6 +6,7 @@ import android.util.Log
 import android.util.TypedValue
 import android.view.*
 import android.view.inputmethod.EditorInfo
+import androidx.core.view.size
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -121,6 +122,38 @@ class NewsFeedDetailFragment : Fragment() {
                             chipGroup.removeView(chip)
                         }
                         chipGroup.addView(chip)
+                        val helperExactText = getString(R.string.helper_chip_exact)
+                        val helperExcludeText = getString(R.string.helper_chip_exclude)
+
+                        // Remove the chip with the helper_exact text if it exists
+                        var chipToRemove: Chip? = null
+                        for (i in 0 until chipGroup.childCount) {
+                            val chip = chipGroup.getChildAt(i) as? Chip
+                            if (chip?.text == helperExactText) {
+                                chipToRemove = chip
+                                break
+                            }
+                        }
+
+                        chipToRemove?.let {
+                            chipGroup.removeView(it)
+                        }
+
+                        // Remove the chip with the helper_exclude text if it exists
+                        chipToRemove = null
+                        for (i in 0 until chipGroup.childCount) {
+                            val chip = chipGroup.getChildAt(i) as? Chip
+                            if (chip?.text == helperExcludeText) {
+                                chipToRemove = chip
+                                break
+                            }
+                        }
+
+                        chipToRemove?.let {
+                            chipGroup.removeView(it)
+                        }
+
+
                         inputWord.text?.clear()
 
                         if (newsFeedDetailViewModel.filterState == Filter.EXACT) {
@@ -163,6 +196,19 @@ class NewsFeedDetailFragment : Fragment() {
 
                 // Handle button click action
                 chipGroup.removeAllViews()
+
+                val wordbank = newsFeedDetailViewModel.newsFeed.value?.wordBank!!
+
+                if (wordbank.size == 1 && wordbank.contains("")) {
+                    val addKeywordsChip = Chip(requireContext())
+                    addKeywordsChip.text = getString(R.string.helper_chip_exact)
+                    addKeywordsChip.chipMinHeight = 140f
+                    addKeywordsChip.isCloseIconVisible = false // This chip won't be removable
+                    addKeywordsChip.isClickable = false // Make the chip unclickable
+                    addKeywordsChip.isFocusable = false // Make the chip unfocusable
+                    chipGroup.addView(addKeywordsChip)
+                }
+
                 for (word in newsFeedDetailViewModel.newsFeed.value?.wordBank!!) {
                     if (word.isNotEmpty()) { // Add this condition to skip empty words
                         val chip = Chip(requireContext())
@@ -173,6 +219,7 @@ class NewsFeedDetailFragment : Fragment() {
                         chip.setOnCloseIconClickListener {
                             // Remove the word from the list and the chip
                             newsFeedDetailViewModel.updateNewsFeed { oldNewsFeed ->
+                                Log.d("sizees", chipGroup.size.toString())
                                 oldNewsFeed.wordBank.remove(word)
                                 oldNewsFeed.copy(wordBank = oldNewsFeed.wordBank)
                             }
@@ -206,6 +253,19 @@ class NewsFeedDetailFragment : Fragment() {
 
 
                 chipGroup.removeAllViews()
+
+                val wordbank = newsFeedDetailViewModel.newsFeed.value?.excludeWordBank!!
+
+                if (wordbank.size == 1 && wordbank.contains("")) {
+                    val addKeywordsChip = Chip(requireContext())
+                    addKeywordsChip.text = getString(R.string.helper_chip_exclude)
+                    addKeywordsChip.chipMinHeight = 140f
+                    addKeywordsChip.isCloseIconVisible = false // This chip won't be removable
+                    addKeywordsChip.isClickable = false // Make the chip unclickable
+                    addKeywordsChip.isFocusable = false // Make the chip unfocusable
+                    chipGroup.addView(addKeywordsChip)
+                }
+
                 for (word in newsFeedDetailViewModel.newsFeed.value?.excludeWordBank!!) {
                     if (word.isNotEmpty()) { // Add this condition to skip empty words
                         val chip = Chip(requireContext())
@@ -272,7 +332,9 @@ class NewsFeedDetailFragment : Fragment() {
             } else if (newsFeedDetailViewModel.filterState == Filter.EXCLUDE) {
                 wordbank = newsFeed.excludeWordBank
             }
-            if (wordbank != null) {
+            if (wordbank != null && !(wordbank.size == 1 && wordbank.contains(""))) {
+                Log.d("wordbank", wordbank.toString())
+                Log.d("wordbankk",wordbank.size.toString())
                 for (word in wordbank) {
                     if (word.isNotEmpty()) { // Add this condition to skip empty words
                         val chip = Chip(requireContext())
@@ -291,6 +353,28 @@ class NewsFeedDetailFragment : Fragment() {
 
                         chipGroup.addView(chip)
                     }
+                }
+            }
+            else {
+                if (newsFeedDetailViewModel.filterState == Filter.EXACT) {
+                    val addKeywordsChip = Chip(requireContext())
+                    addKeywordsChip.text = getString(R.string.helper_chip_exact)
+                    addKeywordsChip.chipMinHeight = 140f
+                    addKeywordsChip.isCloseIconVisible = false // This chip won't be removable
+                    addKeywordsChip.isClickable = false // Make the chip unclickable
+                    addKeywordsChip.isFocusable = false // Make the chip unfocusable
+                    addKeywordsChip.id = resources.getIdentifier("helper_exact", "id", requireContext().packageName)
+                    chipGroup.addView(addKeywordsChip)
+                }
+                else if (newsFeedDetailViewModel.filterState == Filter.EXCLUDE) {
+                    val addKeywordsChip = Chip(requireContext())
+                    addKeywordsChip.text = getString(R.string.helper_chip_exclude)
+                    addKeywordsChip.chipMinHeight = 140f
+                    addKeywordsChip.isCloseIconVisible = false // This chip won't be removable
+                    addKeywordsChip.isClickable = false // Make the chip unclickable
+                    addKeywordsChip.isFocusable = false // Make the chip unfocusable
+                    addKeywordsChip.id = resources.getIdentifier("helper_exclude", "id", requireContext().packageName)
+                    chipGroup.addView(addKeywordsChip)
                 }
             }
             //newsFeedDate.text = newsFeed.date.toString()
