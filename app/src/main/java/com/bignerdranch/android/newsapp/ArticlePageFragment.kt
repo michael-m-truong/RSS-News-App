@@ -12,20 +12,18 @@ import android.view.ViewGroup
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.navArgs
 import com.bignerdranch.android.newsapp.database.SavedArticles
-import com.bignerdranch.android.newsapp.database.SavedArticlesRepository
 import com.bignerdranch.android.newsapp.databinding.FragmentArticlePageBinding
 import com.bignerdranch.android.newsapp.models.Article
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.lang.Exception
+import kotlinx.coroutines.runBlocking
 import java.util.Date
 
 class ArticlePageFragment : Fragment() {
@@ -50,9 +48,6 @@ class ArticlePageFragment : Fragment() {
 
         article = Gson().fromJson(args.savedArticleJson, Article::class.java)
 
-        checkIfContains()
-        save = contains
-        Log.d("articlePageFragment", "will save $save")
         setHasOptionsMenu(true)
 
         binding.apply {
@@ -80,23 +75,35 @@ class ArticlePageFragment : Fragment() {
             }
         }
 
+
+        contains = checkIfContains()
+        save = contains
+        Log.d("articlePageFragment", "will save $save")
+
         return binding.root
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.fragment_article_page, menu)
+        inflater.inflate(R.menu.fragment_article_page_add, menu)
+
+        if (save) {
+            menu.getItem(0).setIcon(R.drawable.baseline_bookmark_remove_24)
+        } else {
+            menu.getItem(0).setIcon((R.drawable.baseline_bookmark_add_24))
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.bookmarkArticle -> {
                 save = !save
-                val messageId = when {
-                    save -> R.string.saved_article
-                    else -> R.string.removed_article
-                }
+                val messageId = if (save) R.string.saved_article else R.string.removed_article
                 view?.let { Snackbar.make(it, messageId, Snackbar.LENGTH_SHORT).show() }
+                if (save)
+                    item.setIcon(R.drawable.baseline_bookmark_remove_24)
+                else
+                    item.setIcon(R.drawable.baseline_bookmark_add_24)
                 true
             }
 
@@ -105,11 +112,13 @@ class ArticlePageFragment : Fragment() {
     }
 
 
-    private fun checkIfContains() {
-        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+    private fun checkIfContains() : Boolean {
+
+        runBlocking {
             contains = savedArticlesListViewModel.contains(article.link)
             Log.d("articlePageFragment", "contains is $contains")
         }
+        return contains
     }
 
     override fun onPause() {
