@@ -1,6 +1,9 @@
 package com.bignerdranch.android.newsapp
 
 import android.annotation.SuppressLint
+import android.content.ActivityNotFoundException
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,6 +13,7 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebChromeClient
+import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.fragment.app.Fragment
@@ -71,6 +75,36 @@ class ArticlePageFragment : Fragment() {
                             progressBar.progress = newProgress
                         }
                     }
+                }
+
+                webViewClient = object : WebViewClient() {
+
+                    override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
+                        return try {
+                            val url = request?.url.toString()
+
+                            if (url.contains("reddit.com")) {
+                                // Open Reddit app
+                                val redditIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                                redditIntent.setPackage("com.reddit.frontpage") // Reddit app package name
+                                view?.context?.startActivity(redditIntent)
+                            } else if (url.contains("twitter.com")) {
+                                // Open Twitter app
+                                val twitterIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                                twitterIntent.setPackage("com.twitter.android") // Twitter app package name
+                                view?.context?.startActivity(twitterIntent)
+                            } else {
+                                // Continue loading the URL in the WebView for other URLs
+                                return false
+                            }
+
+                            true // Indicate that the URL has been handled
+                        } catch (e: ActivityNotFoundException) {
+                            Log.e("test", "Could not load URL: ${request?.url}")
+                            false // Continue loading the URL in the WebView
+                        }
+                    }
+
                 }
             }
         }
