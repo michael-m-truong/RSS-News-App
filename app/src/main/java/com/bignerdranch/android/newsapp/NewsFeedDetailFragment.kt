@@ -115,6 +115,29 @@ class NewsFeedDetailFragment : Fragment() {
                                     oldNewsFeed.copy(excludeWordBank = oldNewsFeed.excludeWordBank)
                                 }
                             }
+                            if( chipGroup.size == 1) {
+                                if (newsFeedDetailViewModel.filterState == Filter.EXACT) {
+                                    val addKeywordsChip = Chip(requireContext())
+                                    addKeywordsChip.text = getString(R.string.helper_chip_exact)
+                                    addKeywordsChip.chipMinHeight = 140f
+                                    addKeywordsChip.isCloseIconVisible = false // This chip won't be removable
+                                    addKeywordsChip.isClickable = false // Make the chip unclickable
+                                    addKeywordsChip.isFocusable = false // Make the chip unfocusable
+                                    addKeywordsChip.id = resources.getIdentifier("helper_exact", "id", requireContext().packageName)
+                                    chipGroup.addView(addKeywordsChip)
+                                }
+                                else if (newsFeedDetailViewModel.filterState == Filter.EXCLUDE) {
+                                    val addKeywordsChip = Chip(requireContext())
+                                    addKeywordsChip.text = getString(R.string.helper_chip_exclude)
+                                    addKeywordsChip.chipMinHeight = 140f
+                                    addKeywordsChip.isCloseIconVisible = false // This chip won't be removable
+                                    addKeywordsChip.isClickable = false // Make the chip unclickable
+                                    addKeywordsChip.isFocusable = false // Make the chip unfocusable
+                                    addKeywordsChip.id = resources.getIdentifier("helper_exclude", "id", requireContext().packageName)
+                                    chipGroup.addView(addKeywordsChip)
+                                }
+
+                            }
 //                            newsFeedDetailViewModel.updateNewsFeed { oldNewsFeed ->
 //                                oldNewsFeed.wordBank.remove(word)
 //                                oldNewsFeed.copy(wordBank = oldNewsFeed.wordBank)
@@ -224,6 +247,30 @@ class NewsFeedDetailFragment : Fragment() {
                                 oldNewsFeed.copy(wordBank = oldNewsFeed.wordBank)
                             }
                             chipGroup.removeView(chip)
+
+                            if( chipGroup.size == 0) {
+                                if (newsFeedDetailViewModel.filterState == Filter.EXACT) {
+                                    val addKeywordsChip = Chip(requireContext())
+                                    addKeywordsChip.text = getString(R.string.helper_chip_exact)
+                                    addKeywordsChip.chipMinHeight = 140f
+                                    addKeywordsChip.isCloseIconVisible = false // This chip won't be removable
+                                    addKeywordsChip.isClickable = false // Make the chip unclickable
+                                    addKeywordsChip.isFocusable = false // Make the chip unfocusable
+                                    addKeywordsChip.id = resources.getIdentifier("helper_exact", "id", requireContext().packageName)
+                                    chipGroup.addView(addKeywordsChip)
+                                }
+                                else if (newsFeedDetailViewModel.filterState == Filter.EXCLUDE) {
+                                    val addKeywordsChip = Chip(requireContext())
+                                    addKeywordsChip.text = getString(R.string.helper_chip_exclude)
+                                    addKeywordsChip.chipMinHeight = 140f
+                                    addKeywordsChip.isCloseIconVisible = false // This chip won't be removable
+                                    addKeywordsChip.isClickable = false // Make the chip unclickable
+                                    addKeywordsChip.isFocusable = false // Make the chip unfocusable
+                                    addKeywordsChip.id = resources.getIdentifier("helper_exclude", "id", requireContext().packageName)
+                                    chipGroup.addView(addKeywordsChip)
+                                }
+
+                            }
                         }
 
                         chipGroup.addView(chip)
@@ -280,6 +327,30 @@ class NewsFeedDetailFragment : Fragment() {
                                 oldNewsFeed.copy(wordBank = oldNewsFeed.wordBank)
                             }
                             chipGroup.removeView(chip)
+
+                            if( chipGroup.size == 0) {
+                                if (newsFeedDetailViewModel.filterState == Filter.EXACT) {
+                                    val addKeywordsChip = Chip(requireContext())
+                                    addKeywordsChip.text = getString(R.string.helper_chip_exact)
+                                    addKeywordsChip.chipMinHeight = 140f
+                                    addKeywordsChip.isCloseIconVisible = false // This chip won't be removable
+                                    addKeywordsChip.isClickable = false // Make the chip unclickable
+                                    addKeywordsChip.isFocusable = false // Make the chip unfocusable
+                                    addKeywordsChip.id = resources.getIdentifier("helper_exact", "id", requireContext().packageName)
+                                    chipGroup.addView(addKeywordsChip)
+                                }
+                                else if (newsFeedDetailViewModel.filterState == Filter.EXCLUDE) {
+                                    val addKeywordsChip = Chip(requireContext())
+                                    addKeywordsChip.text = getString(R.string.helper_chip_exclude)
+                                    addKeywordsChip.chipMinHeight = 140f
+                                    addKeywordsChip.isCloseIconVisible = false // This chip won't be removable
+                                    addKeywordsChip.isClickable = false // Make the chip unclickable
+                                    addKeywordsChip.isFocusable = false // Make the chip unfocusable
+                                    addKeywordsChip.id = resources.getIdentifier("helper_exclude", "id", requireContext().packageName)
+                                    chipGroup.addView(addKeywordsChip)
+                                }
+
+                            }
                         }
 
                         chipGroup.addView(chip)
@@ -349,6 +420,30 @@ class NewsFeedDetailFragment : Fragment() {
                                 oldNewsFeed.copy(wordBank = oldNewsFeed.wordBank)
                             }
                             chipGroup.removeView(chip)
+
+                            if( chipGroup.size == 1) {
+                                if (newsFeedDetailViewModel.filterState == Filter.EXACT) {
+                                    val addKeywordsChip = Chip(requireContext())
+                                    addKeywordsChip.text = getString(R.string.helper_chip_exact)
+                                    addKeywordsChip.chipMinHeight = 140f
+                                    addKeywordsChip.isCloseIconVisible = false // This chip won't be removable
+                                    addKeywordsChip.isClickable = false // Make the chip unclickable
+                                    addKeywordsChip.isFocusable = false // Make the chip unfocusable
+                                    addKeywordsChip.id = resources.getIdentifier("helper_exact", "id", requireContext().packageName)
+                                    chipGroup.addView(addKeywordsChip)
+                                }
+                                else if (newsFeedDetailViewModel.filterState == Filter.EXCLUDE) {
+                                    val addKeywordsChip = Chip(requireContext())
+                                    addKeywordsChip.text = getString(R.string.helper_chip_exclude)
+                                    addKeywordsChip.chipMinHeight = 140f
+                                    addKeywordsChip.isCloseIconVisible = false // This chip won't be removable
+                                    addKeywordsChip.isClickable = false // Make the chip unclickable
+                                    addKeywordsChip.isFocusable = false // Make the chip unfocusable
+                                    addKeywordsChip.id = resources.getIdentifier("helper_exclude", "id", requireContext().packageName)
+                                    chipGroup.addView(addKeywordsChip)
+                                }
+
+                            }
                         }
 
                         chipGroup.addView(chip)
