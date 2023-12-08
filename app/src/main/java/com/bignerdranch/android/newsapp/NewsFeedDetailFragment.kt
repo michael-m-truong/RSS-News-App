@@ -1,5 +1,6 @@
 package com.bignerdranch.android.newsapp
 
+import android.app.AlertDialog
 import android.graphics.Color
 import android.os.Bundle
 import android.text.Spannable
@@ -34,6 +35,7 @@ class NewsFeedDetailFragment : Fragment() {
     private var _binding: FragmentNewsfeedDetailBinding? = null
     private val args: NewsFeedDetailFragmentArgs by navArgs()
 
+    private var originalNewsFeed: NewsFeed? = null
 
     private val newsFeedDetailViewModel: NewsFeedDetailViewModel by viewModels {
         NewsFeedDetailViewModelFactory(args.newsfeedId)
@@ -54,7 +56,7 @@ class NewsFeedDetailFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
 
-        //init_styles()
+        init_styles()
 
         _binding =
             FragmentNewsfeedDetailBinding.inflate(layoutInflater, container, false)
@@ -105,9 +107,7 @@ class NewsFeedDetailFragment : Fragment() {
                 return when (menuItem.itemId) {
                     android.R.id.home -> {
                         //TODO make it so that it doenst save to viewmodel
-                        val actionBar = (activity as AppCompatActivity?)!!.supportActionBar
-                        actionBar?.setDisplayHomeAsUpEnabled(false)
-                        requireActivity().onBackPressedDispatcher.onBackPressed()
+                        showDiscardChangesDialog()
                         return true
                     }
                     R.id.save -> {
@@ -442,6 +442,11 @@ class NewsFeedDetailFragment : Fragment() {
     private fun updateUi(newsFeed: NewsFeed) {
         binding.apply {
 
+            if (originalNewsFeed == null) {
+                // Save the original state when it's not saved yet
+                originalNewsFeed = newsFeed.copy()
+            }
+
             val translationX = exactMatchButton.x
             underline.translationX = translationX
 
@@ -531,6 +536,40 @@ class NewsFeedDetailFragment : Fragment() {
                 }
             }
             //newsFeedDate.text = newsFeed.date.toString()
+        }
+    }
+
+
+    private fun hasChanges(): Boolean {
+        return originalNewsFeed != null && originalNewsFeed != newsFeedDetailViewModel.newsFeed.value
+    }
+
+    private fun discardChanges() {
+        originalNewsFeed?.let { original ->
+            newsFeedDetailViewModel.updateNewsFeed { _ ->
+                // Revert to the original state
+                original.copy()
+            }
+        }
+        requireActivity().onBackPressedDispatcher.onBackPressed()
+    }
+    private fun showDiscardChangesDialog() {
+        val hasChanges = hasChanges()
+        if (hasChanges) {
+            AlertDialog.Builder(requireContext())
+                .setTitle("Discard Changes?")
+                .setMessage("Are you sure you want to discard changes?")
+                .setPositiveButton("Yes") { _, _ ->
+                    // User clicked Yes, discard changes and go back
+                    discardChanges()
+                }
+                .setNegativeButton("No", null)
+                .show()
+        } else {
+            // No changes, simply go back
+            val actionBar = (activity as AppCompatActivity?)!!.supportActionBar
+            actionBar?.setDisplayHomeAsUpEnabled(false)
+            requireActivity().onBackPressedDispatcher.onBackPressed()
         }
     }
 }
