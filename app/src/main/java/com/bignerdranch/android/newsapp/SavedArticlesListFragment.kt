@@ -119,6 +119,12 @@ class SavedArticlesListFragment: Fragment() {
         }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 
+    override fun onDestroyView() {
+        val actionBar = (activity as AppCompatActivity?)!!.supportActionBar
+        actionBar?.setDisplayHomeAsUpEnabled(false)
+        super.onDestroyView()
+    }
+
     fun init_styles() {
         val actionBar = (activity as AppCompatActivity?)!!.supportActionBar
         actionBar?.title = "Saved"

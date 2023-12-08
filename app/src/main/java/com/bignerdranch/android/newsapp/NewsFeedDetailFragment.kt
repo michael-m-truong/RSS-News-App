@@ -435,6 +435,8 @@ class NewsFeedDetailFragment : Fragment() {
     }
 
     override fun onDestroyView() {
+        val actionBar = (activity as AppCompatActivity?)!!.supportActionBar
+        actionBar?.setDisplayHomeAsUpEnabled(false)
         super.onDestroyView()
         _binding = null
     }
