@@ -67,7 +67,16 @@ class NewsFeedDetailFragment : Fragment() {
 
     fun init_styles() {
         val actionBar = (activity as AppCompatActivity?)!!.supportActionBar
-        actionBar?.title = "Edit newsfeed"
+        val feed = newsFeedDetailViewModel.newsFeed.value
+        if (feed == null) {
+            actionBar?.title = "Create newsfeed"
+        }
+        else if (feed != null && feed.wordBank.size == 1 && feed.excludeWordBank.size == 1 && feed.title.isEmpty()) {
+            actionBar?.title = "Create newsfeed"
+        }
+        else {
+            actionBar?.title = "Edit newsfeed"
+        }
         actionBar?.setDisplayHomeAsUpEnabled(true)
         val upArrow = ContextCompat.getDrawable(requireContext(), R.drawable.baseline_arrow_forward_24)
         actionBar?.setHomeAsUpIndicator(upArrow)
