@@ -1,19 +1,31 @@
 package com.bignerdranch.android.newsapp
 
+import android.graphics.Color
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bignerdranch.android.newsapp.databinding.FragmentSavedNewsfeedListBinding
 import kotlinx.coroutines.launch
+
 
 class SavedArticlesListFragment: Fragment() {
 
@@ -31,6 +43,8 @@ class SavedArticlesListFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
+        init_styles()
 
         articleAdapter = SavedArticleListAdapter()
         _binding = FragmentSavedNewsfeedListBinding.inflate(inflater, container, false)
@@ -77,5 +91,55 @@ class SavedArticlesListFragment: Fragment() {
         return binding.root
 
     }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
+        /* stupid thing to fix depreciation for sethasoptionsmenu */
+        val menuHost: MenuHost = requireActivity()
+
+        menuHost.addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                // Add menu items here
+                //menuInflater.inflate(R.menu.fragment_newsfeed_detail, menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                // Handle the menu selection
+                return when (menuItem.itemId) {
+                    android.R.id.home -> {
+                        val actionBar = (activity as AppCompatActivity?)!!.supportActionBar
+                        actionBar?.setDisplayHomeAsUpEnabled(false)
+                        requireActivity().onBackPressedDispatcher.onBackPressed()
+                        return true
+                    }
+                    else -> false
+                }
+
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+    }
+
+    fun init_styles() {
+        val actionBar = (activity as AppCompatActivity?)!!.supportActionBar
+        actionBar?.title = "Saved"
+        actionBar?.setDisplayHomeAsUpEnabled(true)
+        val upArrow = ContextCompat.getDrawable(requireContext(), R.drawable.baseline_arrow_forward_24)
+        actionBar?.setHomeAsUpIndicator(upArrow)
+
+        //setHasOptionsMenu(true)
+
+        if (actionBar != null) {
+            val text: Spannable = SpannableString(actionBar.title)
+            text.setSpan(
+                ForegroundColorSpan(Color.BLACK),
+                0,
+                text.length,
+                Spannable.SPAN_INCLUSIVE_INCLUSIVE
+            )
+            actionBar.title = text
+        }
+    }
+
+
 
 }

@@ -15,7 +15,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         //AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+        customizeUI()
+    }
 
+    private fun customizeUI() {
         // Get the ActionBar
         val actionBar: ActionBar? = supportActionBar
 
@@ -35,7 +38,6 @@ class MainActivity : AppCompatActivity() {
             )
             actionBar.title = text
         }
-
     }
 }
 

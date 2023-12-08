@@ -2,10 +2,14 @@ package com.bignerdranch.android.newsapp
 
 import android.graphics.Color
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.util.TypedValue
 import android.view.*
 import android.view.inputmethod.EditorInfo
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.size
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
@@ -19,6 +23,7 @@ import com.bignerdranch.android.newsapp.databinding.FragmentNewsfeedDetailBindin
 import com.bignerdranch.android.newsapp.models.Filter
 import com.google.android.material.chip.Chip
 import kotlinx.coroutines.launch
+
 
 class NewsFeedDetailFragment : Fragment() {
 
@@ -45,12 +50,29 @@ class NewsFeedDetailFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
+        init_styles()
+
         _binding =
             FragmentNewsfeedDetailBinding.inflate(layoutInflater, container, false)
 
         return binding.root
     }
 
+    fun init_styles() {
+        val actionBar = (activity as AppCompatActivity?)!!.supportActionBar
+        actionBar?.title = "Edit newsfeed"
+        if (actionBar != null) {
+            val text: Spannable = SpannableString(actionBar.title)
+            text.setSpan(
+                ForegroundColorSpan(Color.BLACK),
+                0,
+                text.length,
+                Spannable.SPAN_INCLUSIVE_INCLUSIVE
+            )
+            actionBar.title = text
+        }
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

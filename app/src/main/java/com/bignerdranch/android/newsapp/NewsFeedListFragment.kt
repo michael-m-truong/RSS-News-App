@@ -6,8 +6,12 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.view.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -56,6 +60,8 @@ class NewsFeedListFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        init_styles()
+
         _binding = FragmentNewsfeedListBinding.inflate(inflater, container, false)
 
         binding.newsfeedRecyclerView.layoutManager = LinearLayoutManager(context)
@@ -100,6 +106,21 @@ class NewsFeedListFragment : Fragment() {
         }
 
         return binding.root
+    }
+
+    fun init_styles() {
+        val actionBar = (activity as AppCompatActivity?)!!.supportActionBar
+        actionBar?.title = "News Radar"
+        if (actionBar != null) {
+            val text: Spannable = SpannableString(actionBar.title)
+            text.setSpan(
+                ForegroundColorSpan(Color.BLACK),
+                0,
+                text.length,
+                Spannable.SPAN_INCLUSIVE_INCLUSIVE
+            )
+            actionBar.title = text
+        }
     }
 
     override fun onDestroyView() {
