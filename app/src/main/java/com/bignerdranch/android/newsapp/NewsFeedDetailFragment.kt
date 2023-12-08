@@ -26,6 +26,7 @@ import com.bignerdranch.android.newsapp.database.NewsFeed
 import com.bignerdranch.android.newsapp.databinding.FragmentNewsfeedDetailBinding
 import com.bignerdranch.android.newsapp.models.Filter
 import com.google.android.material.chip.Chip
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
@@ -551,7 +552,15 @@ class NewsFeedDetailFragment : Fragment() {
                 original.copy()
             }
         }
-        requireActivity().onBackPressedDispatcher.onBackPressed()
+        val actionBar = (activity as AppCompatActivity?)!!.supportActionBar
+        actionBar?.setDisplayHomeAsUpEnabled(false)
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
+            if (originalNewsFeed != null && originalNewsFeed!!.wordBank.size == 1 && originalNewsFeed!!.excludeWordBank.size == 1 && originalNewsFeed!!.title.isEmpty()) {
+                newsFeedDetailViewModel.deleteNewsFeed(originalNewsFeed!!.id)
+            }
+            requireActivity().onBackPressedDispatcher.onBackPressed()
+        }
+
     }
     private fun showDiscardChangesDialog() {
         val hasChanges = hasChanges()
@@ -569,7 +578,12 @@ class NewsFeedDetailFragment : Fragment() {
             // No changes, simply go back
             val actionBar = (activity as AppCompatActivity?)!!.supportActionBar
             actionBar?.setDisplayHomeAsUpEnabled(false)
-            requireActivity().onBackPressedDispatcher.onBackPressed()
+            viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
+                if (originalNewsFeed != null && originalNewsFeed!!.wordBank.size == 1 && originalNewsFeed!!.excludeWordBank.size == 1 && originalNewsFeed!!.title.isEmpty()) {
+                    newsFeedDetailViewModel.deleteNewsFeed(originalNewsFeed!!.id)
+                }
+                requireActivity().onBackPressedDispatcher.onBackPressed()
+            }
         }
     }
 }

@@ -36,6 +36,10 @@ class NewsFeedDetailViewModel(newsfeedId: UUID) : ViewModel() {
         newsFeed.value?.let { newsFeedRepository.updateNewsFeed(it) }
     }
 
+    suspend fun deleteNewsFeed(id: UUID) {
+        newsFeedRepository.deleteNewsFeed(id)
+    }
+
 }
 
 class NewsFeedDetailViewModelFactory(
