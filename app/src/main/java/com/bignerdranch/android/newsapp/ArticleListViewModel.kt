@@ -263,32 +263,29 @@ class ArticleListViewModel : ViewModel() {
             else -> {}
         }
 
+
         if (_readTimeOption.isNotEmpty()) {
-            val readTimeArticles = mutableListOf<Article>()
+            val tempFilteredArticles = mutableListOf<Article>()
 
-            if (_readTimeOption.contains(ReadTimeOption.oneTOthree)) {
-                readTimeArticles += filteredArticles.filter {
-                    val readTimeMin = getArticleReadTime(it)
-                    readTimeMin <= 3
+            for (article in filteredArticles) {
+                val readTimeMin = getArticleReadTime(article)
+                Log.d("readtime", readTimeMin.toString())
+
+                if ((_readTimeOption.contains(ReadTimeOption.oneTOthree) && readTimeMin <= 3) ||
+                    (_readTimeOption.contains(ReadTimeOption.fourTOsix) && readTimeMin in 4 .. 6) ||
+                    (_readTimeOption.contains(ReadTimeOption.sixPlus) && readTimeMin >= 7)
+                ) {
+                    tempFilteredArticles.add(article)
+                } else if (_readTimeOption.isEmpty()) {
+                    // Include articles with no read time information
+                    tempFilteredArticles.add(article)
                 }
             }
 
-            if (_readTimeOption.contains(ReadTimeOption.fourTOsix)) {
-                readTimeArticles += filteredArticles.filter {
-                    val readTimeMin = getArticleReadTime(it)
-                    readTimeMin in 4..6
-                }
-            }
-
-            if (_readTimeOption.contains(ReadTimeOption.oneTOthree)) {
-                readTimeArticles += filteredArticles.filter {
-                    val readTimeMin = getArticleReadTime(it)
-                    readTimeMin >= 7
-                }
-            }
-
-            filteredArticles = readTimeArticles
+            filteredArticles = tempFilteredArticles
         }
+
+
 
 
         if (!publisherOption.contains("INIT_NEWSFEED")) {
