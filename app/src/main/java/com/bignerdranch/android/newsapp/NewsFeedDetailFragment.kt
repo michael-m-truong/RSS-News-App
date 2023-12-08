@@ -10,6 +10,9 @@ import android.util.TypedValue
 import android.view.*
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.core.view.size
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
@@ -42,7 +45,7 @@ class NewsFeedDetailFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
+        //setHasOptionsMenu(true)
     }
 
     override fun onCreateView(
@@ -51,7 +54,7 @@ class NewsFeedDetailFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
 
-        init_styles()
+        //init_styles()
 
         _binding =
             FragmentNewsfeedDetailBinding.inflate(layoutInflater, container, false)
@@ -62,6 +65,9 @@ class NewsFeedDetailFragment : Fragment() {
     fun init_styles() {
         val actionBar = (activity as AppCompatActivity?)!!.supportActionBar
         actionBar?.title = "Edit newsfeed"
+        actionBar?.setDisplayHomeAsUpEnabled(true)
+        val upArrow = ContextCompat.getDrawable(requireContext(), R.drawable.baseline_arrow_forward_24)
+        actionBar?.setHomeAsUpIndicator(upArrow)
         if (actionBar != null) {
             val text: Spannable = SpannableString(actionBar.title)
             text.setSpan(
@@ -85,6 +91,36 @@ class NewsFeedDetailFragment : Fragment() {
         val underlineParams = binding.underline.layoutParams
         underlineParams.width = binding.exactMatchButton.width
         binding.underline.layoutParams = underlineParams */
+
+        val menuHost: MenuHost = requireActivity()
+
+        menuHost.addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                // Add menu items here
+                menuInflater.inflate(R.menu.fragment_newsfeed_detail, menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                // Handle the menu selection
+                return when (menuItem.itemId) {
+                    android.R.id.home -> {
+                        //TODO make it so that it doenst save to viewmodel
+                        val actionBar = (activity as AppCompatActivity?)!!.supportActionBar
+                        actionBar?.setDisplayHomeAsUpEnabled(false)
+                        requireActivity().onBackPressedDispatcher.onBackPressed()
+                        return true
+                    }
+                    R.id.save -> {
+                        val actionBar = (activity as AppCompatActivity?)!!.supportActionBar
+                        actionBar?.setDisplayHomeAsUpEnabled(false)
+                        requireActivity().onBackPressedDispatcher.onBackPressed()
+                        return true
+                    }
+                    else -> false
+                }
+
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
 
         binding.root.viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
             override fun onPreDraw(): Boolean {
@@ -495,22 +531,6 @@ class NewsFeedDetailFragment : Fragment() {
                 }
             }
             //newsFeedDate.text = newsFeed.date.toString()
-        }
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.fragment_newsfeed_detail, menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.save -> {
-                fragmentManager?.popBackStack()
-                true
-            }
-
-            else -> super.onOptionsItemSelected(item)
         }
     }
 }
