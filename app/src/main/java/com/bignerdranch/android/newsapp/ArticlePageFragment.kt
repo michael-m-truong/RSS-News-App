@@ -82,8 +82,22 @@ class ArticlePageFragment : Fragment() {
                             actionBar.setDisplayHomeAsUpEnabled(true)
                             val upArrow = ContextCompat.getDrawable(requireContext(), R.drawable.baseline_arrow_forward_24)
                             actionBar.setHomeAsUpIndicator(upArrow)
-                        }
+                            // Set up a scroll change listener for the WebView
+                            val scrollThreshold = 50 // Adjust this threshold based on your preference
 
+                            webView.setOnScrollChangeListener { _, _, scrollY, _, oldScrollY ->
+                                val scrollDifference = oldScrollY - scrollY
+
+                                if (scrollDifference > scrollThreshold-25) {
+                                    // Scrolling up a substantial amount, show ActionBar
+                                    actionBar?.show()
+                                } else if (scrollDifference < -scrollThreshold) {
+                                    // Scrolling down a substantial amount, hide ActionBar
+                                    actionBar?.hide()
+                                }
+                            }
+
+                        }
                         if (newProgress == 100) {
                             progressBar.visibility = View.GONE
                         } else {
