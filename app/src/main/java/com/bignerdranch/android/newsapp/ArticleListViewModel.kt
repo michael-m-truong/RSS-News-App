@@ -128,6 +128,7 @@ class ArticleListViewModel : ViewModel() {
         var dateRelevanceOption: Int = 0
         var publisherOption: MutableList<String> = mutableListOf()
         var newsFeedId: UUID = UUID.randomUUID()
+        var newsfeedTitle: String = ""
     }
 
     init {

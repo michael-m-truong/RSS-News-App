@@ -7,13 +7,19 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.view.*
 import android.widget.CheckBox
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.ProgressBar
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -70,10 +76,66 @@ class ArticleListFragment : Fragment() {
         // Perform data fetching or any other setup tasks here
         articleListViewModel.fetchArticles()
     }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val menuHost: MenuHost = requireActivity()
+
+        menuHost.addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                // Add menu items here
+                //menuInflater.inflate(R.menu.fragment_newsfeed_detail, menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                // Handle the menu selection
+                return when (menuItem.itemId) {
+                    android.R.id.home -> {
+                        val actionBar = (activity as AppCompatActivity?)!!.supportActionBar
+                        actionBar?.setDisplayHomeAsUpEnabled(false)
+                        requireActivity().onBackPressedDispatcher.onBackPressed()
+                        return true
+                    }
+                    else -> false
+                }
+
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+    }
+
+    override fun onDestroyView() {
+        val actionBar = (activity as AppCompatActivity?)!!.supportActionBar
+        actionBar?.setDisplayHomeAsUpEnabled(false)
+        super.onDestroyView()
+    }
+
+    fun init_styles() {
+        val actionBar = (activity as AppCompatActivity?)!!.supportActionBar
+        actionBar?.title = ArticleListViewModel.newsfeedTitle
+        actionBar?.setDisplayHomeAsUpEnabled(true)
+        val upArrow = ContextCompat.getDrawable(requireContext(), R.drawable.baseline_arrow_forward_24)
+        actionBar?.setHomeAsUpIndicator(upArrow)
+
+        //setHasOptionsMenu(true)
+
+        if (actionBar != null) {
+            val text: Spannable = SpannableString(actionBar.title)
+            text.setSpan(
+                ForegroundColorSpan(Color.BLACK),
+                0,
+                text.length,
+                Spannable.SPAN_INCLUSIVE_INCLUSIVE
+            )
+            actionBar.title = text
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
+        init_styles()
 
         _savedArticleBinding = FragmentSavedNewsfeedListBinding.inflate(inflater, container, false)
         savedArticleBinding.savedNewsFeedList.layoutManager = LinearLayoutManager(context)
