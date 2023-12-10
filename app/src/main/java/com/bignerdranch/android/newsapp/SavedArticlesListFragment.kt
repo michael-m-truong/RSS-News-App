@@ -1,7 +1,10 @@
 package com.bignerdranch.android.newsapp
 
+import android.app.AlertDialog
 import android.content.res.Configuration
+import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
@@ -22,9 +25,11 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bignerdranch.android.newsapp.databinding.FragmentSavedNewsfeedListBinding
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
@@ -88,6 +93,8 @@ class SavedArticlesListFragment: Fragment() {
                 }
             }
         }
+
+        swipeToDelete()
         
         return binding.root
 
@@ -154,6 +161,97 @@ class SavedArticlesListFragment: Fragment() {
         }
     }
 
+    private fun swipeToDelete() {
+        val itemTouchHelperCallback = object : ItemTouchHelper.SimpleCallback(
+            0, ItemTouchHelper.LEFT
+        ) {
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                // Not used in this case
+                return false
+            }
 
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                val position = viewHolder.bindingAdapterPosition
+                val article = savedArticlesListViewModel.getArticleByPosition(position)
+
+                val alertdialog = AlertDialog.Builder(context)
+                    .setTitle("Remove Item")
+                    .setMessage("Are you sure you want to remove article from saved?")
+                    .setPositiveButton("Remove") { _, _ ->
+                        if (article != null) {
+                            viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+                                savedArticlesListViewModel.removeArticle(article.link)
+                            }
+                        }
+                    }
+                    .setNegativeButton("Cancel") { dialog, _ ->
+                        dialog.dismiss() // Close the dialog when the user clicks "Cancel"
+                        viewHolder.bindingAdapter?.notifyItemChanged(position)
+                    }
+                    .setCancelable(true) // Allow dialog dismissal by clicking outside
+                    .setOnCancelListener {
+                        // Handle cancellation as needed (equivalent to clicking "Cancel" button)
+                        viewHolder.bindingAdapter?.notifyItemChanged(position)
+                    }
+                    .show()
+            }
+
+            // Customize the swipe appearance
+            override fun onChildDraw(
+                c: Canvas,
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                dX: Float,
+                dY: Float,
+                actionState: Int,
+                isCurrentlyActive: Boolean
+            ) {
+                if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
+                    val itemView = viewHolder.itemView
+                    val background = ColorDrawable(Color.RED)
+                    val deleteIcon =
+                        ContextCompat.getDrawable(requireContext(), R.drawable.baseline_bookmark_remove_48)
+                    val iconMargin = (itemView.height - deleteIcon?.intrinsicHeight!!) / 2
+
+                    // Draw the red background
+                    background.setBounds(
+                        itemView.right + dX.toInt(),
+                        itemView.top,
+                        itemView.right,
+                        itemView.bottom
+                    )
+                    background.draw(c)
+
+                    // Draw the delete icon if the swipe is in progress
+                    if (isCurrentlyActive) {
+                        deleteIcon.setBounds(
+                            itemView.right - iconMargin - deleteIcon.intrinsicWidth,
+                            itemView.top + iconMargin,
+                            itemView.right - iconMargin,
+                            itemView.bottom - iconMargin
+                        )
+                        deleteIcon.draw(c)
+                    }
+                }
+
+                super.onChildDraw(
+                    c,
+                    recyclerView,
+                    viewHolder,
+                    dX,
+                    dY,
+                    actionState,
+                    isCurrentlyActive
+                )
+            }
+        }
+
+        val itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
+        itemTouchHelper.attachToRecyclerView(binding.savedNewsFeedList)
+    }
 
 }
