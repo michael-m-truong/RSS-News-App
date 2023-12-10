@@ -2,6 +2,7 @@ package com.bignerdranch.android.newsapp
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.content.res.Configuration
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -111,10 +112,19 @@ class NewsFeedListFragment : Fragment() {
     fun init_styles() {
         val actionBar = (activity as AppCompatActivity?)!!.supportActionBar
         actionBar?.title = "News Radar"
+
+        // Set ActionBar text color based on night mode
+        val nightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+        val textColor = if (nightMode == Configuration.UI_MODE_NIGHT_YES) {
+            Color.WHITE // Night mode color
+        } else {
+            Color.BLACK // Day mode color
+        }
+
         if (actionBar != null) {
             val text: Spannable = SpannableString(actionBar.title)
             text.setSpan(
-                ForegroundColorSpan(Color.BLACK),
+                ForegroundColorSpan(textColor),
                 0,
                 text.length,
                 Spannable.SPAN_INCLUSIVE_INCLUSIVE

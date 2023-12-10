@@ -1,6 +1,7 @@
 package com.bignerdranch.android.newsapp
 
 import android.app.AlertDialog
+import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Bundle
 import android.text.Spannable
@@ -80,10 +81,19 @@ class NewsFeedDetailFragment : Fragment() {
         actionBar?.setDisplayHomeAsUpEnabled(true)
         val upArrow = ContextCompat.getDrawable(requireContext(), R.drawable.baseline_arrow_forward_24)
         actionBar?.setHomeAsUpIndicator(upArrow)
+
+        // Set ActionBar text color based on night mode
+        val nightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+        val textColor = if (nightMode == Configuration.UI_MODE_NIGHT_YES) {
+            Color.WHITE // Night mode color
+        } else {
+            Color.BLACK // Day mode color
+        }
+
         if (actionBar != null) {
             val text: Spannable = SpannableString(actionBar.title)
             text.setSpan(
-                ForegroundColorSpan(Color.BLACK),
+                ForegroundColorSpan(textColor),
                 0,
                 text.length,
                 Spannable.SPAN_INCLUSIVE_INCLUSIVE

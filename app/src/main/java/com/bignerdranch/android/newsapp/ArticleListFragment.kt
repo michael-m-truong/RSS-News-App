@@ -117,11 +117,18 @@ class ArticleListFragment : Fragment() {
         actionBar?.setHomeAsUpIndicator(upArrow)
 
         //setHasOptionsMenu(true)
+        // Set ActionBar text color based on night mode
+        val nightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+        val textColor = if (nightMode == Configuration.UI_MODE_NIGHT_YES) {
+            Color.WHITE // Night mode color
+        } else {
+            Color.BLACK // Day mode color
+        }
 
         if (actionBar != null) {
             val text: Spannable = SpannableString(actionBar.title)
             text.setSpan(
-                ForegroundColorSpan(Color.BLACK),
+                ForegroundColorSpan(textColor),
                 0,
                 text.length,
                 Spannable.SPAN_INCLUSIVE_INCLUSIVE
