@@ -29,7 +29,7 @@ class SavedArticlesListViewModel: ViewModel(){
         viewModelScope.launch {
             savedArticlesRepository.getSavedArticles().collect() {
                 Log.d("savedArticlesListVIewModel", it.isEmpty().toString())
-                _articles.value = it
+                _articles.value = it.reversed()
                 _isListEmpty.value = it.isEmpty()
             }
         }
