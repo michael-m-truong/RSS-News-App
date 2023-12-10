@@ -156,9 +156,9 @@ class ArticlePageFragment : Fragment() {
                 // Add menu items here
                 menuInflater.inflate(R.menu.fragment_article_page_add, menu)
                 if (save) {
-                    menu.getItem(0).setIcon(R.drawable.baseline_bookmark_remove_24)
+                    menu.getItem(0).setIcon(R.drawable.baseline_bookmark_24)
                 } else {
-                    menu.getItem(0).setIcon((R.drawable.baseline_bookmark_add_24))
+                    menu.getItem(0).setIcon((R.drawable.outline_bookmark_add_24))
                 }
             }
 
@@ -176,9 +176,9 @@ class ArticlePageFragment : Fragment() {
                         val messageId = if (save) R.string.saved_article else R.string.removed_article
                         view?.let { Snackbar.make(it, messageId, Snackbar.LENGTH_SHORT).show() }
                         if (save)
-                            menuItem.setIcon(R.drawable.baseline_bookmark_remove_24)
+                            menuItem.setIcon(R.drawable.baseline_bookmark_24)
                         else
-                            menuItem.setIcon(R.drawable.baseline_bookmark_add_24)
+                            menuItem.setIcon(R.drawable.outline_bookmark_add_24)
                         true
                     }
                     else -> false
