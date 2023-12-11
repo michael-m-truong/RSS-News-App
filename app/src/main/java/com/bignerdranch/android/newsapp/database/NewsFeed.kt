@@ -5,6 +5,7 @@ import androidx.room.PrimaryKey
 import com.bignerdranch.android.newsapp.models.DateRelevance
 import com.bignerdranch.android.newsapp.models.ReadTimeOption
 import java.util.*
+import kotlin.collections.HashMap
 
 @Entity
 data class NewsFeed(
@@ -17,7 +18,8 @@ data class NewsFeed(
     val sortByOption: Int,
     val readTimeOption: MutableList<ReadTimeOption>,
     val dateRelevanceOption: Int,
-    val publisherOption: MutableList<String>
+    val publisherOption: MutableList<String>,
+    val sourceOption: HashMap<String, Boolean>
 )
 
 

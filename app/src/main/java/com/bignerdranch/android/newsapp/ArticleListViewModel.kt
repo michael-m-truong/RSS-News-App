@@ -19,6 +19,7 @@ import org.ocpsoft.prettytime.PrettyTime
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.CopyOnWriteArrayList
+import kotlin.collections.HashMap
 import kotlin.reflect.KClass
 
 
@@ -67,6 +68,15 @@ class ArticleListViewModel : ViewModel() {
     val resourceOption: MutableSet<ResourceOption>
         get() = _resourceOption
 
+    private var _customResourceOption: HashMap<String, Boolean> = HashMap()
+    val customResourceOption: HashMap<String, Boolean>
+        get() = _customResourceOption
+
+    private var _sourceOption: HashMap<String, Boolean> = HashMap()
+    val sourceOption: HashMap<String, Boolean>
+        get() = sourceOption
+
+
     fun setSortByOption(sortOption: SortByOption) {
         _sortByOption = sortOption
 
@@ -112,6 +122,28 @@ class ArticleListViewModel : ViewModel() {
         _resourceOption = resourceOption
     }
 
+    suspend fun setCustomResourceOption(k: String, v: Boolean) {
+        _customResourceOption[k] = v
+        updateSourceOption()
+    }
+
+    fun setSourceOption(sourceOption: HashMap<String, Boolean>) {
+        _sourceOption = sourceOption
+
+    }
+
+    suspend fun updateSourceOption() {
+        try {
+            _sourceOption["Google"] = _resourceOption.contains(ResourceOption.Google)
+            _sourceOption["Reddit"] = _resourceOption.contains(ResourceOption.Reddit)
+            _sourceOption["Twitter"] = _resourceOption.contains(ResourceOption.Twitter)
+            _sourceOption.putAll(customResourceOption)
+            newsFeedRepository.updateSourceOption(newsFeedId, _sourceOption)
+        } catch (e: Exception) {
+            // Log the exception using Log.d
+            Log.d("fuckme", "Failed to update source option: ${e.message}")
+        }
+    }
 
 
 
@@ -129,6 +161,12 @@ class ArticleListViewModel : ViewModel() {
         var publisherOption: MutableList<String> = mutableListOf()
         var newsFeedId: UUID = UUID.randomUUID()
         var newsfeedTitle: String = ""
+        var sourceOption = HashMap<String, Boolean>().apply {
+            put("Google", true)
+            put("Reddit", false)
+            put("Twitter", false)
+        }
+
     }
 
     init {
@@ -143,9 +181,24 @@ class ArticleListViewModel : ViewModel() {
         // add get or else
         setReadTimeOption(ArticleListViewModel.readTimeOption.toMutableSet())
         setPublisherOption(ArticleListViewModel.publisherOption.toMutableSet())
+        setSourceOption(ArticleListViewModel.sourceOption)
+        val sourceOption = ArticleListViewModel.sourceOption
+        if ((sourceOption["Google"]) == true) {
+            resourceOption.add(ResourceOption.Google)
+        }
+        if ((sourceOption["Reddit"]) == true) {
+            resourceOption.add(ResourceOption.Reddit)
+        }
+        if ((sourceOption["Twitter"]) == true) {
+            resourceOption.add(ResourceOption.Twitter)
+        }
+        for (source in sourceOption.keys) {
+            if (source == "Google" || source == "Reddit" || source == "Twitter") {
+                continue
+            }
+            sourceOption[source]?.let { customResourceOption.put(source, it) }
 
-        resourceOption.add(ResourceOption.Google)
-        setResourceOption(resourceOption)
+        }
     }
 
     fun applyFilters(change: KClass<*>?) {
@@ -167,6 +220,10 @@ class ArticleListViewModel : ViewModel() {
                 String::class-> {
                     Log.d("kkkk","here")
                     updatePublisherOption()
+                }
+                ResourceOption::class-> {
+                    Log.d("kkkk","here")
+                    updateSourceOption()
                 }
                 else -> {
                     // Code to handle other types

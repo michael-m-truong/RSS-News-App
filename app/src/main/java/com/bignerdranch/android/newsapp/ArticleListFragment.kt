@@ -7,15 +7,23 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.text.Editable
 import android.text.Spannable
 import android.text.SpannableString
+import android.text.TextWatcher
 import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.view.*
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.CheckBox
+import android.widget.EditText
+import android.widget.ImageView
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.ProgressBar
+import android.widget.RelativeLayout
+import android.widget.Spinner
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.MenuHost
@@ -628,9 +636,62 @@ class ArticleListFragment : Fragment() {
 
         val resourceOption = articleListViewModel.resourceOption
         val applyButton = dialog.findViewById<MaterialButton>(R.id.apply_button)
+        val addSourceButton = dialog.findViewById<MaterialButton>(R.id.add_source_button)
+        val buttonGroup = dialog.findViewById<RadioGroup>(R.id.button_group)
         val googleButton = dialog.findViewById<MaterialCheckBox>(R.id.google)
         val redditButton = dialog.findViewById<MaterialCheckBox>(R.id.reddit)
         val twitterButton = dialog.findViewById<MaterialCheckBox>(R.id.twitter)
+        val checkBoxes = mutableListOf<CheckBox>()
+
+        addSourceButton.setOnClickListener {
+            showAddSourceDialog(dialog, buttonGroup)
+        }
+
+        // Dynamically create checkboxes based on custom resource options
+        for (customResourceOption in articleListViewModel.customResourceOption.keys) {
+            // Create a new layout for each item
+            val itemLayout = RelativeLayout(requireContext())
+            val layoutParams = ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+            itemLayout.layoutParams = layoutParams
+
+
+            // Create a new checkbox
+            val checkBox = CheckBox(requireContext())
+            checkBox.text = customResourceOption
+            checkBox.setPadding(8,0,0,0)
+
+            checkBox.isChecked = articleListViewModel.customResourceOption.get(customResourceOption) == true
+
+            // Create a new delete icon
+            val deleteIcon = ImageView(requireContext())
+            deleteIcon.setImageResource(R.drawable.baseline_delete_24) // Replace with your delete icon
+            val deleteIconParams = RelativeLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+            deleteIconParams.addRule(RelativeLayout.ALIGN_PARENT_END)
+            deleteIcon.layoutParams = deleteIconParams
+
+            // Set up delete icon click listener
+            deleteIcon.setOnClickListener {
+                // Handle deletion here
+                // Remove the item from your data and the view
+                articleListViewModel.customResourceOption.remove(customResourceOption)
+                buttonGroup.removeView(itemLayout)
+            }
+
+            // Add the checkbox and delete icon to the item layout
+            itemLayout.addView(checkBox)
+            itemLayout.addView(deleteIcon)
+
+            // Add the item layout to the container
+            buttonGroup.addView(itemLayout)
+
+            checkBoxes.add(checkBox)
+        }
 
         applyButton.setOnClickListener {
             val sources = mutableSetOf<ResourceOption>()
@@ -640,6 +701,15 @@ class ArticleListFragment : Fragment() {
 
             articleListViewModel.setResourceOption(sources)
 
+            for (checkbox in checkBoxes) {
+                if (checkbox.isChecked) {
+                    articleListViewModel.customResourceOption[checkbox.text.toString()] = true
+                }
+                else {
+                    articleListViewModel.customResourceOption[checkbox.text.toString()] = false
+                }
+            }
+
             // so articles of diff sources appear
             articleListViewModel.publisherOption.add("ALL_PUBLISHERS")
 
@@ -648,6 +718,8 @@ class ArticleListFragment : Fragment() {
             loadingProgressBar.visibility = View.VISIBLE
 
             recyclerView.smoothScrollToPosition(0)
+            Log.d("plsss", articleListViewModel.customResourceOption.toString())
+            articleListViewModel.applyFilters(ResourceOption::class)
             articleListViewModel.fetchArticles()
             dialog.dismiss()
         }
@@ -655,8 +727,173 @@ class ArticleListFragment : Fragment() {
         if (resourceOption.contains(ResourceOption.Google)) googleButton.isChecked = true
         if (resourceOption.contains(ResourceOption.Reddit)) redditButton.isChecked = true
         if (resourceOption.contains(ResourceOption.Twitter)) twitterButton.isChecked = true
-
     }
+
+    // Function to show the Add Source dialog
+    private fun showAddSourceDialog(sourceOptionDialog: Dialog, sourceOptionButtonGroup: RadioGroup) {
+        sourceOptionDialog.hide()
+        val dialog = Dialog(requireContext())
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        dialog.setContentView(R.layout.add_source_view) // Use your custom layout for the Add Source dialog
+        dialog.setCancelable(true)
+
+        val nightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+        val backgroundColor = if (nightMode == Configuration.UI_MODE_NIGHT_YES) {
+            Color.parseColor("#121212")
+        } else {
+            Color.WHITE
+        }
+        dialog.window?.setBackgroundDrawable(ColorDrawable(backgroundColor))
+
+        // Get the window attributes and set width and height
+        val lp = WindowManager.LayoutParams()
+        val window = dialog.window
+        lp.copyFrom(window?.attributes)
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT
+
+        // Set the gravity to make the dialog appear at the bottom
+        //lp.gravity = Gravity.BOTTOM
+
+        window?.attributes = lp
+
+        // Handle the dialog UI and interactions here
+        // For example, set up a Spinner and an EditText for selecting source type and entering details
+        val sourceTypeSpinner = dialog.findViewById<Spinner>(R.id.sourceTypeSpinner)
+        val sourceEditText = dialog.findViewById<EditText>(R.id.sourceEditText)
+
+        // Adapter for the spinner
+        val adapter = ArrayAdapter.createFromResource(
+            requireContext(),
+            R.array.source_types,
+            android.R.layout.simple_spinner_item
+        )
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        sourceTypeSpinner.adapter = adapter
+
+        // Set up a TextWatcher to handle real-time updates to the entered text
+        val textWatcher = object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                // Do nothing
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                // Check the selected source type
+                val selectedOption = sourceTypeSpinner.selectedItem.toString()
+                when (selectedOption) {
+                    "Reddit" -> {
+                        // If the user is typing, ensure "/r/" is always at the beginning
+                        if (!s.isNullOrBlank() && !s.startsWith("/r/")) {
+                            sourceEditText.setText("/r/$s")
+                            sourceEditText.setSelection(sourceEditText.text.length)
+                        }
+                    }
+                    "Twitter" -> {
+                        // If the user is typing, ensure "@" is always at the beginning
+                        if (!s.isNullOrBlank() && !s.startsWith("@")) {
+                            sourceEditText.setText("@$s")
+                            sourceEditText.setSelection(sourceEditText.text.length)
+                        }
+                    }
+                    // Add more cases for other source types if needed
+                }
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                // Do nothing
+            }
+        }
+
+        // Set up the spinner listener
+        sourceTypeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                // Update the hint based on the selected option
+                val selectedOption = parent.getItemAtPosition(position).toString()
+                when (selectedOption) {
+                    "Reddit" -> {
+                        sourceEditText.hint = "/r/example"
+                        sourceEditText.text.clear()
+                        //sourceEditText.removeTextChangedListener(textWatcher)
+                    }
+                    "Twitter" -> {
+                        sourceEditText.hint = "@example"
+                        sourceEditText.text.clear()
+                        //sourceEditText.removeTextChangedListener(textWatcher)
+                    }
+                    // Add more cases for other source types if needed
+                }
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>) {
+                // Do nothing here
+            }
+        }
+
+        sourceEditText.addTextChangedListener(textWatcher)
+
+        val addSourceButton = dialog.findViewById<MaterialButton>(R.id.applyButton)
+        addSourceButton.setOnClickListener {
+            // Pass the entered text to the callback function
+            //onAddSource(sourceEditText.text.toString())
+
+            viewLifecycleOwner.lifecycleScope.launch {
+                articleListViewModel.setCustomResourceOption(sourceEditText.text.toString(), true)
+            }
+            // Dynamically create checkboxes based on custom resource options
+            for (customResourceOption in articleListViewModel.customResourceOption.keys) {
+                // Create a new layout for each item
+                val itemLayout = RelativeLayout(requireContext())
+                val layoutParams = ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+                )
+                itemLayout.layoutParams = layoutParams
+
+
+                // Create a new checkbox
+                val checkBox = CheckBox(requireContext())
+                checkBox.text = customResourceOption
+                checkBox.isChecked = true
+                checkBox.setPadding(8,0,0,0)
+
+                // Create a new delete icon
+                val deleteIcon = ImageView(requireContext())
+                deleteIcon.setImageResource(R.drawable.baseline_delete_24) // Replace with your delete icon
+                val deleteIconParams = RelativeLayout.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+                )
+                deleteIconParams.addRule(RelativeLayout.ALIGN_PARENT_END)
+                deleteIcon.layoutParams = deleteIconParams
+
+                // Set up delete icon click listener
+                deleteIcon.setOnClickListener {
+                    // Handle deletion here
+                    // Remove the item from your data and the view
+                    articleListViewModel.customResourceOption.remove(customResourceOption)
+                    sourceOptionButtonGroup.removeView(itemLayout)
+                }
+
+                // Add the checkbox and delete icon to the item layout
+                itemLayout.addView(checkBox)
+                itemLayout.addView(deleteIcon)
+
+                // Add the item layout to the container
+                sourceOptionButtonGroup.addView(itemLayout)
+            }
+            dialog.dismiss()
+            sourceOptionDialog.show()
+        }
+
+        // Show the dialog
+        dialog.show()
+    }
+
 
     private fun swipeToSave() {
         val itemTouchHelperCallback = object : ItemTouchHelper.SimpleCallback(

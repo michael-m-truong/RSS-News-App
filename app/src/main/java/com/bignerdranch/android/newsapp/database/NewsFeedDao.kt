@@ -45,4 +45,8 @@ interface NewsFeedDao {
 
     @Query("UPDATE NewsFeed SET date = :newDate WHERE id = :newsFeedId")
     suspend fun updateNewsfeedDate(newsFeedId: UUID, newDate: Date)
+
+    @Query("UPDATE NewsFeed SET sourceOption = :newSourceOption WHERE id = :newsFeedId")
+    suspend fun updateSourceOption(newsFeedId: UUID, newSourceOption: HashMap<String, Boolean>)
+
 }

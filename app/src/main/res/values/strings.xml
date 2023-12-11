@@ -14,5 +14,6 @@
     <string name="removed_article">Removed Article!</string>
     <string name="helper_chip_exact">Includes only articles containing these keywords</string>
     <string name="helper_chip_exclude">Excludes articles containing these keywords</string>
-
+    <string name="select_source_type">Select Source Type</string>
+    <string name="source_details_hint">Enter Source Details</string>
 </resources>

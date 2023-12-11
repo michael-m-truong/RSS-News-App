@@ -4,5 +4,4 @@ enum class ResourceOption {
     Google,
     Reddit,
     Twitter,
-    All
 }

@@ -71,6 +71,10 @@ class NewsFeedRepository private constructor
         database.newsfeedDao().updateNewsfeedDate(newsFeedId, newDate)
     }
 
+    suspend fun updateSourceOption(newsFeedId: UUID, newSourceOption: HashMap<String, Boolean>) {
+        database.newsfeedDao().updateSourceOption(newsFeedId, newSourceOption)
+    }
+
     companion object {
         private var INSTANCE: NewsFeedRepository? = null
         fun initialize(context: Context) {

@@ -42,4 +42,15 @@ class NewsFeedTypeConverters {
         }
     }
 
+    @TypeConverter
+    fun fromSourceOption(sourceOption: HashMap<String, Boolean>): String {
+        return sourceOption.entries.joinToString(",") { (key, value) -> "$key=$value" }
+    }
+
+    @TypeConverter
+    fun toSourceOption(sourceOptionString: String): HashMap<String, Boolean> {
+        val entries = sourceOptionString.split(",").map { it.trim().split("=") }
+        return HashMap(entries.map { (key, value) -> key to value.toBoolean() }.toMap())
+    }
+
 }

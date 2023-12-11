@@ -30,6 +30,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.util.*
+import kotlin.collections.HashMap
 
 private const val TAG = "NewsFeedListFragment"
 
@@ -200,7 +201,12 @@ class NewsFeedListFragment : Fragment() {
                     ReadTimeOption.sixPlus
                 ),
                 dateRelevanceOption = 0,
-                publisherOption = mutableListOf<String>("INIT_NEWSFEED")
+                publisherOption = mutableListOf<String>("INIT_NEWSFEED"),
+                sourceOption = HashMap<String, Boolean>().apply {
+                    put("Google", true)
+                    put("Reddit", false)
+                    put("Twitter", false)
+                }
             )
             newsFeedListViewModel.addNewsFeed(newNewsFeed)
             findNavController().navigate(

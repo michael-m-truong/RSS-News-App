@@ -29,6 +29,7 @@ class NewsFeedHolder(
             ArticleListViewModel.dateRelevanceOption = newsFeed.dateRelevanceOption
             ArticleListViewModel.publisherOption = newsFeed.publisherOption
             ArticleListViewModel.newsfeedTitle = newsFeed.title
+            ArticleListViewModel.sourceOption = newsFeed.sourceOption
             Log.d("relop",newsFeed.publisherOption.toString())
             val action = NewsFeedListFragmentDirections.showArticleList(newsFeed.id)
             it.findNavController().navigate(action)

@@ -37,22 +37,28 @@
                 android:paddingLeft="8dp"
                 android:checked="false"/>
 
+    </RadioGroup>
 
-        <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingHorizontal="8dp"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="8dp"
         >
 
-            <!-- Apply Button -->
-            <Button
-                    android:id="@+id/apply_button"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Apply"/>
-        </LinearLayout>
+        <Button
+            android:id="@+id/add_source_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Add source"/>
 
-    </RadioGroup>
+        <!-- Apply Button -->
+        <Button
+            android:id="@+id/apply_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Apply"/>
+    </LinearLayout>
 </LinearLayout>
