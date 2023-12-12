@@ -202,7 +202,6 @@ class ArticleListFragment : Fragment() {
         }
 
         articleListViewModel.onDataFiltered.observe(viewLifecycleOwner, Observer {
-            updateEmptyStateVisibility()
             recyclerView.post {
                 recyclerView.scrollToPosition(0)
             }
