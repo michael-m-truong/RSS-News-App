@@ -850,51 +850,51 @@ class ArticleListFragment : Fragment() {
                 articleListViewModel.setCustomResourceOption(sourceEditText.text.toString(), true)
             }
             // Dynamically create checkboxes based on custom resource options
-            for (customResourceOption in articleListViewModel.customResourceOption.keys) {
-                // Create a new layout for each item
-                val itemLayout = RelativeLayout(requireContext())
-                val layoutParams = ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT
-                )
-                itemLayout.layoutParams = layoutParams
+
+            // Create a new layout for each item
+            val itemLayout = RelativeLayout(requireContext())
+            val layoutParams = ViewGroup.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+            itemLayout.layoutParams = layoutParams
 
 
-                // Create a new checkbox
-                val checkBox = CheckBox(requireContext())
-                checkBox.text = customResourceOption
-                checkBox.isChecked = true
-                checkBox.setPadding(8,0,0,0)
+            // Create a new checkbox
+            val checkBox = CheckBox(requireContext())
+            checkBox.text = sourceEditText.text.toString()
+            checkBox.isChecked = true
+            checkBox.setPadding(8,0,0,0)
 
-                // Create a new delete icon
-                val deleteIcon = ImageView(requireContext())
-                deleteIcon.setImageResource(R.drawable.baseline_delete_24) // Replace with your delete icon
-                val deleteIconParams = RelativeLayout.LayoutParams(
-                    ViewGroup.LayoutParams.WRAP_CONTENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT
-                )
-                deleteIconParams.addRule(RelativeLayout.ALIGN_PARENT_END)
-                deleteIcon.layoutParams = deleteIconParams
+            // Create a new delete icon
+            val deleteIcon = ImageView(requireContext())
+            deleteIcon.setImageResource(R.drawable.baseline_delete_24) // Replace with your delete icon
+            val deleteIconParams = RelativeLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+            deleteIconParams.addRule(RelativeLayout.ALIGN_PARENT_END)
+            deleteIcon.layoutParams = deleteIconParams
 
-                // Set up delete icon click listener
-                deleteIcon.setOnClickListener {
-                    // Handle deletion here
-                    // Remove the item from your data and the view
-                    articleListViewModel.customResourceOption.remove(customResourceOption)
-                    articleListViewModel.sourceOption.remove(customResourceOption)
-                    viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
-                        articleListViewModel.updateSourceOption()
-                    }
-                    sourceOptionButtonGroup.removeView(itemLayout)
+            // Set up delete icon click listener
+            deleteIcon.setOnClickListener {
+                // Handle deletion here
+                // Remove the item from your data and the view
+                articleListViewModel.customResourceOption.remove(sourceEditText.text.toString())
+                articleListViewModel.sourceOption.remove(sourceEditText.text.toString())
+                viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+                    articleListViewModel.updateSourceOption()
                 }
-
-                // Add the checkbox and delete icon to the item layout
-                itemLayout.addView(checkBox)
-                itemLayout.addView(deleteIcon)
-
-                // Add the item layout to the container
-                sourceOptionButtonGroup.addView(itemLayout)
+                sourceOptionButtonGroup.removeView(itemLayout)
             }
+
+            // Add the checkbox and delete icon to the item layout
+            itemLayout.addView(checkBox)
+            itemLayout.addView(deleteIcon)
+
+            // Add the item layout to the container
+            sourceOptionButtonGroup.addView(itemLayout)
+
             dialog.dismiss()
             sourceOptionDialog.show()
         }

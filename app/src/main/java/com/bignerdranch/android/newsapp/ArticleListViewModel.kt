@@ -269,7 +269,7 @@ class ArticleListViewModel : ViewModel() {
         Log.d("THE ARTICLES ORIGINAL", articles.toString())
 
         if (_sortByOption == SortByOption.MOST_POPULAR) {
-            if (resourceOption.size == 1) {
+            if (resourceOption.size == 1 || customResourceOption.size == 1) {
                 filteredArticles = _originalArticles.value
             }
             else {
@@ -324,7 +324,7 @@ class ArticleListViewModel : ViewModel() {
             }
             else -> {}
         }
-
+        Log.d("THE ARTICLES AFTER", filteredArticles.toString())
 
         if (_readTimeOption.isNotEmpty()) {
             val tempFilteredArticles = mutableListOf<Article>()
@@ -347,7 +347,7 @@ class ArticleListViewModel : ViewModel() {
             filteredArticles = tempFilteredArticles
         }
 
-
+        Log.d("THE ARTICLES AFTER", filteredArticles.toString())
 
 
         if (!publisherOption.contains("INIT_NEWSFEED")) {
@@ -383,10 +383,11 @@ class ArticleListViewModel : ViewModel() {
                     continue
                 }
                 if (source.startsWith("@")) {
-                    //performWebScraping_Reddit(source)
+                    //performWebScraping_TwitterDirect(source)
+                    performWebScraping(ResourceOption.Twitter, source)
                 }
                 else if (source.startsWith("/r/")) {
-                    continue
+                    performWebScraping_Reddit(source)
                 }
             }
             val initialArticles = filterArticles(_originalArticles.value.toList())
@@ -452,13 +453,14 @@ class ArticleListViewModel : ViewModel() {
         }
     }
 
-    private suspend fun performWebScraping(option: ResourceOption? = null): List<Article> {
+    private suspend fun performWebScraping(option: ResourceOption? = null, username: String = ""): List<Article> {
         val exactStrings = searchQueries.joinToString("+") { "%22$it%22" }
         val excludeStrings = excludeSearchQueries.joinToString("+") { "-$it" }
         var queryStrings = exactStrings + "%20" + excludeStrings
 
         if (option == ResourceOption.Twitter) {
-            queryStrings += "%20" + "site:twitter.com"
+            val username = username.replaceFirst("@", "")
+            queryStrings += "%20" + "site:twitter.com/$username"
         }
 
         val url = "https://news.google.com/search?q=$queryStrings&hl=en-US&gl=US&ceid=US:en"
@@ -693,6 +695,140 @@ class ArticleListViewModel : ViewModel() {
 
     }
 
+    private suspend fun performWebScraping_TwitterDirect(username: String): List<Article> {
+        val username = username.replaceFirst("@", "")
+        val exactStrings = searchQueries
+            .filter { it.isNotEmpty() } // Filter out empty strings
+            .joinToString("+") { "%22$it%22"}
+        val url = "https://twitter.com/$username"
+        val articles = mutableListOf<Article>()
+
+        try {
+            val htmlContent = Jsoup.connect(url).get().html()
+            val document = Jsoup.parse(htmlContent)
+            Log.d("not empty", "test")
+            val timeline = document.select("div.timeline")
+            val tweets = timeline.select("div.timeline-item")
+
+            var count = 0
+
+            for (tweet in tweets) {
+                if (count == 25) {
+                    break
+                }
+                val tweetContentDiv = document.select("div.tweet-content.media-body").first()
+
+                // Get the text content
+                var title = tweetContentDiv?.text()
+                if (title == null) {
+                    title = ""
+                }
+
+                val tweetLink = tweet.select("a.tweet-link")
+                // Get the href attribute value if the tweetLink is not null
+                var link = tweetLink.attr("href")
+                val parts = url.split(link)
+                if (parts.size > 1) {
+                    val extractedPart = parts[1]
+                    link = "https://twiter.com$extractedPart"
+                }
+
+                val tweetDateSpan = document.select("span.tweet-date")
+
+
+                val aElement = tweetDateSpan.select("a").first()
+
+                // Get the title attribute value
+                val datetime_string = aElement?.attr("title")
+
+                val datetime = datetime_string?.let { parseDateTime_twitter(it) }
+
+                var date = formatPrettyTime(datetime)
+
+                val usernameLink = document.select("a.username")
+                // Get the title attribute value
+                val publisher = usernameLink.attr("title")
+
+                date += "  $publisher"
+
+
+                // Select the <a> element with class "still-image"
+                val stillImageLink = document.select("a.still-image").first()
+
+                // Get the href attribute value
+                var imgSrc = stillImageLink?.attr("href")
+                imgSrc = "https://nitter.net$imgSrc"
+                // Select the <img> element with class "avatar round"
+                val avatarImage = tweet.select("img.avatar.round")
+                // Get the src attribute value
+                var publisherSrc = avatarImage?.attr("src")
+
+                if (imgSrc == null) {
+                    imgSrc = ""
+                }
+                if (publisherSrc == null) {
+                    publisherSrc = ""
+                }
+
+                val articleText = "fill" // You may fetch article text if needed
+
+                val article = Article(
+                    title,
+                    link,
+                    date,
+                    datetime,
+                    publisher,
+                    imgSrc,
+                    publisherSrc, // Reddit doesn't have a publisher image in the same way as Google News
+                    articleText,
+                    ResourceOption.Twitter,
+                    Date(),
+                )
+
+                articles.add(article)
+                count++
+
+                _publishers.add(publisher)
+            }
+
+        } catch (e: Exception) {
+            Log.d("bad", e.message.toString())
+            e.printStackTrace()
+        }
+
+        /*viewModelScope.launch(Dispatchers.IO) {
+            val deferredUpdates = articles.map { article ->
+                async {
+                    updateArticleUrlAndText(article.link, article)
+                }
+            }
+
+            deferredUpdates.awaitAll()
+        }*/
+
+        //if (sortByOption == SortByOption.NEWEST) {
+        //    val sortedArticles = articles.sortedByDescending { it.datetime }
+        //    return sortedArticles
+        //} else {
+        articles.filter { article ->
+            // List of words to exclude (non-case-sensitive)
+            val excludeWords = excludeSearchQueries
+
+            // Splitting the article text by space and checking for exclusion
+            val articleWords = article.text.split("\\s+".toRegex())
+            val containsExcludedWord = articleWords.any { word ->
+                excludeWords.any { excluded -> word.equals(excluded, ignoreCase = true) }
+            }
+
+            // Only add the article to the list if it doesn't contain any excluded words
+            !containsExcludedWord
+        }
+        _originalArticles.value += articles.toList()
+        return filterArticles(articles)
+        //}
+
+    }
+
     // Define the parseDateTime function
     private fun parseDateTime(dateTimeString: String): Date? {
         val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
@@ -706,6 +842,16 @@ class ArticleListViewModel : ViewModel() {
 
     private fun parseDateTime_reddit(dateTimeString: String): Date? {
         val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSSSSXX")
+        try {
+            return dateFormat.parse(dateTimeString)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return null
+    }
+
+    private fun parseDateTime_twitter(dateTimeString: String): Date? {
+        val dateFormat = SimpleDateFormat("MMM d, yyyy · h:mm a 'UTC'", Locale.US)
         try {
             return dateFormat.parse(dateTimeString)
         } catch (e: Exception) {
