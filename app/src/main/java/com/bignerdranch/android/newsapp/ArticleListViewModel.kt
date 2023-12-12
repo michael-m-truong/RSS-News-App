@@ -247,6 +247,7 @@ class ArticleListViewModel : ViewModel() {
         _sortByOption = SortByOption.MOST_POPULAR
         _publishers.clear()
         _resourceOption = mutableSetOf(ResourceOption.Google)
+        _customResourceOption.clear()
         fetchArticles()
 
         /*if (view != null) {
@@ -390,6 +391,9 @@ class ArticleListViewModel : ViewModel() {
                 else if (source.startsWith("/r/")) {
                     performWebScraping_Reddit(source)
                 }
+                else {
+                    performWebScraping(ResourceOption.Custom, website = source)
+                }
             }
             val initialArticles = filterArticles(_originalArticles.value.toList())
 
@@ -454,7 +458,7 @@ class ArticleListViewModel : ViewModel() {
         }
     }
 
-    private suspend fun performWebScraping(option: ResourceOption? = null, username: String = ""): List<Article> {
+    private suspend fun performWebScraping(option: ResourceOption? = null, username: String = "", website: String = ""): List<Article> {
         val exactStrings = searchQueries.joinToString("+") { "%22$it%22" }
         val excludeStrings = excludeSearchQueries.joinToString("+") { "-$it" }
         var queryStrings = exactStrings + "%20" + excludeStrings
@@ -462,6 +466,9 @@ class ArticleListViewModel : ViewModel() {
         if (option == ResourceOption.Twitter) {
             val username = username.replaceFirst("@", "")
             queryStrings += "%20" + "site:twitter.com/$username"
+        }
+        else if (option == ResourceOption.Custom) {
+            queryStrings += "%20" + "site:$website"
         }
 
         val url = "https://news.google.com/search?q=$queryStrings&hl=en-US&gl=US&ceid=US:en"
@@ -471,16 +478,18 @@ class ArticleListViewModel : ViewModel() {
         try {
             val htmlContent = Jsoup.connect(url).get().html()
             val document = Jsoup.parse(htmlContent)
-            val toplevelElements = document.select("div[jslog]")
+            var toplevelElements = document.select("div[jslog]")
             var count = 0
-
+            Log.d("fuck", toplevelElements.size.toString())
+            Log.d("fuck", toplevelElements.select("article").size.toString())
             for (element in toplevelElements) {
-                val articleElements = element.select("article")
+                val articleElements = toplevelElements.select("article")
                 if (count == 20) {
                     break
                 }
+                Log.d("articleelements", articleElements.size.toString())
                 for (articleElement in articleElements) {
-                    val headlineText = articleElement.select("h4").text()
+                    val headlineText = articleElement.select("a[href]").text()
                     if (headlineText.isEmpty()) {
                         continue
                     }
@@ -488,6 +497,7 @@ class ArticleListViewModel : ViewModel() {
                         .substring(1)  //remove the initial "."
                     val headlineDate = articleElement.select("time[datetime]").text()
                     val headlinePublisher = articleElement.select("div[data-n-tid]").text()
+                    Log.d("headlinepub", headlinePublisher)
                     var imgSrc: String?
 
                     //if (articleElements.size <= 1) {
