@@ -2,5 +2,6 @@
     <string-array name="source_types">
         <item>Reddit</item>
         <item>Twitter</item>
+        <item>Custom URL</item>
     </string-array>
 </resources>

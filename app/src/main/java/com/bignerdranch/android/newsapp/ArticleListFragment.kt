@@ -723,6 +723,8 @@ class ArticleListFragment : Fragment() {
             // Dismiss the dialog or perform other actions if needed
             recyclerView.visibility = View.INVISIBLE
             loadingProgressBar.visibility = View.VISIBLE
+            binding.emptyTextView.visibility = View.GONE
+            binding.noPublishersView.visibility = View.GONE
 
             recyclerView.smoothScrollToPosition(0)
             Log.d("plsss", articleListViewModel.customResourceOption.toString())
@@ -829,6 +831,10 @@ class ArticleListFragment : Fragment() {
                     }
                     "Twitter" -> {
                         sourceEditText.hint = "@example"
+                        sourceEditText.text.clear()
+                        //sourceEditText.removeTextChangedListener(textWatcher)
+                    }
+                    "Custom URL" -> {
                         sourceEditText.text.clear()
                         //sourceEditText.removeTextChangedListener(textWatcher)
                     }

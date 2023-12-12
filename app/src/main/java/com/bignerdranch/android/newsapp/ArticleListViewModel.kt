@@ -247,7 +247,7 @@ class ArticleListViewModel : ViewModel() {
         _sortByOption = SortByOption.MOST_POPULAR
         _publishers.clear()
         _resourceOption = mutableSetOf(ResourceOption.Google)
-        _customResourceOption.clear()
+        //_customResourceOption.clear  // dont erase these on clear filter
         fetchArticles()
 
         /*if (view != null) {
@@ -271,7 +271,7 @@ class ArticleListViewModel : ViewModel() {
         Log.d("THE ARTICLES ORIGINAL", articles.toString())
 
         if (_sortByOption == SortByOption.MOST_POPULAR) {
-            if (resourceOption.size == 1 || customResourceOption.size == 1) {
+            if (resourceOption.size + customResourceOption.size == 1) {
                 filteredArticles = _originalArticles.value
             }
             else {
