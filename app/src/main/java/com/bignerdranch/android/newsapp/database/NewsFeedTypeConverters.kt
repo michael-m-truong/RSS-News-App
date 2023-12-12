@@ -21,7 +21,7 @@ class NewsFeedTypeConverters {
 
     @TypeConverter
     fun toStringList(string: String): List<String> {
-        return string.split(",").map { it.trim() }
+        return string.split(",").map { it.trim() }.filter { it.isNotEmpty() }
     }
 
     @TypeConverter
