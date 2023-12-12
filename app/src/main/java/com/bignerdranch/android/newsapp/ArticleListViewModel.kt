@@ -74,7 +74,7 @@ class ArticleListViewModel : ViewModel() {
 
     private var _sourceOption: HashMap<String, Boolean> = HashMap()
     val sourceOption: HashMap<String, Boolean>
-        get() = sourceOption
+        get() = _sourceOption
 
 
     fun setSortByOption(sortOption: SortByOption) {
@@ -291,6 +291,10 @@ class ArticleListViewModel : ViewModel() {
             }
         } else if (_sortByOption == SortByOption.NEWEST) {
             filteredArticles = filteredArticles.sortedByDescending { it.datetime }
+//            for (a in filteredArticles) {
+//                Log.d("datime", a.datetime.toString())
+//                Log.d("datime", a.headline)
+//            }
         }
 
 
@@ -373,6 +377,17 @@ class ArticleListViewModel : ViewModel() {
             }
             if (resourceOption.contains(ResourceOption.Twitter)) {
                 performWebScraping(ResourceOption.Twitter)
+            }
+            for (source in customResourceOption.keys) {
+                if (customResourceOption[source] == false) {
+                    continue
+                }
+                if (source.startsWith("@")) {
+                    //performWebScraping_Reddit(source)
+                }
+                else if (source.startsWith("/r/")) {
+                    continue
+                }
             }
             val initialArticles = filterArticles(_originalArticles.value.toList())
 
@@ -504,7 +519,7 @@ class ArticleListViewModel : ViewModel() {
                         headlineLink,
                         headlineDate,
                         parsedDate,
-                        headlinePublisher,
+                        if (option == ResourceOption.Twitter) extractTwitterPublisher(headlineText) else headlinePublisher,
                         imgSrc,
                         publisherImgSrc,
                         articleText,
@@ -512,7 +527,7 @@ class ArticleListViewModel : ViewModel() {
                         dateAdded = Date()
                     )
                     articles.add(article)
-                    _publishers.add(headlinePublisher)
+                    _publishers.add(article.publisher)
                 }
             }
         } catch (e: Exception) {
@@ -541,11 +556,11 @@ class ArticleListViewModel : ViewModel() {
 
     }
 
-    private suspend fun performWebScraping_Reddit(): List<Article> {
+    private suspend fun performWebScraping_Reddit(subreddit: String = ""): List<Article> {
         val exactStrings = searchQueries
             .filter { it.isNotEmpty() } // Filter out empty strings
             .joinToString("+") { "%22$it%22"}
-        val url = "https://www.reddit.com/search/?q=$exactStrings&sort=hot"
+        val url = "https://www.reddit.com$subreddit/search/?q=$exactStrings&sort=hot"
         Log.d("url", url)
         val articles = mutableListOf<Article>()
 
@@ -709,6 +724,20 @@ class ArticleListViewModel : ViewModel() {
         val matchResult = regex.find(input)
 
         return matchResult?.groups?.get(1)?.value
+    }
+
+    private fun extractTwitterPublisher(inputText: String): String {
+        // Split the input text at "on X"
+        val parts = inputText.split(" on X:")
+
+        // Take the text before "on X" if there are multiple parts
+        val result = if (parts.size > 1) {
+            parts[0].trim()
+        } else {
+            // Handle the case where "on X" is not found
+            "Name not found"
+        }
+        return result
     }
 
     // As of now,text will be null in the article object if ran async; but we dont need text rn

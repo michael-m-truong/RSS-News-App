@@ -47,6 +47,7 @@ import com.bignerdranch.android.newsapp.models.SortByOption
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.checkbox.MaterialCheckBox
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.Date
 
@@ -680,6 +681,10 @@ class ArticleListFragment : Fragment() {
                 // Handle deletion here
                 // Remove the item from your data and the view
                 articleListViewModel.customResourceOption.remove(customResourceOption)
+                articleListViewModel.sourceOption.remove(customResourceOption)
+                viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+                    articleListViewModel.updateSourceOption()
+                }
                 buttonGroup.removeView(itemLayout)
             }
 
@@ -876,6 +881,10 @@ class ArticleListFragment : Fragment() {
                     // Handle deletion here
                     // Remove the item from your data and the view
                     articleListViewModel.customResourceOption.remove(customResourceOption)
+                    articleListViewModel.sourceOption.remove(customResourceOption)
+                    viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+                        articleListViewModel.updateSourceOption()
+                    }
                     sourceOptionButtonGroup.removeView(itemLayout)
                 }
 
