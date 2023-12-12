@@ -6,6 +6,7 @@ import android.view.View
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.bignerdranch.android.newsapp.database.NewsFeed
 import com.bignerdranch.android.newsapp.database.NewsFeedRepository
 import com.bignerdranch.android.newsapp.models.*
 import com.google.android.material.snackbar.Snackbar
@@ -884,6 +885,14 @@ class ArticleListViewModel : ViewModel() {
             "Name not found"
         }
         return result
+    }
+
+    fun getArticleByPosition(index: Int): Article? {
+        val articlesList = _articles.value
+        if (index >= 0 && index < articlesList.size) {
+            return articlesList[index]
+        }
+        return null
     }
 
     // As of now,text will be null in the article object if ran async; but we dont need text rn

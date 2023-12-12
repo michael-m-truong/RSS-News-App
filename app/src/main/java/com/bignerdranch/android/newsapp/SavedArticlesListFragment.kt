@@ -66,8 +66,15 @@ class SavedArticlesListFragment: Fragment() {
 //                        binding.savedNewsFeedList.visibility = View.GONE
 //                        binding.noSavedArticlesTextView.visibility = View.VISIBLE
 //                    } else {
+                    if (isEmpty) {
+                        binding.savedNewsFeedList.visibility = View.GONE
+                        binding.noSavedArticlesTextView.visibility = View.VISIBLE
+                    }
+                    else {
                         binding.savedNewsFeedList.visibility = View.VISIBLE
                         binding.noSavedArticlesTextView.visibility = View.GONE
+                    }
+
 //                    }
                 }
             }

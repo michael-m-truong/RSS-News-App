@@ -6,6 +6,7 @@ import android.content.res.Configuration
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.text.Editable
 import android.text.Spannable
@@ -40,6 +41,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bignerdranch.android.newsapp.database.SavedArticles
 import com.bignerdranch.android.newsapp.databinding.FragmentArticleListBinding
 import com.bignerdranch.android.newsapp.databinding.FragmentSavedNewsfeedListBinding
+import com.bignerdranch.android.newsapp.models.Article
 import com.bignerdranch.android.newsapp.models.DateRelevance
 import com.bignerdranch.android.newsapp.models.ReadTimeOption
 import com.bignerdranch.android.newsapp.models.ResourceOption
@@ -49,6 +51,7 @@ import com.google.android.material.checkbox.MaterialCheckBox
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.util.Date
 
 
@@ -61,13 +64,15 @@ class ArticleListFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private val savedArticlesListViewModel: SavedArticlesListViewModel by viewModels()
 
-    private var _savedArticleBinding: FragmentSavedNewsfeedListBinding? = null
-    private val savedArticleBinding
-        get() = checkNotNull(_savedArticleBinding) {
+    private var _binding: FragmentArticleListBinding? = null
+    private val binding
+        get() = checkNotNull(_binding) {
             "Cannot access binding because it is null. Is the view Visible?"
         }
 
     private lateinit var loadingProgressBar: ProgressBar
+
+    var isSaved = false
 
     override fun onPause() {
         super.onPause()
@@ -153,11 +158,10 @@ class ArticleListFragment : Fragment() {
 
         init_styles()
 
-        _savedArticleBinding = FragmentSavedNewsfeedListBinding.inflate(inflater, container, false)
-        savedArticleBinding.savedNewsFeedList.layoutManager = LinearLayoutManager(context)
+        _binding = FragmentArticleListBinding.inflate(inflater, container, false)
+        binding.articleRecyclerView.layoutManager = LinearLayoutManager(context)
 
         swipeToSave()
-        val binding = FragmentArticleListBinding.inflate(inflater, container, false)
 
         articleAdapter = ArticleListAdapter() // Initialize your RecyclerView adapter
         binding.articleRecyclerView.layoutManager = LinearLayoutManager(requireContext())
@@ -308,7 +312,6 @@ class ArticleListFragment : Fragment() {
                 .show()
 
         }
-
 
         return binding.root
     }
@@ -912,32 +915,75 @@ class ArticleListFragment : Fragment() {
                 viewHolder: RecyclerView.ViewHolder,
                 target: RecyclerView.ViewHolder
             ): Boolean {
+                Log.d("testurmom", (savedArticlesListViewModel == null).toString())
+                val position = viewHolder.bindingAdapterPosition
+                val savedArticle = articleListViewModel.getArticleByPosition(position)
+                if (savedArticle != null) {
+                    viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
+                        checkIfSaved(savedArticle)
+                    }
+                }
                 return false
             }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val position = viewHolder.bindingAdapterPosition
-                val savedArticle = savedArticlesListViewModel.getArticleByPosition(position)
+                Log.d("testurmom", (savedArticlesListViewModel == null).toString())
+                val savedArticle = articleListViewModel.getArticleByPosition(position)
+                if (savedArticle != null) {
+                    viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
+                        checkIfSaved(savedArticle)
+                    }
+                }
 
-                val alertdialog = AlertDialog.Builder(context)
-                    .setTitle("Save Article")
-                    .setMessage("Save Article?")
-                    .setPositiveButton("Save") { _, _ ->
-                        if (savedArticle != null) {
-                            viewLifecycleOwner.lifecycleScope.launch {
-                                savedArticlesListViewModel.addArticle(savedArticle)
+                if (!isSaved) {
+                    val alertdialog = AlertDialog.Builder(context)
+                        .setTitle("Save Item")
+                        .setMessage("Save Article?")
+                        .setPositiveButton("Save") { _, _ ->
+                            if (savedArticle != null) {
+                                viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+                                    savedArticlesListViewModel.addArticle(SavedArticles(savedArticle))
+                                }
                             }
+                            val messageId = R.string.saved_article
+                            view?.let { Snackbar.make(it, messageId, Snackbar.LENGTH_SHORT).show() }
+                            viewHolder.bindingAdapter?.notifyItemChanged(position)
                         }
-                    }
-                    .setNegativeButton("Cancel") { dialog, _ ->
-                        dialog.dismiss()
-                        viewHolder.bindingAdapter?.notifyItemChanged(position)
-                    }
-                    .setCancelable(true)
-                    .setOnCancelListener {
-                        viewHolder.bindingAdapter?.notifyItemChanged(position)
-                    }
-                    .show()
+                        .setNegativeButton("Cancel") { dialog, _ ->
+                            dialog.dismiss()
+                            viewHolder.bindingAdapter?.notifyItemChanged(position)
+                        }
+                        .setCancelable(true)
+                        .setOnCancelListener {
+                            viewHolder.bindingAdapter?.notifyItemChanged(position)
+                        }
+                        .show()
+                }
+                else {
+                    val alertdialog = AlertDialog.Builder(context)
+                        .setTitle("Unsave Item")
+                        .setMessage("Unsave Article?")
+                        .setPositiveButton("Unsave") { _, _ ->
+                            if (savedArticle != null) {
+                                viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+                                    savedArticlesListViewModel.removeArticle(savedArticle.link)
+                                }
+                            }
+                            val messageId = R.string.removed_article
+                            view?.let { Snackbar.make(it, messageId, Snackbar.LENGTH_SHORT).show() }
+                            viewHolder.bindingAdapter?.notifyItemChanged(position)
+                        }
+                        .setNegativeButton("Cancel") { dialog, _ ->
+                            dialog.dismiss()
+                            viewHolder.bindingAdapter?.notifyItemChanged(position)
+                        }
+                        .setCancelable(true)
+                        .setOnCancelListener {
+                            viewHolder.bindingAdapter?.notifyItemChanged(position)
+                        }
+                        .show()
+                }
             }
 
             // Customize the swipe appearance
@@ -951,11 +997,33 @@ class ArticleListFragment : Fragment() {
                 isCurrentlyActive: Boolean
             ) {
                 if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
-                    val itemView = viewHolder.itemView
-                    val background = ColorDrawable(Color.RED)
-                    val deleteIcon =
-                        ContextCompat.getDrawable(requireContext(), R.drawable.baseline_delete_24)
-                    val iconMargin = (itemView.height - deleteIcon?.intrinsicHeight!!) / 2
+                    val position = viewHolder.bindingAdapterPosition
+                    Log.d("testurmom", (savedArticlesListViewModel == null).toString())
+                    val savedArticle = articleListViewModel.getArticleByPosition(position)
+                    if (savedArticle != null) {
+                        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
+                            checkIfSaved(savedArticle)
+                        }
+                    }
+                    var itemView = viewHolder.itemView
+                    var background: Drawable
+                    var saveIcon: Drawable
+                    var iconMargin: Int
+                    if (!isSaved) {
+                        itemView = viewHolder.itemView
+                        background = ColorDrawable(Color.BLUE)
+                        saveIcon =
+                            ContextCompat.getDrawable(requireContext(), R.drawable.baseline_bookmark_add_48)!!
+                        iconMargin = (itemView.height - saveIcon?.intrinsicHeight!!) / 2
+                    }
+                    else {
+                        itemView = viewHolder.itemView
+                        background = ColorDrawable(Color.RED)
+                        saveIcon =
+                            ContextCompat.getDrawable(requireContext(), R.drawable.baseline_bookmark_remove_48)!!
+                        iconMargin = (itemView.height - saveIcon?.intrinsicHeight!!) / 2
+                    }
+
 
                     // Draw the red background
                     background.setBounds(
@@ -967,13 +1035,13 @@ class ArticleListFragment : Fragment() {
                     background.draw(c)
                     // Draw the delete icon if the swipe is in progress
                     if (isCurrentlyActive) {
-                        deleteIcon.setBounds(
-                            itemView.right - iconMargin - deleteIcon.intrinsicWidth,
+                        saveIcon.setBounds(
+                            itemView.right - iconMargin - saveIcon.intrinsicWidth,
                             itemView.top + iconMargin,
                             itemView.right - iconMargin,
                             itemView.bottom - iconMargin
                         )
-                        deleteIcon.draw(c)
+                        saveIcon.draw(c)
                     }
                 }
 
@@ -990,7 +1058,12 @@ class ArticleListFragment : Fragment() {
         }
 
         val itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
-        itemTouchHelper.attachToRecyclerView(savedArticleBinding.savedNewsFeedList)
+        itemTouchHelper.attachToRecyclerView(binding.articleRecyclerView)
+    }
+
+    private suspend fun checkIfSaved(article: Article){
+        isSaved = savedArticlesListViewModel.contains(article.link)
+        Log.d("articlePageFragment", "contains is $isSaved")
     }
 }
 
