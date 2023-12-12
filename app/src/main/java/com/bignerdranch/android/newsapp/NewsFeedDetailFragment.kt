@@ -72,7 +72,7 @@ class NewsFeedDetailFragment : Fragment() {
         if (feed == null) {
             actionBar?.title = "Create newsfeed"
         }
-        else if (feed != null && feed.wordBank.size == 1 && feed.excludeWordBank.size == 1 && feed.title.isEmpty()) {
+        else if (feed != null && feed.wordBank.size == 0 && feed.excludeWordBank.size == 0 && feed.title.isEmpty()) {
             actionBar?.title = "Create newsfeed"
         }
         else {
@@ -193,7 +193,7 @@ class NewsFeedDetailFragment : Fragment() {
                                     oldNewsFeed.copy(excludeWordBank = oldNewsFeed.excludeWordBank)
                                 }
                             }
-                            if( chipGroup.size == 1) {
+                            if(newsFeedDetailViewModel.newsFeed.value!!.wordBank.size == 0) {
                                 if (newsFeedDetailViewModel.filterState == Filter.EXACT) {
                                     val addKeywordsChip = Chip(requireContext())
                                     addKeywordsChip.text = getString(R.string.helper_chip_exact)
@@ -300,7 +300,7 @@ class NewsFeedDetailFragment : Fragment() {
 
                 val wordbank = newsFeedDetailViewModel.newsFeed.value?.wordBank!!
 
-                if (wordbank.size == 1 && wordbank.contains("")) {
+                if (wordbank.size == 0) {
                     val addKeywordsChip = Chip(requireContext())
                     addKeywordsChip.text = getString(R.string.helper_chip_exact)
                     addKeywordsChip.chipMinHeight = 140f
@@ -326,7 +326,7 @@ class NewsFeedDetailFragment : Fragment() {
                             }
                             chipGroup.removeView(chip)
 
-                            if( chipGroup.size == 0) {
+                            if( newsFeedDetailViewModel.newsFeed.value!!.wordBank.size == 0) {
                                 if (newsFeedDetailViewModel.filterState == Filter.EXACT) {
                                     val addKeywordsChip = Chip(requireContext())
                                     addKeywordsChip.text = getString(R.string.helper_chip_exact)
@@ -337,17 +337,6 @@ class NewsFeedDetailFragment : Fragment() {
                                     addKeywordsChip.id = resources.getIdentifier("helper_exact", "id", requireContext().packageName)
                                     chipGroup.addView(addKeywordsChip)
                                 }
-                                else if (newsFeedDetailViewModel.filterState == Filter.EXCLUDE) {
-                                    val addKeywordsChip = Chip(requireContext())
-                                    addKeywordsChip.text = getString(R.string.helper_chip_exclude)
-                                    addKeywordsChip.chipMinHeight = 140f
-                                    addKeywordsChip.isCloseIconVisible = false // This chip won't be removable
-                                    addKeywordsChip.isClickable = false // Make the chip unclickable
-                                    addKeywordsChip.isFocusable = false // Make the chip unfocusable
-                                    addKeywordsChip.id = resources.getIdentifier("helper_exclude", "id", requireContext().packageName)
-                                    chipGroup.addView(addKeywordsChip)
-                                }
-
                             }
                         }
 
@@ -381,7 +370,7 @@ class NewsFeedDetailFragment : Fragment() {
 
                 val wordbank = newsFeedDetailViewModel.newsFeed.value?.excludeWordBank!!
 
-                if (wordbank.size == 1 && wordbank.contains("")) {
+                if (wordbank.size == 0) {
                     val addKeywordsChip = Chip(requireContext())
                     addKeywordsChip.text = getString(R.string.helper_chip_exclude)
                     addKeywordsChip.chipMinHeight = 140f
@@ -401,23 +390,13 @@ class NewsFeedDetailFragment : Fragment() {
                         chip.setOnCloseIconClickListener {
                             // Remove the word from the list and the chip
                             newsFeedDetailViewModel.updateNewsFeed { oldNewsFeed ->
-                                oldNewsFeed.wordBank.remove(word)
-                                oldNewsFeed.copy(wordBank = oldNewsFeed.wordBank)
+                                oldNewsFeed.excludeWordBank.remove(word)
+                                oldNewsFeed.copy(excludeWordBank = oldNewsFeed.excludeWordBank)
                             }
                             chipGroup.removeView(chip)
 
-                            if( chipGroup.size == 0) {
-                                if (newsFeedDetailViewModel.filterState == Filter.EXACT) {
-                                    val addKeywordsChip = Chip(requireContext())
-                                    addKeywordsChip.text = getString(R.string.helper_chip_exact)
-                                    addKeywordsChip.chipMinHeight = 140f
-                                    addKeywordsChip.isCloseIconVisible = false // This chip won't be removable
-                                    addKeywordsChip.isClickable = false // Make the chip unclickable
-                                    addKeywordsChip.isFocusable = false // Make the chip unfocusable
-                                    addKeywordsChip.id = resources.getIdentifier("helper_exact", "id", requireContext().packageName)
-                                    chipGroup.addView(addKeywordsChip)
-                                }
-                                else if (newsFeedDetailViewModel.filterState == Filter.EXCLUDE) {
+                            if(newsFeedDetailViewModel.newsFeed.value!!.excludeWordBank.size == 0) {
+                                if (newsFeedDetailViewModel.filterState == Filter.EXCLUDE) {
                                     val addKeywordsChip = Chip(requireContext())
                                     addKeywordsChip.text = getString(R.string.helper_chip_exclude)
                                     addKeywordsChip.chipMinHeight = 140f
@@ -434,7 +413,6 @@ class NewsFeedDetailFragment : Fragment() {
                         chipGroup.addView(chip)
                     }
                 }
-
                 // Handle button click action
             }
 
@@ -445,6 +423,15 @@ class NewsFeedDetailFragment : Fragment() {
             viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 newsFeedDetailViewModel.newsFeed.collect { newsFeed ->
                     newsFeed?.let { updateUi(it) }
+                    Log.d("does this run", "nad")
+                    if (newsFeed != null && !newsFeedDetailViewModel.isOriginalNewsFeedInitialized) {
+                        originalNewsFeed = newsFeed.copy()
+                        originalNewsFeed = originalNewsFeed!!.copy(
+                            wordBank = originalNewsFeed!!.wordBank.toMutableList(),
+                            excludeWordBank = originalNewsFeed!!.excludeWordBank.toMutableList()
+                        )
+                        newsFeedDetailViewModel.isOriginalNewsFeedInitialized = true
+                    }
                 }
             }
         }
@@ -464,10 +451,9 @@ class NewsFeedDetailFragment : Fragment() {
     private fun updateUi(newsFeed: NewsFeed) {
         binding.apply {
 
-            if (originalNewsFeed == null) {
+            //if (originalNewsFeed != null) {
                 // Save the original state when it's not saved yet
-                originalNewsFeed = newsFeed.copy()
-            }
+            //}
 
             val translationX = exactMatchButton.x
             underline.translationX = translationX
@@ -488,7 +474,7 @@ class NewsFeedDetailFragment : Fragment() {
             } else if (newsFeedDetailViewModel.filterState == Filter.EXCLUDE) {
                 wordbank = newsFeed.excludeWordBank
             }
-            if (wordbank != null && !(wordbank.size == 1 && wordbank.contains(""))) {
+            if (wordbank != null && !(wordbank.size == 0)) {
                 Log.d("wordbank", wordbank.toString())
                 Log.d("wordbankk",wordbank.size.toString())
                 for (word in wordbank) {
@@ -506,7 +492,7 @@ class NewsFeedDetailFragment : Fragment() {
                             }
                             chipGroup.removeView(chip)
 
-                            if( chipGroup.size == 1) {
+                            if( newsFeedDetailViewModel.newsFeed.value!!.wordBank.size == 0) {
                                 if (newsFeedDetailViewModel.filterState == Filter.EXACT) {
                                     val addKeywordsChip = Chip(requireContext())
                                     addKeywordsChip.text = getString(R.string.helper_chip_exact)
@@ -517,16 +503,23 @@ class NewsFeedDetailFragment : Fragment() {
                                     addKeywordsChip.id = resources.getIdentifier("helper_exact", "id", requireContext().packageName)
                                     chipGroup.addView(addKeywordsChip)
                                 }
-                                else if (newsFeedDetailViewModel.filterState == Filter.EXCLUDE) {
-                                    val addKeywordsChip = Chip(requireContext())
-                                    addKeywordsChip.text = getString(R.string.helper_chip_exclude)
-                                    addKeywordsChip.chipMinHeight = 140f
-                                    addKeywordsChip.isCloseIconVisible = false // This chip won't be removable
-                                    addKeywordsChip.isClickable = false // Make the chip unclickable
-                                    addKeywordsChip.isFocusable = false // Make the chip unfocusable
-                                    addKeywordsChip.id = resources.getIdentifier("helper_exclude", "id", requireContext().packageName)
-                                    chipGroup.addView(addKeywordsChip)
-                                }
+                            }
+                            if( newsFeedDetailViewModel.newsFeed.value!!.excludeWordBank.size == 0) {
+                                    if (newsFeedDetailViewModel.filterState == Filter.EXCLUDE) {
+                                        val addKeywordsChip = Chip(requireContext())
+                                        addKeywordsChip.text =
+                                            getString(R.string.helper_chip_exclude)
+                                        addKeywordsChip.chipMinHeight = 140f
+                                        addKeywordsChip.isCloseIconVisible = false // This chip won't be removable
+                                        addKeywordsChip.isClickable = false // Make the chip unclickable
+                                        addKeywordsChip.isFocusable = false // Make the chip unfocusable
+                                        addKeywordsChip.id = resources.getIdentifier(
+                                            "helper_exclude",
+                                            "id",
+                                            requireContext().packageName
+                                        )
+                                        chipGroup.addView(addKeywordsChip)
+                                    }
 
                             }
                         }
@@ -563,6 +556,10 @@ class NewsFeedDetailFragment : Fragment() {
 
 
     private fun hasChanges(): Boolean {
+        Log.d("ognews", (originalNewsFeed != null && originalNewsFeed != newsFeedDetailViewModel.newsFeed.value).toString())
+        Log.d("ognews", (originalNewsFeed != null).toString())
+        Log.d("ognews", (originalNewsFeed != newsFeedDetailViewModel.newsFeed.value).toString())
+        originalNewsFeed?.let { Log.d("ognews", it.title) }
         return originalNewsFeed != null && originalNewsFeed != newsFeedDetailViewModel.newsFeed.value
     }
 
@@ -576,7 +573,7 @@ class NewsFeedDetailFragment : Fragment() {
         val actionBar = (activity as AppCompatActivity?)!!.supportActionBar
         actionBar?.setDisplayHomeAsUpEnabled(false)
         viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
-            if (originalNewsFeed != null && originalNewsFeed!!.wordBank.size == 1 && originalNewsFeed!!.excludeWordBank.size == 1 && originalNewsFeed!!.title.isEmpty()) {
+            if (originalNewsFeed != null && originalNewsFeed!!.wordBank.size == 0 && originalNewsFeed!!.excludeWordBank.size == 0 && originalNewsFeed!!.title.isEmpty()) {
                 newsFeedDetailViewModel.deleteNewsFeed(originalNewsFeed!!.id)
             }
             requireActivity().onBackPressedDispatcher.onBackPressed()
@@ -600,7 +597,7 @@ class NewsFeedDetailFragment : Fragment() {
             val actionBar = (activity as AppCompatActivity?)!!.supportActionBar
             actionBar?.setDisplayHomeAsUpEnabled(false)
             viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
-                if (originalNewsFeed != null && originalNewsFeed!!.wordBank.size == 1 && originalNewsFeed!!.excludeWordBank.size == 1 && originalNewsFeed!!.title.isEmpty()) {
+                if (originalNewsFeed != null && originalNewsFeed!!.wordBank.size == 0 && originalNewsFeed!!.excludeWordBank.size == 0 && originalNewsFeed!!.title.isEmpty()) {
                     newsFeedDetailViewModel.deleteNewsFeed(originalNewsFeed!!.id)
                 }
                 requireActivity().onBackPressedDispatcher.onBackPressed()
