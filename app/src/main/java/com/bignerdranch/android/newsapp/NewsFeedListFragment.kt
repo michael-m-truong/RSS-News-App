@@ -71,13 +71,9 @@ class NewsFeedListFragment : Fragment() {
         // Set your touch listener to detect when the touch is released
 //        binding.root.setOnTouchListener { _, motionEvent ->
 //            if (motionEvent.action == MotionEvent.ACTION_UP) {
-//                Log.d("from", fromPos.toString())
-//                Log.d("to", toPos.toString())
 //                if (fromPos != null && toPos != null) {
-//                    Log.d("changed", toPos.toString())
 //                    newsFeedListViewModel.reorderNewsFeeds(fromPos!!, toPos!!)
 //                    viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
-//                        Log.d("changed", "here")
 //                        newsFeedListViewModel.updateNewsFeedOrder(fromPos!!, toPos!!)
 //                        fromPos = null
 //                        toPos = null
@@ -323,7 +319,6 @@ class NewsFeedListFragment : Fragment() {
                 val toPosition = target.bindingAdapterPosition
 
                 recyclerView.adapter?.notifyItemMoved(fromPosition, toPosition)
-                //Log.d("moving","moving")
                 if (isMoving) {
                     toPos = toPosition
                 } else {
@@ -344,12 +339,9 @@ class NewsFeedListFragment : Fragment() {
                 super.clearView(recyclerView, viewHolder)
 
                 // Call notifyItemMoved here when the move is complete (user releases the item)
-                Log.d("noway", "noway")
                 if (fromPos != null && toPos != null) {
-                    Log.d("changed", toPos.toString())
                     newsFeedListViewModel.reorderNewsFeeds(fromPos!!, toPos!!)
                     viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
-                        Log.d("changed", "here")
                         newsFeedListViewModel.updateNewsFeedOrder(fromPos!!, toPos!!)
                         fromPos = null
                         toPos = null

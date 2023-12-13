@@ -77,7 +77,6 @@ class NewsFeedListViewModel : ViewModel() {
 
     fun reorderNewsFeeds(fromPosition: Int, toPosition: Int) {
         val newsFeedsList = _newsFeeds.value.toMutableList()
-        Log.d("idx", "test")
         if (fromPosition in 0 until newsFeedsList.size && toPosition in 0 until newsFeedsList.size) {
             val itemToMove = newsFeedsList.removeAt(fromPosition)
             newsFeedsList.add(toPosition, itemToMove)

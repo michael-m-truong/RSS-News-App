@@ -282,14 +282,12 @@ class NewsFeedDetailFragment : Fragment() {
                 // Move the underline to the position of the exactMatchButton
                 val translationX = exactMatchButton.x
                 underline.animate().translationX(translationX).setDuration(200).start()
-                Log.d("exact", "exact")
 
                 // Change the text color of the exactMatchButton
                 exactMatchButton.setTextColor(Color.BLUE)
 
                 val typedValue = TypedValue()
                 context?.theme?.resolveAttribute(android.R.attr.textColorPrimary, typedValue, true)
-                Log.d("exact", "Resolved color: ${typedValue.data}")
                 excludeButton.setTextColor(typedValue.data)
 
                 // Dynamically set the width of the underline view to match the width of the exactMatchButton
@@ -323,7 +321,6 @@ class NewsFeedDetailFragment : Fragment() {
                         chip.setOnCloseIconClickListener {
                             // Remove the word from the list and the chip
                             newsFeedDetailViewModel.updateNewsFeed { oldNewsFeed ->
-                                Log.d("sizees", chipGroup.size.toString())
                                 oldNewsFeed.wordBank.remove(word)
                                 oldNewsFeed.copy(wordBank = oldNewsFeed.wordBank)
                             }
@@ -352,14 +349,12 @@ class NewsFeedDetailFragment : Fragment() {
                 // Move the underline to the position of the excludeButton
                 val translationX = excludeButton.x
                 underline.animate().translationX(translationX).setDuration(200).start()
-                Log.d("exclude", "exclude")
 
                 // Change the text color of the excludeButton
                 excludeButton.setTextColor(Color.BLUE)
 
                 val typedValue = TypedValue()
                 context?.theme?.resolveAttribute(android.R.attr.textColorPrimary, typedValue, true)
-                Log.d("exact", "Resolved color: ${typedValue.data}")
                 exactMatchButton.setTextColor(typedValue.data)
 
                 // Dynamically set the width of the underline view to match the width of the excludeButton
@@ -426,7 +421,6 @@ class NewsFeedDetailFragment : Fragment() {
             viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 newsFeedDetailViewModel.newsFeed.collect { newsFeed ->
                     newsFeed?.let { updateUi(it) }
-                    Log.d("does this run", "nad")
                     if (newsFeed != null && !newsFeedDetailViewModel.isOriginalNewsFeedInitialized) {
                         originalNewsFeed = newsFeed.copy()
                         originalNewsFeed = originalNewsFeed!!.copy(
@@ -478,8 +472,6 @@ class NewsFeedDetailFragment : Fragment() {
                 wordbank = newsFeed.excludeWordBank
             }
             if (wordbank != null && !(wordbank.size == 0)) {
-                Log.d("wordbank", wordbank.toString())
-                Log.d("wordbankk",wordbank.size.toString())
                 for (word in wordbank) {
                     if (word.isNotEmpty()) { // Add this condition to skip empty words
                         val chip = Chip(requireContext())
@@ -559,10 +551,6 @@ class NewsFeedDetailFragment : Fragment() {
 
 
     private fun hasChanges(): Boolean {
-        Log.d("ognews", (originalNewsFeed != null && originalNewsFeed != newsFeedDetailViewModel.newsFeed.value).toString())
-        Log.d("ognews", (originalNewsFeed != null).toString())
-        Log.d("ognews", (originalNewsFeed != newsFeedDetailViewModel.newsFeed.value).toString())
-        originalNewsFeed?.let { Log.d("ognews", it.title) }
         return originalNewsFeed != null && originalNewsFeed != newsFeedDetailViewModel.newsFeed.value
     }
 

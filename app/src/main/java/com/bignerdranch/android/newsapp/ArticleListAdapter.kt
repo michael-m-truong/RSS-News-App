@@ -69,7 +69,6 @@ class ArticleListAdapter :
             // Make article clickable
             binding.root.setOnClickListener {
                 val jsonString = Gson().toJson(article)
-                Log.d("click", article.link)
                 val action = ArticleListFragmentDirections.showArticle(jsonString)
                 it.findNavController().navigate(action)
             }

@@ -18,7 +18,6 @@ class NewsFeedHolder(
         val newsfeedDateString = "Last checked: " + formatPrettyTime(newsFeed.date)
 
         binding.newsfeedDate.text = newsfeedDateString
-        Log.d("init", "editnewsfeed")
 
         binding.root.setOnClickListener {
             ArticleListViewModel.searchQueries = newsFeed.wordBank
@@ -30,7 +29,6 @@ class NewsFeedHolder(
             ArticleListViewModel.publisherOption = newsFeed.publisherOption
             ArticleListViewModel.newsfeedTitle = newsFeed.title
             ArticleListViewModel.sourceOption = newsFeed.sourceOption
-            Log.d("relop",newsFeed.publisherOption.toString())
             val action = NewsFeedListFragmentDirections.showArticleList(newsFeed.id)
             it.findNavController().navigate(action)
         }

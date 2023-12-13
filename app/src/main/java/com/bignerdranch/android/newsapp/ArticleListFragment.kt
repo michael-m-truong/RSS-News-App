@@ -331,7 +331,6 @@ class ArticleListFragment : Fragment() {
         dialog.setCancelable(true)
 
         val nightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-        Log.d("night", nightMode.toString())
         val backgroundColor = if (nightMode == Configuration.UI_MODE_NIGHT_YES) {
             Color.parseColor("#121212")
         } else {
@@ -500,7 +499,6 @@ class ArticleListFragment : Fragment() {
                 if (view.isChecked) {
                     // Checkbox is checked, add the publisher to the temporary set
                     selectedPublishers.add(view.text.toString())
-                    Log.d("heree!", "bad")
                 } else {
                     // Checkbox is unchecked, remove the publisher from the temporary set
                     selectedPublishers.remove(view.text.toString())
@@ -555,7 +553,6 @@ class ArticleListFragment : Fragment() {
             checkBox.layoutParams = layoutParams
 
             checkBoxContainer.addView(checkBox)
-            Log.d("selectedpub",selectedPublishers.toString())
             if (selectedPublishers.contains("INIT_NEWSFEED")) {
                 checkBox.isChecked = true
             }
@@ -587,7 +584,6 @@ class ArticleListFragment : Fragment() {
                 }
             }
 
-            Log.d("pubz",selectedPublishers.toString())
             articleListViewModel.publisherOption.remove("INIT_NEWSFEED")
             articleListViewModel.setPublisherOption(selectedPublishers)
             // Dismiss the dialog or perform other actions if needed
@@ -730,7 +726,6 @@ class ArticleListFragment : Fragment() {
             binding.noPublishersView.visibility = View.GONE
 
             recyclerView.smoothScrollToPosition(0)
-            Log.d("plsss", articleListViewModel.customResourceOption.toString())
             articleListViewModel.applyFilters(ResourceOption::class)
             articleListViewModel.fetchArticles()
             dialog.dismiss()
@@ -924,7 +919,6 @@ class ArticleListFragment : Fragment() {
                 viewHolder: RecyclerView.ViewHolder,
                 target: RecyclerView.ViewHolder
             ): Boolean {
-                Log.d("testurmom", (savedArticlesListViewModel == null).toString())
                 val position = viewHolder.bindingAdapterPosition
                 val savedArticle = articleListViewModel.getArticleByPosition(position)
                 if (savedArticle != null) {
@@ -937,7 +931,6 @@ class ArticleListFragment : Fragment() {
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val position = viewHolder.bindingAdapterPosition
-                Log.d("testurmom", (savedArticlesListViewModel == null).toString())
                 val savedArticle = articleListViewModel.getArticleByPosition(position)
                 if (savedArticle != null) {
                     viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
@@ -1007,7 +1000,6 @@ class ArticleListFragment : Fragment() {
             ) {
                 if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
                     val position = viewHolder.bindingAdapterPosition
-                    Log.d("testurmom", (savedArticlesListViewModel == null).toString())
                     val savedArticle = articleListViewModel.getArticleByPosition(position)
                     if (savedArticle != null) {
                         viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
@@ -1072,7 +1064,6 @@ class ArticleListFragment : Fragment() {
 
     private suspend fun checkIfSaved(article: Article){
         isSaved = savedArticlesListViewModel.contains(article.link)
-        Log.d("articlePageFragment", "contains is $isSaved")
     }
 }
 

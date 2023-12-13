@@ -130,7 +130,6 @@ class ArticlePageFragment : Fragment() {
 
                             true // Indicate that the URL has been handled
                         } catch (e: ActivityNotFoundException) {
-                            Log.e("test", "Could not load URL: ${request?.url}")
                             false // Continue loading the URL in the WebView
                         }
                     }
@@ -142,7 +141,6 @@ class ArticlePageFragment : Fragment() {
 
         contains = checkIfContains()
         save = contains
-        Log.d("articlePageFragment", "will save $save")
 
         return binding.root
     }
@@ -244,7 +242,6 @@ class ArticlePageFragment : Fragment() {
 
         runBlocking {
             contains = savedArticlesListViewModel.contains(article.link)
-            Log.d("articlePageFragment", "contains is $contains")
         }
         return contains
     }
@@ -263,20 +260,16 @@ class ArticlePageFragment : Fragment() {
             datetime = article.datetime,
             publisherImgSrc = article.publisherImgSrc
         )
-        Log.d("articlePageFrag", "created article")
 
 
 
         viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
-            Log.d("articlePageFragment", "will save $save")
             if (save) {
                 if (!contains) {
                     savedArticlesListViewModel.addArticle(savedArticle)
-                    Log.d("articlepagefrag", "Added article")
                 }
             }else {
                 savedArticlesListViewModel.removeArticle(savedArticle.link)
-                Log.d("articlepagefrag", "removed Article")
             }
         }
         super.onPause()

@@ -93,7 +93,6 @@ class ArticleListViewModel : ViewModel() {
 
     suspend fun updateDateRelevanceOption() {
         val intValue = _dateOption.ordinal
-        Log.d("intval",intValue.toString())
         newsFeedRepository.updateDateRelevanceOption(newsFeedId, intValue)
     }
 
@@ -113,7 +112,6 @@ class ArticleListViewModel : ViewModel() {
     suspend fun updatePublisherOption() {
         if (publisherOption.contains("INIT_NEWSFEED") && publisherOption.size >= 2) {
             publisherOption.remove("INIT_NEWSFEED")
-            Log.d("betterbe",publisherOption.toString())
         }
         val publisherOptionList: MutableList<String> = publisherOption.toMutableList()
         newsFeedRepository.updatePublisherOption(newsFeedId, publisherOptionList)
@@ -142,7 +140,6 @@ class ArticleListViewModel : ViewModel() {
             newsFeedRepository.updateSourceOption(newsFeedId, _sourceOption)
         } catch (e: Exception) {
             // Log the exception using Log.d
-            Log.d("fuckme", "Failed to update source option: ${e.message}")
         }
     }
 
@@ -216,19 +213,15 @@ class ArticleListViewModel : ViewModel() {
                 }
                 DateRelevance::class-> {
                     updateDateRelevanceOption()
-                    Log.d("daterel","daterel")
                 }
                 String::class-> {
-                    Log.d("kkkk","here")
                     updatePublisherOption()
                 }
                 ResourceOption::class-> {
-                    Log.d("kkkk","here")
                     updateSourceOption()
                 }
                 else -> {
                     // Code to handle other types
-                    println("Input is of an unknown type")
                 }
             }
 
@@ -268,7 +261,6 @@ class ArticleListViewModel : ViewModel() {
         // Apply your filter criteria here
         var filteredArticles = articles
 
-        Log.d("THE ARTICLES ORIGINAL", articles.toString())
 
         if (_sortByOption == SortByOption.MOST_POPULAR) {
             if (resourceOption.size + customResourceOption.size == 1) {
@@ -294,8 +286,6 @@ class ArticleListViewModel : ViewModel() {
         } else if (_sortByOption == SortByOption.NEWEST) {
             filteredArticles = filteredArticles.sortedByDescending { it.datetime }
 //            for (a in filteredArticles) {
-//                Log.d("datime", a.datetime.toString())
-//                Log.d("datime", a.headline)
 //            }
         }
 
@@ -326,14 +316,12 @@ class ArticleListViewModel : ViewModel() {
             }
             else -> {}
         }
-        Log.d("THE ARTICLES AFTER", filteredArticles.toString())
 
         if (_readTimeOption.isNotEmpty()) {
             val tempFilteredArticles = mutableListOf<Article>()
 
             for (article in filteredArticles) {
                 val readTimeMin = getArticleReadTime(article)
-                Log.d("readtime", readTimeMin.toString())
 
                 if ((_readTimeOption.contains(ReadTimeOption.oneTOthree) && readTimeMin <= 3) ||
                     (_readTimeOption.contains(ReadTimeOption.fourTOsix) && readTimeMin in 4 .. 6) ||
@@ -349,19 +337,16 @@ class ArticleListViewModel : ViewModel() {
             filteredArticles = tempFilteredArticles
         }
 
-        Log.d("THE ARTICLES AFTER", filteredArticles.toString())
 
 
         if (!publisherOption.contains("INIT_NEWSFEED")) {
             filteredArticles = filterByPublisher(filteredArticles)
         }
 
-        Log.d("filtered", filteredArticles.toString())
 
 
         // Add more filters as needed
 
-        print(filteredArticles.size)
 
         return filteredArticles
     }
@@ -472,7 +457,6 @@ class ArticleListViewModel : ViewModel() {
         }
 
         val url = "https://news.google.com/search?q=$queryStrings&hl=en-US&gl=US&ceid=US:en"
-        Log.d("url", url)
         val articles = mutableListOf<Article>()
 
         try {
@@ -480,14 +464,11 @@ class ArticleListViewModel : ViewModel() {
             val document = Jsoup.parse(htmlContent)
             var toplevelElements = document.select("div[jslog]")
             var count = 0
-            Log.d("fuck", toplevelElements.size.toString())
-            Log.d("fuck", toplevelElements.select("article").size.toString())
             for (element in toplevelElements) {
                 val articleElements = toplevelElements.select("article")
                 if (count == 20) {
                     break
                 }
-                Log.d("articleelements", articleElements.size.toString())
                 for (articleElement in articleElements) {
                     val headlineText = articleElement.select("a[href]").text()
                     if (headlineText.isEmpty()) {
@@ -497,14 +478,12 @@ class ArticleListViewModel : ViewModel() {
                         .substring(1)  //remove the initial "."
                     val headlineDate = articleElement.select("time[datetime]").text()
                     val headlinePublisher = articleElement.select("div[data-n-tid]").text()
-                    Log.d("headlinepub", headlinePublisher)
                     var imgSrc: String?
 
                     //if (articleElements.size <= 1) {
                     //    imgSrc = articleElement.select("img").attr("src")
                     //} else {
                         imgSrc = articleElement.select("figure img").attr("src")
-                        Log.d("imgsrc", imgSrc)
                     //}
                     val publisherImgSrc: String?
                     if (articleElements.size <= 1) {
@@ -524,7 +503,6 @@ class ArticleListViewModel : ViewModel() {
                     }
                     val headlineDateElement = articleElement.select("time")
                     val headlineDateTime = headlineDateElement.attr("datetime")
-                    Log.d("datetime", headlineDateTime)
                     val parsedDate = parseDateTime(headlineDateTime)
 
                     val article = Article(
@@ -544,8 +522,7 @@ class ArticleListViewModel : ViewModel() {
                 }
             }
         } catch (e: Exception) {
-            Log.d("bad", "bad")
-            e.printStackTrace()
+            //e.printStackTrace()
         }
 
         /*viewModelScope.launch(Dispatchers.IO) {
@@ -562,7 +539,6 @@ class ArticleListViewModel : ViewModel() {
         //    val sortedArticles = articles.sortedByDescending { it.datetime }
         //    return sortedArticles
         //} else {
-        Log.d("GOOGLE ARTICLES",articles.toString())
         _originalArticles.value += articles.toList()
         return filterArticles(articles)
         //}
@@ -574,42 +550,30 @@ class ArticleListViewModel : ViewModel() {
             .filter { it.isNotEmpty() } // Filter out empty strings
             .joinToString("+") { "%22$it%22"}
         val url = "https://www.reddit.com$subreddit/search/?q=$exactStrings&sort=hot"
-        Log.d("url", url)
         val articles = mutableListOf<Article>()
 
         try {
             val htmlContent = Jsoup.connect(url).get().html()
             val document = Jsoup.parse(htmlContent)
-            Log.d("not empty", "test")
             val postElements = document.select("post-consume-tracker")
             val tf = document.select("faceplate-timeago")
-            Log.d("ongg", tf.size.toString())
-            Log.d("ongg", tf.outerHtml())
             for (element in tf) {
                 val attributes = element.attributes()
                 for (attribute in attributes) {
-                    Log.d("Attribute", "${attribute.key} = ${attribute.value}")
                 }
             }
 
             val allElements = document.getAllElements()
 
-            for (element in allElements) {
-                if (element.text().contains("hours ago")) {
-                    // Log or process the element as needed
-                    Log.d("FoundElement", "Element with 'hours ago': ${element.outerHtml()}")
-                }
-            }
+            
             var count = 0
 
-            Log.d("totalamt", postElements.size.toString())
             for (postElement in postElements) {
                 if (count == 25) {
                     break
                 }
 
                 val title = postElement.select("span.invisible").text()
-                Log.d("DISDATITLE",title)
                 if (title.isEmpty()) {
                     continue
                 }
@@ -618,16 +582,13 @@ class ArticleListViewModel : ViewModel() {
 
                 var datetime = parseDateTime_reddit(postElement.select("faceplate-timeago").attr("ts"))
                 var date = formatPrettyTime(datetime)
-                Log.d("plss",postElement.select("faceplate-timeago").attr("ts"))
                 var publisher = postElement.select("a[href^='/r/']").attr("href")
                 publisher = getSubReddit(publisher)
 
                 date += "  $publisher"
 
                 val imgs = postElement.select("faceplate-img")
-                for (img in imgs) {
-                    Log.d("imgz", img.attr("src"))
-                }
+                
                 var imgSrc = imgs[1].attr("src")
                 var publisherSrc = imgs[0].attr("src")
                 if (imgs.size == 3) {
@@ -639,7 +600,6 @@ class ArticleListViewModel : ViewModel() {
                     publisherSrc = imgs[2].attr("src")
                 }
 
-                Log.d("testt", postElement.select("faceplate-img").size.toString())
                 if (imgSrc == null) {
                     imgSrc = ""
                 }
@@ -669,8 +629,7 @@ class ArticleListViewModel : ViewModel() {
             }
 
         } catch (e: Exception) {
-            Log.d("bad", e.message.toString())
-            e.printStackTrace()
+            //e.printStackTrace()
         }
 
         /*viewModelScope.launch(Dispatchers.IO) {
@@ -717,7 +676,6 @@ class ArticleListViewModel : ViewModel() {
         try {
             val htmlContent = Jsoup.connect(url).get().html()
             val document = Jsoup.parse(htmlContent)
-            Log.d("not empty", "test")
             val timeline = document.select("div.timeline")
             val tweets = timeline.select("div.timeline-item")
 
@@ -803,8 +761,7 @@ class ArticleListViewModel : ViewModel() {
             }
 
         } catch (e: Exception) {
-            Log.d("bad", e.message.toString())
-            e.printStackTrace()
+            //e.printStackTrace()
         }
 
         /*viewModelScope.launch(Dispatchers.IO) {
@@ -918,7 +875,6 @@ class ArticleListViewModel : ViewModel() {
 
             htmlContent = Jsoup.connect(finalUrl).get().html()
             val articleDocument = Jsoup.parse(htmlContent)
-            Log.d("finalurl", finalUrl)
             val paragraphs = articleDocument.select("p")
             return paragraphs.joinToString(" ") { it.text() }
         } catch (e: Exception) {
@@ -946,13 +902,10 @@ class ArticleListViewModel : ViewModel() {
                 .get()
                 .html()
             val articleDocument = Jsoup.parse(htmlContent)
-            Log.d("finalurl", finalUrl)
             val paragraphs = articleDocument.select("p")
             article.text = paragraphs.joinToString(" ") { it.text() }
-            Log.d("huh", article.toString())
 
         } catch (e: Exception) {
-            Log.d("exception", e.message.toString())
         }
     }
 
