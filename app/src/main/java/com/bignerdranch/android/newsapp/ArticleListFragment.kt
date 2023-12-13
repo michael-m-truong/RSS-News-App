@@ -88,6 +88,9 @@ class ArticleListFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         // Perform data fetching or any other setup tasks here
+        lifecycleScope.launch(Dispatchers.IO) {
+            articleListViewModel.updateLastCheckedDate()
+        }
         articleListViewModel.fetchArticles()
     }
 

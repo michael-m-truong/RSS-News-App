@@ -68,16 +68,17 @@ class NewsFeedDetailFragment : Fragment() {
 
     fun init_styles() {
         val actionBar = (activity as AppCompatActivity?)!!.supportActionBar
-        val feed = newsFeedDetailViewModel.newsFeed.value
-        if (feed == null) {
+        actionBar?.title = "Edit newsfeed"
+        // we can fix this later not impt
+        /*if (feed == null) {
             actionBar?.title = "Create newsfeed"
         }
-        else if (feed != null && feed.wordBank.size == 0 && feed.excludeWordBank.size == 0 && feed.title.isEmpty()) {
+        if (feed != null && feed.wordBank.size == 0 && feed.excludeWordBank.size == 0 && feed.title.isEmpty()) {
             actionBar?.title = "Create newsfeed"
         }
         else {
             actionBar?.title = "Edit newsfeed"
-        }
+        } */
         actionBar?.setDisplayHomeAsUpEnabled(true)
         val upArrow = ContextCompat.getDrawable(requireContext(), R.drawable.baseline_arrow_forward_24)
         actionBar?.setHomeAsUpIndicator(upArrow)
@@ -113,6 +114,8 @@ class NewsFeedDetailFragment : Fragment() {
         val underlineParams = binding.underline.layoutParams
         underlineParams.width = binding.exactMatchButton.width
         binding.underline.layoutParams = underlineParams */
+
+        //init_styles()
 
         val menuHost: MenuHost = requireActivity()
 
