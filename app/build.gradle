@@ -8,6 +8,10 @@ plugins {
 android {
     compileSdk 34
 
+    android {
+        namespace = "com.bignerdranch.android.newsapp"
+    }
+
     defaultConfig {
         applicationId "com.bignerdranch.android.newsapp"
         minSdk 24

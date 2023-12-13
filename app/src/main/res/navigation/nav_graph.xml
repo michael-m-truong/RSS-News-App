@@ -11,7 +11,7 @@
         tools:layout="@layout/fragment_newsfeed_list" >
         <action
             android:id="@+id/show_crime_detail"
-            app:destination="@id/crimeDetailFragment" />
+            app:destination="@id/newsfeedDetailFragment" />
         <action
             android:id="@+id/show_article_list"
             app:destination="@id/articleListFragment" />
@@ -21,7 +21,7 @@
             />
     </fragment>
     <fragment
-        android:id="@+id/crimeDetailFragment"
+        android:id="@+id/newsfeedDetailFragment"
         android:name="com.bignerdranch.android.newsapp.NewsFeedDetailFragment"
         android:label="CrimeDetailFragment"
         tools:layout="@layout/fragment_newsfeed_detail" >
