@@ -470,14 +470,14 @@ class ArticleListViewModel : ViewModel() {
                     break
                 }
                 for (articleElement in articleElements) {
-                    val headlineText = articleElement.select("a[href]").text()
+                    var headlineText = articleElement.select("a[href]").text()
                     if (headlineText.isEmpty()) {
                         continue
                     }
                     val headlineLink = "https://news.google.com" + articleElement.select("a").attr("href")
                         .substring(1)  //remove the initial "."
-                    val headlineDate = articleElement.select("time[datetime]").text()
-                    val headlinePublisher = articleElement.select("div[data-n-tid]").text()
+                    var headlineDate = articleElement.select("time[datetime]").text()
+                    var headlinePublisher = articleElement.select("div[data-n-tid]").text()
                     var imgSrc: String?
 
                     //if (articleElements.size <= 1) {
@@ -503,6 +503,14 @@ class ArticleListViewModel : ViewModel() {
                     }
                     val headlineDateElement = articleElement.select("time")
                     val headlineDateTime = headlineDateElement.attr("datetime")
+
+                    if (option == ResourceOption.Twitter) {
+                        headlinePublisher = extractTwitterPublisher(headlineText)
+                        headlineDate += "  $headlinePublisher"
+                        headlineText = extractTwitterText(headlineText)
+                        headlineText = headlineText.drop(1).dropLast(1)
+                    }
+
                     val parsedDate = parseDateTime(headlineDateTime)
 
                     val article = Article(
@@ -852,6 +860,13 @@ class ArticleListViewModel : ViewModel() {
             "Name not found"
         }
         return result
+    }
+
+    private fun extractTwitterText(inputText: String): String {
+        // Split the input text at "on X"
+        val parts = inputText.split(" on X:")
+
+        return parts[1].trimStart()
     }
 
     fun getArticleByPosition(index: Int): Article? {

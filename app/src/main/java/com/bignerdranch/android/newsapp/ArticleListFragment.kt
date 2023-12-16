@@ -848,6 +848,7 @@ class ArticleListFragment : Fragment() {
         sourceEditText.addTextChangedListener(textWatcher)
 
         val addSourceButton = dialog.findViewById<MaterialButton>(R.id.applyButton)
+        val cancelButton = dialog.findViewById<MaterialButton>(R.id.cancelButton)
         addSourceButton.setOnClickListener {
             // Pass the entered text to the callback function
             //onAddSource(sourceEditText.text.toString())
@@ -903,6 +904,9 @@ class ArticleListFragment : Fragment() {
 
             dialog.dismiss()
             sourceOptionDialog.show()
+        }
+        cancelButton.setOnClickListener {
+            dialog.dismiss()
         }
 
         // Show the dialog
